@@ -1,0 +1,11 @@
+openapi: 1.0.0
+info:
+  title: Rudex
+  description: >
+    Authentication service
+  version: "0.1"
+  x-displayName: Authentication service
+
+servers:
+  - url: https://app.42pasila.vn
+    description: Production

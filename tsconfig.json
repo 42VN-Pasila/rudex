@@ -1,0 +1,35 @@
+{
+  "compilerOptions": {
+    "resolveJsonModule": true,
+    "target": "es2020",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "noImplicitAny": true,
+    "noUnusedLocals": true,
+    "removeComments": false,
+    "strict": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "allowJs": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "paths": {
+      "@lib/*": ["./src/lib/*"],
+      "@repository/*": ["./src/repositories/*"],
+      "@domain/*": ["./src/domain/*"],
+      "@mappers/*": ["./src/mappers/*"],
+      "@services/*": ["./src/services/*"],
+      "@useCases/*": ["./src/useCases/*"],
+      "@jobs/*": ["./src/scheduler/jobs/definitions/*"],
+      "@mock/*": ["./tests/mock/*"],
+      "@src/*": ["./src/*"],
+      "@tests/*": ["./tests/*"],
+      "@gen/*": ["./src/gen/*"],
+      "@dto/*": ["./src/dtos/*"],
+      "@queries/*": ["./src/queries/*"],
+      "@middleware/*": ["./src/middleware/*"],
+      "@scheduler/*": ["./src/scheduler/*"]
+    }
+  },
+  "exclude": ["./coverage/**", "./dist/**", "jest*"]
+}
