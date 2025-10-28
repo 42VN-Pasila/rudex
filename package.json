@@ -1,0 +1,30 @@
+{
+  "name": "rudex",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:42VN-Pasila/rudex.git",
+  "author": "Kha Tieu",
+  "license": "MIT",
+  "scripts": {
+    "clean": "rm -rf ./dist/ ./src/gen/",
+    "build": "tsc --project tsconfig.build.json",
+    "lint": "eslint './**/*.ts' --quiet",
+    "test": "jest --config ./jest.config.js --forceExit",
+    "test:e2e": "jest --config ./jest-e2e.config.js --runInBand --forceExit"
+  },
+  "dependencies": {
+    "@types/bull": "^4.10.4",
+    "bull": "^4.16.5",
+    "dotenv": "^17.2.3"
+  },
+  "devDependencies": {
+    "eslint": "^9.38.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-prettier": "^5.5.4",
+    "jest": "^30.2.0",
+    "prettier": "^3.6.2",
+    "typescript": "^5.9.3"
+  },
+  "packageManager": "yarn@1.22.22+sha1.ac34549e6aa8e7ead463a7407e1c7390f61a6610"
+}
