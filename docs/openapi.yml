@@ -7,5 +7,95 @@ info:
   x-displayName: Authentication service
 
 servers:
-  - url: https://app.42pasila.vn
+  - url: https://app.42pasila.vn/rudex
     description: Production
+
+paths:
+  /login:
+    post:
+      summary: Login a user and return authentication tokens
+      description: >
+        Authenticates a user using email/username and password, returning
+        a short-lived access token and a refresh token.
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        "200":
+          description: Successful login
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginResponse"
+        "400":
+          description: Invalid request body or missing fields
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIErrorResponse"
+        "401":
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIErrorResponse"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIErrorResponse"
+
+components:
+  schemas:
+    LoginRequest:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+          format: password
+
+    LoginResponse:
+      type: object
+      required:
+        - accessToken
+        - refreshToken
+        - userId
+      properties:
+        accessToken:
+          type: string
+          description: JWT access token used for authenticated requests.
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        refreshToken:
+          type: string
+          description: Token used to refresh access tokens.
+          example: 9f8c2d10b7c84800aef5a05bd43b9a54
+        userId:
+          type: string
+
+    APIErrorResponse:
+      description: api error response
+      content:
+        application/json:
+          schema:
+            type: object
+            additionalProperties: false
+            properties:
+              type:
+                type: string
+              message:
+                type: string
+              stack:
+                type: string
+              info:
+                type: object
