@@ -69,17 +69,20 @@ components:
       type: object
       required:
         - accessToken
+        - accessTokenExpiryDate
         - refreshToken
         - userId
       properties:
         accessToken:
           type: string
           description: JWT access token used for authenticated requests.
-          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        accessTokenExpiryDate:
+          type: string
+          format: date-time
+          description: Expiration date and time of the access token.
         refreshToken:
           type: string
           description: Token used to refresh access tokens.
-          example: 9f8c2d10b7c84800aef5a05bd43b9a54
         userId:
           type: string
 

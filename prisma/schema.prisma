@@ -1,0 +1,25 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                     String    @id @default(uuid())
+  username               String    @unique
+  password               String?   @map("password")
+  googleUserId           String?   @map("google_user_id")
+  googleUserName         String?   @map("google_user_name")
+  accessToken            String?   @map("access_token")
+  accessTokenExpiryDate  DateTime? @map("access_token_expiry_date")
+  refreshToken           String?   @map("refresh_token")
+  createdAt              DateTime  @map("created_at")
+  updatedAt              DateTime  @map("updated_at")
+}

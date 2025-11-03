@@ -16,12 +16,16 @@
   },
   "dependencies": {
     "@fastify/cors": "^11.1.0",
+    "@prisma/client": "^6.18.0",
     "@types/bull": "^4.10.4",
     "bull": "^4.16.5",
     "dotenv": "^17.2.3",
     "fastify": "^5.6.1",
     "pino": "^10.1.0",
-    "pino-pretty": "^13.1.2"
+    "pino-pretty": "^13.1.2",
+    "prisma": "^6.18.0",
+    "sqlite3": "^5.1.7",
+    "zod": "^4.1.12"
   },
   "devDependencies": {
     "@openapitools/openapi-generator-cli": "^2.25.0",

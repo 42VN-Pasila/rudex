@@ -1,0 +1,19 @@
+import type { UserModel as PrismaUser } from '../generated/prisma/models';
+import { User } from '@domain/user/user';
+
+export class UserMapper {
+  static prismaToDomain(u: PrismaUser): User {
+    return {
+      id: u.id,
+      username: u.username,
+      password: u.password ?? undefined,
+      googleUserId: u.googleUserId ?? undefined,
+      googleUserName: u.googleUserName ?? undefined,
+      accessToken: u.accessToken ?? undefined,
+      accessTokenExpiryDate: u.accessTokenExpiryDate ?? undefined,
+      refreshToken: u.refreshToken ?? undefined,
+      createdAt: u.createdAt,
+      updatedAt: u.updatedAt
+    };
+  }
+}
