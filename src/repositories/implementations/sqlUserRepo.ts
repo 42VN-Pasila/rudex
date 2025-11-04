@@ -16,6 +16,30 @@ export class SQLUserRepo implements IUserRepo {
     return UserMapper.prismaToDomain(dbRecord);
   }
 
+  async getByUsername(username: string): Promise<User | null> {
+    const dbRecord = await sql.user.findUnique({
+      where: { username }
+    });
+
+    if (!dbRecord) {
+      return null;
+    }
+
+    return UserMapper.prismaToDomain(dbRecord);
+  }
+
+  async getByGoogleUserId(googleUserId: string): Promise<User | null> {
+    const dbRecord = await sql.user.findUnique({
+      where: { googleUserId }
+    });
+
+    if (!dbRecord) {
+      return null;
+    }
+
+    return UserMapper.prismaToDomain(dbRecord);
+  }
+
   async save({
     googleUserId,
     googleUserName,

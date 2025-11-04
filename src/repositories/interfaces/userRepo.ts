@@ -1,8 +1,9 @@
 import type { User } from '@domain/user/user';
-import { IBaseRepo } from './baseRepo';
 
-export interface IUserRepo extends IBaseRepo<User> {
+export interface IUserRepo {
   getById(userId: string): Promise<User>;
+  getByUsername(username: string): Promise<User | null>;
+  getByGoogleUserId(googleUserId: string): Promise<User | null>;
   save({
     googleUserId,
     googleUserName,

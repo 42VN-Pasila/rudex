@@ -12,7 +12,8 @@
     "lint": "eslint './**/*.ts' --quiet",
     "test": "jest --config ./jest.config.js --forceExit",
     "test:e2e": "jest --config ./jest-e2e.config.js --runInBand --forceExit",
-    "gen": "openapi-typescript docs/openapi.yml --output gen/server.d.ts"
+    "gen": "openapi-typescript docs/openapi.yml --output src/gen/server.d.ts",
+    "gen:prisma": "prisma generate"
   },
   "dependencies": {
     "@fastify/cors": "^11.1.0",
