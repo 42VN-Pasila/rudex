@@ -1,5 +1,5 @@
 import type { User } from '@domain/user/user';
-import { IBaseRepo } from './IBaseRepo';
+import { IBaseRepo } from './baseRepo';
 
 export interface IUserRepo extends IBaseRepo<User> {
   getById(userId: string): Promise<User>;
