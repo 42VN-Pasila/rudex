@@ -16,7 +16,7 @@ export class UserMapper {
       updatedAt: u.updatedAt
     };
   }
-  static domainToLoginDto(u: User) {
+  static domainToLoginDto(u: Partial<User>) {
     return {
       userId: u.id,
       accessToken: u.accessToken ?? null,

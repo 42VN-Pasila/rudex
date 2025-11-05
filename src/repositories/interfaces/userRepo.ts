@@ -7,10 +7,12 @@ export interface IUserRepo {
   save({
     googleUserId,
     googleUserName,
-    refreshToken
+    refreshToken,
+    username
   }: {
     googleUserId: string;
-    googleUserName: string;
-    refreshToken: string;
+    googleUserName?: string;
+    refreshToken?: string;
+    username: string;
   }): Promise<User>;
 }

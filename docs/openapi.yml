@@ -24,7 +24,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/LoginRequest"
+              $ref: "#/components/schemas/LoginRequestBody"
       responses:
         "200":
           description: Successful login
@@ -53,7 +53,7 @@ paths:
 
 components:
   schemas:
-    LoginRequest:
+    LoginRequestBody:
       additionalProperties: true
       type: object
       required:

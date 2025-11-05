@@ -1,9 +1,8 @@
 import fastify from 'fastify';
 import { configuration } from './config';
-import logger, { fastifyLoggerConfig } from './logger';
+import logger from './logger';
 
 const app = fastify({
-  logger: fastifyLoggerConfig,
   trustProxy: true,
   requestIdHeader: 'x-request-id',
   requestIdLogLabel: 'reqId',

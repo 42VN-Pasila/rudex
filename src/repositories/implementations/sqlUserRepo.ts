@@ -43,17 +43,23 @@ export class SQLUserRepo implements IUserRepo {
   async save({
     googleUserId,
     googleUserName,
-    refreshToken
+    refreshToken,
+    username
   }: {
     googleUserId: string;
     googleUserName?: string;
     refreshToken?: string;
+    username: string;
   }): Promise<User> {
+    const now = new Date();
     const dbRecord = await sql.user.create({
       data: {
+        username,
         googleUserId,
         googleUserName: googleUserName ?? null,
-        refreshToken: refreshToken ?? null
+        refreshToken: refreshToken ?? null,
+        createdAt: now,
+        updatedAt: now
       }
     });
 

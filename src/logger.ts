@@ -11,7 +11,10 @@ const loggerConfig: pino.LoggerOptions = {
       target: 'pino-pretty',
       options: {
         colorize: true,
-        ignore: 'pid,hostname'
+        ignore: 'pid,hostname',
+        errorLikeObjectKeys: ['err', 'error'],
+        singleLine: false,
+        hideObject: false
       }
     }
   }),
@@ -25,15 +28,6 @@ const loggerConfig: pino.LoggerOptions = {
 
 const pinoLogger = pino(loggerConfig);
 
-export const fastifyLoggerConfig: pino.LoggerOptions = {
-  ...loggerConfig,
-  serializers: {
-    req: pino.stdSerializers.req,
-    res: pino.stdSerializers.res,
-    err: pino.stdSerializers.err
-  }
-};
-
 export const createLogger = (context?: string) => {
   const contextLogger = context ? pinoLogger.child({ context }) : pinoLogger;
 
@@ -42,10 +36,6 @@ export const createLogger = (context?: string) => {
     info: (message: string, meta?: object) => contextLogger.info(meta, message),
     warn: (message: string, meta?: object) => contextLogger.warn(meta, message),
     error: (message: string, meta?: object) => contextLogger.error(meta, message),
-
-    log: (level: LogLevel, message: string, meta?: object) => {
-      contextLogger[level](meta, message);
-    },
 
     raw: contextLogger
   };

@@ -14,9 +14,9 @@ async function start(): Promise<void> {
     });
   } catch (error) {
     logger.error('Error starting server', {
-      error: error instanceof Error ? error.message : String(error),
-      stack: error instanceof Error ? error.stack : undefined
+      err: error instanceof Error ? error : new Error(String(error))
     });
+
     process.exit(1);
   }
 }
@@ -28,8 +28,7 @@ async function close(): Promise<void> {
       logger.info('Server closed successfully');
     } catch (error) {
       logger.error('Error closing server', {
-        error: error instanceof Error ? error.message : String(error),
-        stack: error instanceof Error ? error.stack : undefined
+        err: error instanceof Error ? error : new Error(String(error))
       });
     }
   }
