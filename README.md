@@ -20,6 +20,7 @@ It follows a **Clean Architecture** approach with strict separation of concerns 
 
 ## 📁 Project Structure
 
+```
 rudex/
 ├─ src/
 │ ├─ app.ts # Fastify app setup
@@ -40,6 +41,7 @@ rudex/
 ├─ package.json
 ├─ tsconfig.json
 └─ README.md
+```
 
 ---
 
