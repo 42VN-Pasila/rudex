@@ -5,8 +5,7 @@ import { UserNotFoundError, InvalidCredentialsError } from '@domain/error';
 import { UserMapper } from '@mappers/userMapper';
 import { ILoginUserRequest } from './loginUserRequest';
 
-type ResponseBody = components['schemas']['LoginResponse'];
-type Response = HttpResponse<undefined, ResponseBody>;
+type Response = HttpResponse<undefined, components['schemas']['LoginResponse']>;
 
 export class LoginUserController extends IBaseController<HttpRequest, Response> {
   private readonly loginUserUseCase: LoginUserUseCase;
@@ -16,7 +15,7 @@ export class LoginUserController extends IBaseController<HttpRequest, Response> 
     this.loginUserUseCase = loginUserUseCase;
   }
 
-  async execute(request: HttpRequest): Promise<HttpResponse<undefined, ResponseBody>> {
+  async execute(request: HttpRequest): Promise<Response> {
     const loginUserRequest: ILoginUserRequest = {
       username: request.body.username,
       password: request.body.password || undefined,
