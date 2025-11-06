@@ -19,8 +19,6 @@ paths:
         a short-lived access token and a refresh token.
       tags:
         - Authentication
-      parameters:
-        - $ref: "#/components/parameters/rudexUserId"
       requestBody:
         required: true
         content:
@@ -34,6 +32,31 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/LoginResponseBody"
+        "400":
+          $ref: "#/components/responses/APIErrorResponse"
+        "401":
+          $ref: "#/components/responses/APIErrorResponse"
+        "500":
+          $ref: "#/components/responses/APIErrorResponse"
+
+  /resgister:
+    post:
+      summary: Resgister an user
+      description: >
+        Create a new user with provided input.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterRequestBody"
+      responses:
+        "201":
+          description: New user created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RegisterResponseBody"
         "400":
           $ref: "#/components/responses/APIErrorResponse"
         "401":
@@ -59,7 +82,7 @@ components:
 
     LoginRequestBody:
       type: object
-      additionalProperties: true
+      additionalProperties: false
       required:
         - username
       properties:
@@ -91,6 +114,30 @@ components:
           description: Token used to refresh access tokens.
         userId:
           type: string
+
+    RegisterRequestBody:
+      type: object
+      additionalProperties: false
+      required:
+        - username
+        - password
+        - email
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+        email:
+          type: string
+
+    RegisterResponseBody:
+      type: object
+      additionalProperties: false
+      required:
+        - rudexUserId
+      properties:
+        rudexUserId: 
+           $ref: "#/components/schemas/rudexUserId"
 
   responses:
     APIErrorResponse:
