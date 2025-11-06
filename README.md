@@ -47,17 +47,15 @@ rudex/
 
 ## ⚙️ Environment Setup
 
-### 1. Project setup
-
-```bash
-yarn install
-yarn gen
-```
-
-### 2. Setup environment
-
+### 1. Setup environment
 Create a `.env` file in the project root from the `.env.local`
 
+### 2. Project setup
+
+```bash
+yarn
+yarn gen
+```
 ## 🧩 Development
 
 Run the app

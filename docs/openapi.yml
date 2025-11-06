@@ -18,7 +18,7 @@ paths:
         Authenticates a user using email/username and password, returning
         a short-lived access token and a refresh token.
       tags:
-        - Authentication
+        - User login
       requestBody:
         required: true
         content:
@@ -44,6 +44,8 @@ paths:
       summary: Resgister an user
       description: >
         Create a new user with provided input.
+      tags: 
+        - User registration
       requestBody:
         required: true
         content:
