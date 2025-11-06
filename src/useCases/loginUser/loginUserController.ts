@@ -5,7 +5,7 @@ import { UserNotFoundError, InvalidCredentialsError } from '@domain/error';
 import { UserMapper } from '@mappers/userMapper';
 import { ILoginUserRequest } from './loginUserRequest';
 
-type Response = HttpResponse<undefined, components['schemas']['LoginResponse']>;
+type Response = HttpResponse<undefined, components['schemas']['LoginResponseBody']>;
 
 export class LoginUserController extends IBaseController<HttpRequest, Response> {
   private readonly loginUserUseCase: LoginUserUseCase;

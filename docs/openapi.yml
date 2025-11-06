@@ -19,6 +19,8 @@ paths:
         a short-lived access token and a refresh token.
       tags:
         - Authentication
+      parameters:
+        - $ref: "#/components/parameters/rudexUserId"
       requestBody:
         required: true
         content:
@@ -27,35 +29,33 @@ paths:
               $ref: "#/components/schemas/LoginRequestBody"
       responses:
         "200":
-          description: Successful login
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/LoginResponse"
+          $ref: "#/components/schemas/LoginResponseBody"
         "400":
-          description: Invalid request body or missing fields
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/APIErrorResponse"
+          $ref: "#/components/responses/BadRequest"
         "401":
-          description: Invalid credentials
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/APIErrorResponse"
+          $ref: "#/components/responses/Unauthorized"
         "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/APIErrorResponse"
+          $ref: "#/components/responses/InternalError"
 
 components:
+  parameters:
+    rudexUserId:
+      name: rudexUserId
+      in: query
+      description: Unique ID of a Rudex user (optional)
+      required: false
+      schema:
+        $ref: "#/components/schemas/rudexUserId"
+
   schemas:
+    rudexUserId:
+      type: string
+      description: Rudex user identifier (string). Use UUID if you require a UUID format.
+      example: "123e4567-e89b-12d3-a456-426614174000"
+
     LoginRequestBody:
-      additionalProperties: true
       type: object
+      additionalProperties: true
       required:
         - username
       properties:
@@ -67,7 +67,7 @@ components:
         googleUserId:
           type: string
 
-    LoginResponse:
+    LoginResponseBody:
       type: object
       required:
         - accessToken
@@ -89,18 +89,41 @@ components:
           type: string
 
     APIErrorResponse:
-      description: api error response
+      type: object
+      description: API error response
+      additionalProperties: false
+      properties:
+        type:
+          type: string
+          description: Short error type or code
+        message:
+          type: string
+          description: Human-readable error message
+        stack:
+          type: string
+          description: Server stack trace (only for internal/debug builds; avoid in production)
+        info:
+          type: object
+          description: Additional structured error info (optional)
+
+  responses:
+    BadRequest:
+      description: Invalid request body or missing fields
       content:
         application/json:
           schema:
-            type: object
-            additionalProperties: false
-            properties:
-              type:
-                type: string
-              message:
-                type: string
-              stack:
-                type: string
-              info:
-                type: object
+            $ref: "#/components/schemas/APIErrorResponse"
+
+    Unauthorized:
+      description: Invalid credentials
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/APIErrorResponse"
+
+    InternalError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/APIErrorResponse"
