@@ -19,8 +19,6 @@ paths:
         a short-lived access token and a refresh token.
       tags:
         - Authentication
-      parameters:
-        - $ref: "#/components/parameters/rudexUserId"
       requestBody:
         required: true
         content:
@@ -30,6 +28,31 @@ paths:
       responses:
         "200":
           $ref: "#/components/schemas/LoginResponseBody"
+        "400":
+          $ref: "#/components/responses/APIErrorResponse"
+        "401":
+          $ref: "#/components/responses/APIErrorResponse"
+        "500":
+          $ref: "#/components/responses/APIErrorResponse"
+  #---Register---
+  /resgister:
+    post:
+      summary: Resgister an user
+      description: >
+        Create a new user with provided input.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterRequestBody"
+      responses:
+        "201":
+          description: New user created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/rudexUserId"
         "400":
           $ref: "#/components/responses/APIErrorResponse"
         "401":
@@ -86,6 +109,21 @@ components:
           type: string
           description: Token used to refresh access tokens.
         userId:
+          type: string
+
+    RegisterRequestBody:
+      type: object
+      additionalProperties: true
+      required:
+        - username
+        - password
+        - email
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+        email:
           type: string
 
   responses:
