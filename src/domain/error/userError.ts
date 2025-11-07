@@ -2,9 +2,13 @@ import { BaseError } from './baseError';
 
 export enum UserErrors {
   UserNotFoundError = 'UserNotFoundError',
-  InvalidCredentialsError = 'InvalidCredentialsError'
+  InvalidCredentialsError = 'InvalidCredentialsError',
+  ExistedUsername = 'ExistedUsername',
+  InvalidEmail = 'InvalidEmail',
+  InvalidPassword = 'InvalidPassword'
 }
 
+//Login
 export class UserNotFoundError extends BaseError {
   type!: UserErrors.UserNotFoundError;
 
@@ -21,4 +25,20 @@ export class InvalidCredentialsError extends BaseError {
   public static create(): InvalidCredentialsError {
     return new this(UserErrors.InvalidCredentialsError, 'Invalid user credentials provided');
   }
+}
+
+//Register
+export class  ExistedUsername extends BaseError 
+{
+
+}
+
+export class  InvalidEmail extends BaseError
+{
+
+}
+
+export class  InvalidPassword extends BaseError
+{
+  
 }
