@@ -3,3 +3,6 @@ node_modules
 .env
 
 /src/gen/*
+
+prisma/data.db
+prisma/migrations/
