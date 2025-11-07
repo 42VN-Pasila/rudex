@@ -8,3 +8,4 @@ export abstract class BaseError extends Error {
     this.info = info;
   }
 }
+

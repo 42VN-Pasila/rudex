@@ -2,7 +2,9 @@ import { BaseError } from './baseError';
 
 export enum UserErrors {
   UserNotFoundError = 'UserNotFoundError',
-  InvalidCredentialsError = 'InvalidCredentialsError'
+  InvalidCredentialsError = 'InvalidCredentialsError',
+  UserAlreadyExistsError = 'UserAlreadyExistsError',
+  InvalidInputError = 'InvalidInputError'
 }
 
 export class UserNotFoundError extends BaseError {
@@ -20,5 +22,24 @@ export class InvalidCredentialsError extends BaseError {
 
   public static create(): InvalidCredentialsError {
     return new this(UserErrors.InvalidCredentialsError, 'Invalid user credentials provided');
+  }
+}
+
+export class UserAlreadyExistsError extends BaseError {
+  type!: UserErrors.UserAlreadyExistsError;
+
+  public static create(username: string, email?: string) : UserAlreadyExistsError {
+    return new this(UserErrors.UserAlreadyExistsError, 'User already exists', {
+      username,
+      email,
+    });
+  }
+}
+
+export class InvalidInputError extends BaseError {
+  type!: UserErrors.InvalidInputError;
+
+  public static create(info?: Record<string, unknown>): InvalidInputError{
+    return new this(UserErrors.InvalidInputError, 'Invalid input data', info);
   }
 }

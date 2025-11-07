@@ -24,4 +24,9 @@ export class UserMapper {
       refreshToken: u.refreshToken ?? null
     };
   }
+  static domainRegisterDto(u: {id: string}){
+    return {
+      rudexUserId: u.id
+    };
+  }
 }
