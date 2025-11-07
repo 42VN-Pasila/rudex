@@ -48,6 +48,7 @@ rudex/
 ## ⚙️ Environment Setup
 
 ### 1. Setup environment
+
 Create a `.env` file in the project root from the `.env.local`
 
 ### 2. Project setup
@@ -56,11 +57,13 @@ Create a `.env` file in the project root from the `.env.local`
 yarn
 yarn gen
 ```
+
 ## 🧩 Development
 
 Run the app
 
 ```bash
+yarn db:dev
 yarn dev
 ```
 

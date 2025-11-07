@@ -18,9 +18,8 @@
     "gen:prisma": "prisma generate",
     "migrate:dev": "prisma migrate dev",
     "migrate:deploy": "prisma migrate deploy",
-    "db:setup": "yarn db:prepare",
-    "db:reset": "prisma migrate reset --force",
-    "db:prepare": "prisma migrate dev --name init && prisma generate"
+    "db:dev": "prisma migrate dev --name init && prisma generate",
+    "db:reset": "prisma migrate reset --force"
   },
   "dependencies": {
     "@fastify/cors": "^11.1.0",
