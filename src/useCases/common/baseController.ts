@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export interface HttpRequest<THeader = any, TPathParams = any, TQueryParams = any, TBody = any> {
   headers?: THeader;
   pathParams?: TPathParams;
@@ -6,6 +7,7 @@ export interface HttpRequest<THeader = any, TPathParams = any, TQueryParams = an
 }
 
 export interface HttpResponse<THeader, TBody> {
+  headers?: THeader;
   statusCode: number;
   data?: TBody;
 }

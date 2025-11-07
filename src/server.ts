@@ -8,14 +8,13 @@ const { host } = configuration;
 
 async function start(): Promise<void> {
   try {
+    logger.info(`Starting server on port ${containerPort}...`);
     await app.listen({
       port: containerPort,
       host
     });
-  } catch (error) {
-    logger.error('Error starting server', {
-      err: error instanceof Error ? error : new Error(String(error))
-    });
+  } catch (err) {
+    logger.error('Error starting server', { err });
 
     process.exit(1);
   }
@@ -26,9 +25,9 @@ async function close(): Promise<void> {
     try {
       await app.close();
       logger.info('Server closed successfully');
-    } catch (error) {
+    } catch (err) {
       logger.error('Error closing server', {
-        err: error instanceof Error ? error : new Error(String(error))
+        err
       });
     }
   }
@@ -36,9 +35,13 @@ async function close(): Promise<void> {
 
 async function handleShutdown(signal: string) {
   try {
+    logger.info(`Received ${signal}. Shutting down server...`);
     await close();
     process.exit(0);
   } catch (err) {
+    logger.error('Error shutting down server', {
+      err
+    });
     process.exit(1);
   }
 }
@@ -48,6 +51,9 @@ process.on('SIGTERM', () => handleShutdown('SIGTERM'));
 
 if (require.main === module) {
   start().catch((err) => {
+    logger.error('Error starting server', {
+      err
+    });
     process.exit(1);
   });
 }
