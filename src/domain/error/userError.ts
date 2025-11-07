@@ -30,15 +30,19 @@ export class InvalidCredentialsError extends BaseError {
 //Register
 export class  ExistedUsername extends BaseError 
 {
+  type!: UserErrors.ExistedUsername;
 
+  public static create(): ExistedUsername{
+    return new this(UserErrors.ExistedUsername, 'ExistedUsername');
+  }
 }
 
 export class  InvalidEmail extends BaseError
 {
-
+  type!: UserErrors.InvalidEmail;
 }
 
 export class  InvalidPassword extends BaseError
 {
-  
+  type!: UserErrors.InvalidPassword;
 }
