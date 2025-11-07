@@ -12,6 +12,7 @@
     "lint": "eslint './**/*.ts' --quiet",
     "test": "jest --config ./jest.config.js --forceExit",
     "test:e2e": "jest --config ./jest-e2e.config.js --runInBand --forceExit",
+    "typecheck": "yarn gen && yarn tsc --noEmit",
     "gen": "yarn gen:openapi && yarn gen:prisma",
     "gen:openapi": "openapi-typescript docs/openapi.yml --output src/gen/server.d.ts",
     "gen:prisma": "prisma generate"

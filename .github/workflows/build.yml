@@ -1,0 +1,45 @@
+name: Build
+
+on:
+  workflow_call:
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: [self-hosted, small]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+      - name: Run Linting Check
+        run: yarn lint
+
+  typescript-check:
+    name: Type Check
+    runs-on: [self-hosted, small]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+      - name: Run Type Check
+        run: yarn typecheck
+
+  unit-test:
+    name: Unit Tests
+    runs-on: [self-hosted, medium]
+    needs: [lint, typescript-check]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Upload coverage report
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/
