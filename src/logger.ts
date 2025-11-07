@@ -23,6 +23,13 @@ const loggerConfig: pino.LoggerOptions = {
     service: configuration.service.name,
     version: configuration.service.appVersion,
     environment: configuration.service.currentEnvironment.get
+  },
+
+  serializers: {
+    req: pino.stdSerializers.req,
+    res: pino.stdSerializers.res,
+    err: pino.stdSerializers.err,
+    error: pino.stdSerializers.err
   }
 };
 
