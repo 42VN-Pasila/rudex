@@ -1,4 +1,9 @@
-export interface IBaseRequest<IHeader = any, IPathParams = any, IQueryParams = any, IBody = any> {
+export interface IBaseRequest<
+  IHeader = unknown,
+  IPathParams = unknown,
+  IQueryParams = unknown,
+  IBody = unknown
+> {
   headers?: IHeader;
   pathParams?: IPathParams;
   queryParams?: IQueryParams;

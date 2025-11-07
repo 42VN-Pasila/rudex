@@ -1,5 +1,6 @@
-import { FastifyInstance, FastifyPluginOptions } from 'fastify';
+import { FastifyInstance } from 'fastify';
+import base from './base';
 
-export default async function routes(fastify: FastifyInstance, options: FastifyPluginOptions) {
-  await fastify.register(require('./base'));
+export default async function routes(fastify: FastifyInstance) {
+  await fastify.register(base);
 }

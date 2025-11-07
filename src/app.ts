@@ -1,6 +1,8 @@
 import fastify from 'fastify';
 import { configuration } from './config';
 import logger from './logger';
+import fastifyCors from '@fastify/cors';
+import router from './routes/router';
 
 const app = fastify({
   trustProxy: true,
@@ -15,8 +17,7 @@ app.setErrorHandler(async (error, request, reply) => {
   const statusCode = error.statusCode || 500;
 
   logger.error('Request error', {
-    error: error.message,
-    stack: error.stack,
+    error: error,
     statusCode,
     url: request.url,
     method: request.method,
@@ -32,14 +33,12 @@ app.setErrorHandler(async (error, request, reply) => {
     path: request.url
   });
 });
-
 app.register(async function (fastify) {
-  await fastify.register(require('@fastify/cors'), {
+  await fastify.register(fastifyCors, {
     origin: configuration.service.currentEnvironment.isDevelopment ? true : [configuration.baseUrl],
     credentials: true
   });
 });
-
-app.register(require('./routes/router'));
+app.register(router);
 
 export default app;
