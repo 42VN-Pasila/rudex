@@ -3,9 +3,10 @@ import { BaseError } from './baseError';
 export enum UserErrors {
   UserNotFoundError = 'UserNotFoundError',
   InvalidCredentialsError = 'InvalidCredentialsError',
-  ExistedUsername = 'ExistedUsername',
-  InvalidEmail = 'InvalidEmail',
-  InvalidPassword = 'InvalidPassword'
+  ExistedUsernameError = 'ExistedUsername',
+  InvalidEmailError = 'InvalidEmailError',
+  InvalidPasswordError = 'InvalidPasswordError',
+  PasswordMismatchError = 'PasswordMismatchError'
 }
 
 //Login
@@ -28,21 +29,34 @@ export class InvalidCredentialsError extends BaseError {
 }
 
 //Register
-export class  ExistedUsername extends BaseError 
-{
-  type!: UserErrors.ExistedUsername;
+export class  ExistedUsernameError extends BaseError {
+  type!: UserErrors.ExistedUsernameError;
 
-  public static create(): ExistedUsername{
-    return new this(UserErrors.ExistedUsername, 'ExistedUsername');
+  public static create(): ExistedUsernameError{
+    return new this(UserErrors.ExistedUsernameError, 'This username is unvailable');
   }
 }
 
-export class  InvalidEmail extends BaseError
-{
-  type!: UserErrors.InvalidEmail;
+export class  InvalidEmailError extends BaseError {
+  type!: UserErrors.InvalidEmailError;
+
+  public static create(): InvalidEmailError{
+    return new this(UserErrors.InvalidEmailError, 'Unverified email');
+  }
 }
 
-export class  InvalidPassword extends BaseError
-{
-  type!: UserErrors.InvalidPassword;
+export class  InvalidPasswordError extends BaseError {
+  type!: UserErrors.InvalidPasswordError;
+
+  public static create(error: string): InvalidPasswordError{
+    return new this(UserErrors.InvalidPasswordError, error);
+  }
+}
+
+export class  PasswordMismatchError extends BaseError {
+  type!: UserErrors.PasswordMismatchError;
+
+  public static create(): PasswordMismatchError{
+    return new this(UserErrors.PasswordMismatchError, 'Password and confirmation are not the same');
+  }
 }
