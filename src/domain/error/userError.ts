@@ -5,8 +5,7 @@ export enum UserErrors {
   InvalidCredentialsError = 'InvalidCredentialsError',
   ExistedUsernameError = 'ExistedUsername',
   InvalidEmailError = 'InvalidEmailError',
-  InvalidPasswordError = 'InvalidPasswordError',
-  PasswordMismatchError = 'PasswordMismatchError'
+  InvalidPasswordError = 'InvalidPasswordError'
 }
 
 //Login
@@ -50,13 +49,5 @@ export class  InvalidPasswordError extends BaseError {
 
   public static create(error: string): InvalidPasswordError{
     return new this(UserErrors.InvalidPasswordError, error);
-  }
-}
-
-export class  PasswordMismatchError extends BaseError {
-  type!: UserErrors.PasswordMismatchError;
-
-  public static create(): PasswordMismatchError{
-    return new this(UserErrors.PasswordMismatchError, 'Password and confirmation are not the same');
   }
 }
