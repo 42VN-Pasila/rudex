@@ -33,8 +33,8 @@ export class InvalidCredentialsError extends BaseError {
 export class  InvalidUsernameError extends BaseError{
   type!: UserErrors.InvalidUsernameError;
 
-  public static create(): InvalidUsernameError{
-    return new this(UserErrors.InvalidUsernameError, 'Username only accepts letters, numbers, .-_ and length 8-16');
+  public static create(error: string): InvalidUsernameError{
+    return new this(UserErrors.InvalidUsernameError, error);
   }
 }
 
@@ -57,8 +57,8 @@ export class  ExistedEmailError extends BaseError {
 export class  InvalidEmailError extends BaseError {
   type!: UserErrors.InvalidEmailError;
 
-  public static create(): InvalidEmailError{
-    return new this(UserErrors.InvalidEmailError, 'Unverified email');
+  public static create(error: string): InvalidEmailError{
+    return new this(UserErrors.InvalidEmailError, error);
   }
 }
 
