@@ -1,10 +1,10 @@
 import { err, IBaseUseCase, Result } from "@useCases/common";
 import { IRegisterUserResponse } from "./registerUserResponse";
-import { ExistedEmailError, ExistedUsernameError, InvalidEmailError, InvalidPasswordError } from "@domain/error/userError";
+import { ExistedEmailError, ExistedUsernameError, InvalidEmailError, InvalidPasswordError, InvalidUsernameError } from "@domain/error/userError";
 import { IRegisterUserRequest } from "./registerUserRequest";
 import { IUserRepo } from "@repository/interfaces/userRepo";
 
-type IResponse = Result<IRegisterUserResponse, ExistedUsernameError | InvalidEmailError | InvalidPasswordError>;
+type IResponse = Result<IRegisterUserResponse,InvalidUsernameError | ExistedUsernameError | InvalidEmailError | InvalidPasswordError>;
 
 type IRegisterUserUseCase = IBaseUseCase<IRegisterUserRequest, IRegisterUserResponse>;
 
@@ -22,9 +22,9 @@ export  class RegisterUserUseCase implements IRegisterUserUseCase{
 
         const { username, password, email } = request;
 
-        const usernameRegex  = /^[a-zA-Z0-9_.-]{3,30}$/;
+        const usernameRegex  = /^[a-zA-Z0-9_.-]{8,16}$/;
         if (!usernameRegex.test(username))
-            return err();
+            return err(InvalidUsernameError.create());
         
         const rudexUserName = await this.userRepo.getByUsername(username);
         if (rudexUserName)
@@ -37,7 +37,7 @@ export  class RegisterUserUseCase implements IRegisterUserUseCase{
 
         //Check email logic
 
-        if (password.length < )
+        if ()
 
     }
 
