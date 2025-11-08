@@ -34,7 +34,7 @@ export class  InvalidUsernameError extends BaseError{
   type!: UserErrors.InvalidUsernameError;
 
   public static create(): InvalidUsernameError{
-    return new this(UserErrors.InvalidUsernameError, 'Username only accepts characters, numbers, .-_ and length 8-16');
+    return new this(UserErrors.InvalidUsernameError, 'Username only accepts letters, numbers, .-_ and length 8-16');
   }
 }
 

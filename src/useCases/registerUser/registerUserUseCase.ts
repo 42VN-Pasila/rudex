@@ -22,6 +22,7 @@ export  class RegisterUserUseCase implements IRegisterUserUseCase{
 
         const { username, password, email } = request;
 
+        //Username check
         const usernameRegex  = /^[a-zA-Z0-9_.-]{8,16}$/;
         if (!usernameRegex.test(username))
             return err(InvalidUsernameError.create());
@@ -30,15 +31,19 @@ export  class RegisterUserUseCase implements IRegisterUserUseCase{
         if (rudexUserName)
             return err(ExistedUsernameError.create());
 
-
+        //Email check
         const rudexUserEmail = await this.userRepo.getByEmail(email);
         if (rudexUserEmail)
             return err(ExistedEmailError.create());
 
-        //Check email logic
-
-        if ()
-
+        //Password check
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])$/;
+        if (password.length < 8 || password.length > 16 )
+            return err(InvalidPasswordError.create('Password length must be 8-16'));
+        else if (!passwordRegex.test(password))
+            return err(InvalidPasswordError.create('Password requires at least 1 uppercase, 1 lowercase, 1 number, and 1 special character'));
+        else if (/['"\\;]/.test(password) || /'\s'/.test(password))
+            return err(InvalidPasswordError.create('Password cannot contain (\'"), backflash and white space'));   
     }
 
 }
