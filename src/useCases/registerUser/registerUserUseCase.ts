@@ -4,9 +4,9 @@ import { ExistedEmailError, ExistedUsernameError, InvalidEmailError, InvalidPass
 import { IRegisterUserRequest } from "./registerUserRequest";
 import { IUserRepo } from "@repository/interfaces/userRepo";
 
-type IResponse = Result<IRegisterUserResponse,InvalidUsernameError | ExistedUsernameError | InvalidEmailError | InvalidPasswordError>;
+type IResponse = Result<IRegisterUserResponse,InvalidUsernameError | ExistedUsernameError | InvalidEmailError | ExistedEmailError | InvalidPasswordError>;
 
-type IRegisterUserUseCase = IBaseUseCase<IRegisterUserRequest, IRegisterUserResponse>;
+type IRegisterUserUseCase = IBaseUseCase<IRegisterUserRequest, IResponse>;
 
 export  class RegisterUserUseCase implements IRegisterUserUseCase{
     private readonly userRepo: IUserRepo;
@@ -65,6 +65,12 @@ export  class RegisterUserUseCase implements IRegisterUserUseCase{
 
         const { username, password, email } = request;
 
+        if (!username)
+            throw new Error('Username cannot be empty');
+        if (!password)
+            throw new Error('Password cannot be empty');
+        if (!email)
+            throw new Error('Email cannot be empty');
         //Username check
         const usernamError = this.validateUsername(username);
         if (usernamError)
@@ -88,7 +94,8 @@ export  class RegisterUserUseCase implements IRegisterUserUseCase{
         if (passwordError)
             return err(InvalidPasswordError.create(passwordError));
         
-        const user = this.userRepo.save(username, email);
+        const user = this.userRepo.save(username, email, password);
+
         return ok(user);
     }
 }
