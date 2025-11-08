@@ -6,6 +6,7 @@ export enum UserErrors {
   ExistedUsernameError = 'ExistedUsername',
   InvalidEmailError = 'InvalidEmailError',
   InvalidPasswordError = 'InvalidPasswordError'
+  ExistedEmailError = 'ExistedEmailError';
 }
 
 //Login
@@ -33,6 +34,14 @@ export class  ExistedUsernameError extends BaseError {
 
   public static create(): ExistedUsernameError{
     return new this(UserErrors.ExistedUsernameError, 'This username is unvailable');
+  }
+}
+
+export class  ExistedEmailError extends BaseError {
+  type!: UserErrors.ExistedUsernameError;
+
+  public static create(): ExistedUsernameError{
+    return new this(UserErrors.ExistedEmailError, 'This email is registered');
   }
 }
 

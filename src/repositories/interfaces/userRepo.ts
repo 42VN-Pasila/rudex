@@ -4,6 +4,7 @@ export interface IUserRepo {
   getById(userId: string): Promise<User>;
   getByUsername(username: string): Promise<User | null>;
   getByGoogleUserId(googleUserId: string): Promise<User | null>;
+  getByEmail(email: string): Promise<User | null>;
   save({
     googleUserId,
     googleUserName,
