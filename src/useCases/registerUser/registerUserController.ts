@@ -31,7 +31,7 @@ export class RegisterUserController extends IBaseController<HttpRequest, Respons
             return this.badRequest(error.message);
         }
         
-        const   responseBody = UserMapper.domainToRegisterDto(result.unwrap());
+        const   responseBody = result.unwrap();
         
         return this.ok(responseBody);
     }
