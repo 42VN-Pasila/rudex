@@ -14,27 +14,25 @@ export class RegisterUserController extends IBaseController<HttpRequest, Respons
         this.registerUserUseCase = registerUserUseCase;
     }
     
-    async execute(request: HttpRequest): Promise<Response>{
+    async execute(request: HttpRequest): Promise<Response>{        
         const registerUserRequest: IRegisterUserRequest = {
             username: request.body.username,
             password: request.body.password,
             email:  request.body.email
         };
-
-    const result = await this.registerUserUseCase.execute(registerUserRequest);
-
-    if (result.isErr()) {
-        const error: Error = result.unwrapErr()
+    
+        const result = await this.registerUserUseCase.execute(registerUserRequest);
         
-        if (error instanceof ExistedUsernameError)
+        if (result.isErr()) {
+            const error: Error = result.unwrapErr()
+            
+            if (error instanceof ExistedUsernameError)
+                return this.conflict(error.message);
             return this.badRequest(error.message);
-        else if (error instanceof InvalidEmailError)
-            return this.badRequest(error.message);
-        else if (error instanceof InvalidPasswordError)
-            return this.badRequest(error.message);
-        return this.badRequest(error.message);
-    }
-
-    return this.ok(result);
+        }
+        
+        const   responseBody = UserMapper.domainToRegisterDto(result.unwrap());
+        
+        return this.ok(responseBody);
     }
 }
