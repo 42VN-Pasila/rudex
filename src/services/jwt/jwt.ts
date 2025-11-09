@@ -1,23 +1,25 @@
+import { JWT_ACCESS_TOKEN_EXP } from '@src/constants';
 import jwt from 'jsonwebtoken';
 
-export const jwtConfig = {
-  secret:
-    process.env.JWT_SECRET ??
-    (() => {
-      throw new Error('JWT_SECRET not set');
-    })(),
-  accessTokenExpSec: Number(process.env.ACCESS_TOKEN_EXP ?? '1d'),
-  refreshTokenExpSec: Number(process.env.REFRESH_TOKEN_EXP ?? '604800')
-};
-
-export function signJwt(
+export async function signJwt(
   payload: object,
-  expiresInSec: number = jwtConfig.accessTokenExpSec
-): string {
-  return jwt.sign(payload, jwtConfig.secret, { expiresIn: expiresInSec });
-}
+  expiresInSec: number = Number(JWT_ACCESS_TOKEN_EXP)
+): Promise<string> {
+  const secret = process.env.JWT_SECRET;
 
-export function verifyJwt(token: string): object | null {
-  const decoded = jwt.verify(token, jwtConfig.secret);
+  if (!secret) {
+    throw new Error('JWT secret is not defined');
+  }
+
+  return jwt.sign(payload, secret, { expiresIn: expiresInSec });
+}
+export async function verifyJwt(token: string): Promise<object | null> {
+  const secret = process.env.JWT_SECRET;
+
+  if (!secret) {
+    throw new Error('JWT secret is not defined');
+  }
+
+  const decoded = jwt.verify(token, secret);
   return typeof decoded === 'object' ? decoded : null;
 }
