@@ -3,59 +3,19 @@ import { IRegisterUserResponse } from "./registerUserResponse";
 import { ExistedEmailError, ExistedUsernameError, InvalidEmailError, InvalidPasswordError, InvalidUsernameError } from "@domain/error/userError";
 import { IRegisterUserRequest } from "./registerUserRequest";
 import { IUserRepo } from "@repository/interfaces/userRepo";
+import { ValidationUser } from "@useCases/utils/validationUserUseCase";
 
 type IResponse = Result<IRegisterUserResponse,InvalidUsernameError | ExistedUsernameError | InvalidEmailError | ExistedEmailError | InvalidPasswordError>;
 
 type IRegisterUserUseCase = IBaseUseCase<IRegisterUserRequest, IResponse>;
 
-export  class RegisterUserUseCase implements IRegisterUserUseCase{
+export class    RegisterUserUseCase implements IRegisterUserUseCase{
     private readonly userRepo: IUserRepo;
+    private readonly userValidate: ValidationUser;
 
-    constructor(userRepo: IUserRepo){
+    constructor(userRepo: IUserRepo, userValidate: ValidationUser){
         this.userRepo = userRepo;
-    }
-
-    //Username Validation
-    private usernameRules = [
-        {regex: /.{8,16}/, error: 'Username length must be 8-16.'},
-        {regex: /[a-zA-Z0-9_.-]/, error: 'Username can only contains letters, numbers, or [_.-]'}
-    ];
-
-    private validateUsername(username: string){
-        const error = this.usernameRules
-                        .filter(rules => !rules.regex.test(username))
-                        .map(rule => rule.error);
-        return (error.length > 0 ? error[0]: null);
-    }
-
-    //Email Validation
-    private emailRules = [
-        {regex: /^[^\s'"\\]+$/, error: 'Email cannot contain whitspace, quote and backflash'},
-        {regex: /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/, error: 'Email must be a valid address (ex: email@gmail.com)'}
-    ];
-
-    private validateEmail(email: string){
-        const error = this.emailRules
-                        .filter(rules => !rules.regex.test(email))
-                        .map(rules => rules.error);
-        return (error.length > 0 ? error[0] : null);          
-    }
-
-    //Pasword Validation
-    private passwordRules = [
-        {regex: /.{8,16}/, error: 'Password length must be 8-16'},
-        {regex: /[a-z]/, error: 'Password requires at least 1 lowercase letter'},
-        {regex: /[A-Z]/, error: 'Password requires at least 1 uppercase letter'},
-        {regex: /\d/, error: 'Password requires at least 1 number'},
-        {regex: /[\W_]/, error: 'Password requires at least 1 special character'},
-        {regex: /^[^\s'"\\;]+$/, error: 'Password cannot contain quotes, backflash or whitespace'}
-    ];
-
-    private validatePassword(password: string){
-        const error = this.passwordRules
-                        .filter(rules => !rules.regex.test(password))
-                        .map(rules => rules.error);
-        return (error.length > 0 ? error[0] : null);
+        this.userValidate = userValidate;
     }
 
     async execute(request?: IRegisterUserRequest): Promise<IResponse> {
@@ -65,37 +25,42 @@ export  class RegisterUserUseCase implements IRegisterUserUseCase{
 
         const { username, password, email } = request;
 
+        //Empty check
         if (!username)
             throw new Error('Username cannot be empty');
         if (!password)
             throw new Error('Password cannot be empty');
         if (!email)
             throw new Error('Email cannot be empty');
+
         //Username check
-        const usernamError = this.validateUsername(username);
+        const usernamError = this.userValidate.validateUsername(username);
         if (usernamError)
             return err(InvalidUsernameError.create(usernamError));
         
-        const rudexUserName = await this.userRepo.getByUsername(username);
+        const rudexUserName = await this.userRepo.checkExistsByUsername(username);
         if (rudexUserName)
             return err(ExistedUsernameError.create());
 
         //Email check
-        const emailError = this.validateEmail(email);
+        const emailError = this.userValidate.validateEmail(email);
         if (emailError)
             return err(InvalidEmailError.create(emailError));
 
-        const rudexUserEmail = await this.userRepo.getByEmail(email);
+        const rudexUserEmail = await this.userRepo.getByGoogleUserId(email);
         if (rudexUserEmail)
             return err(ExistedEmailError.create());
 
         //Password check
-        const passwordError = this.validatePassword(password);
+        const passwordError = this.userValidate.validatePassword(password);
         if (passwordError)
             return err(InvalidPasswordError.create(passwordError));
         
-        const user = this.userRepo.save(username, email, password);
+        const user = await this.userRepo.save({
+                                username: username, 
+                                googleUserId: email, 
+                                password: password});
 
-        return ok(user);
+        return this.ok(user);
     }
 }
