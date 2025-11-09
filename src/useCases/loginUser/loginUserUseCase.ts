@@ -10,7 +10,7 @@ type IResponse = Result<ILoginUserResponse, UserNotFoundError | InvalidCredentia
 type ILoginUserUseCase = IBaseUseCase<ILoginUserRequest, IResponse>;
 
 export class LoginUserUseCase implements ILoginUserUseCase {
-  private userRepo: IUserRepo;
+  private readonly userRepo: IUserRepo;
 
   constructor(userRepo: IUserRepo) {
     this.userRepo = userRepo;
