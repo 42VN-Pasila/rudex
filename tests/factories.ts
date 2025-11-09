@@ -48,6 +48,7 @@ export function generateJwtToken(
   const now = Math.floor(Date.now() / 1000);
   const body = { ...payload, iat: now, exp: now + expiresInSec };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const encode = (obj: any) =>
     Buffer.from(JSON.stringify(obj))
       .toString('base64')

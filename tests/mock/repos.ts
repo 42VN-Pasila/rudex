@@ -1,6 +1,6 @@
 export const mockUserRepo = () => ({
   getById: jest.fn(),
-  getByUsername: jest.fn(),
   getByGoogleUserId: jest.fn(),
+  checkExistsByUsername: jest.fn(),
   save: jest.fn()
 });

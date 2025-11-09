@@ -1,11 +1,11 @@
 import { User } from '@domain/user/user';
 import { generateString, generateUUID } from '@tests/factories';
 
-export const mockUser = (options?: Partial<User>): User => ({
+export const createMockUser = (options?: Partial<User>): User => ({
   id: generateUUID(),
-  username: 'JohnDoe',
+  username: generateString(),
   googleUserId: generateUUID(),
-  googleUserName: 'John Doe',
+  googleUserName: generateString(),
   accessToken: generateString(),
   accessTokenExpiryDate: new Date('2100'),
   refreshToken: generateString(),

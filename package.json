@@ -6,12 +6,12 @@
   "author": "Kha Tieu",
   "license": "MIT",
   "scripts": {
-    "dev": "ts-node -r tsconfig-paths/register src/server.ts | pino-pretty",
+    "dev": "yarn env:dev && ts-node -r tsconfig-paths/register src/server.ts | pino-pretty",
     "clean": "rm -rf ./dist/ ./src/gen/",
     "build": "tsc --project tsconfig.build.json",
     "lint": "eslint './**/*.ts' --quiet",
-    "test": "jest --config ./jest.config.js --forceExit",
-    "test:e2e": "jest --config ./jest-e2e.config.js --runInBand --forceExit",
+    "test": "yarn env:test && jest --config ./jest.config.js --forceExit",
+    "test:e2e": "yarn env:test && jest --config ./jest-e2e.config.js --runInBand --forceExit",
     "typecheck": "yarn gen && yarn tsc --noEmit",
     "gen": "yarn gen:openapi && yarn gen:prisma",
     "gen:openapi": "openapi-typescript docs/openapi.yml --output src/gen/server.d.ts",
@@ -19,7 +19,9 @@
     "migrate:dev": "prisma migrate dev",
     "migrate:deploy": "prisma migrate deploy",
     "db:dev": "prisma migrate dev --name init && prisma generate",
-    "db:reset": "prisma migrate reset --force"
+    "db:reset": "prisma migrate reset --force",
+    "env:dev": "node scripts/setup-env.js dev",
+    "env:test": "node scripts/setup-env.js test"
   },
   "dependencies": {
     "@fastify/cors": "^11.1.0",

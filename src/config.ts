@@ -1,4 +1,7 @@
+import { config } from 'dotenv';
 import { AllowedEnvironments } from './enum';
+
+config({ path: './.env' });
 
 const currentEnvironment = getEnvironment('NODE_ENV');
 
@@ -10,7 +13,10 @@ export const configuration = {
     appVersion: getValueFromEnv('APP_VERSION', 'unknown')
   },
   baseUrl: getValueFromEnv('BASE_URL'),
-  host: getValueFromEnv('HOST', '127.0.0.1')
+  host: getValueFromEnv('HOST', '127.0.0.1'),
+  database: {
+    url: getValueFromEnv('DATABASE_URL')
+  }
 };
 
 //----------------------------------------------------------
