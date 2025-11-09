@@ -1,15 +1,15 @@
 import { IBaseController, HttpResponse, HttpRequest } from '@useCases/common';
 import type { components } from '@src/gen/server';
-import { LoginUserUseCase } from './loginUserUseCase';
+import { ILoginUserUseCase } from './loginUserUseCase';
 import { UserNotFoundError, InvalidCredentialsError } from '@domain/error';
 import { ILoginUserRequest } from './loginUserRequest';
 
 type Response = HttpResponse<undefined, components['schemas']['LoginResponseBody']>;
 
 export class LoginUserController extends IBaseController<HttpRequest, Response> {
-  private readonly loginUserUseCase: LoginUserUseCase;
+  private readonly loginUserUseCase: ILoginUserUseCase;
 
-  constructor(loginUserUseCase: LoginUserUseCase) {
+  constructor(loginUserUseCase: ILoginUserUseCase) {
     super();
     this.loginUserUseCase = loginUserUseCase;
   }

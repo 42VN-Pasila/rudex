@@ -1,4 +1,4 @@
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const mockUseCase = <Request = any, Response = any>() => ({
-  execute: jest.fn<Response, Request[]>()
+export const mockUseCase = <IRequest = any, IResponse = any>() => ({
+  execute: jest.fn<IResponse, IRequest[]>()
 });

@@ -30,7 +30,6 @@
     "@prisma/extension-accelerate": "^2.0.2",
     "@types/bull": "^4.10.4",
     "bull": "^4.16.5",
-    "client-secrets-manager": "aws-sdk/client-secrets-manager",
     "dotenv": "^17.2.3",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import": "^2.32.0",

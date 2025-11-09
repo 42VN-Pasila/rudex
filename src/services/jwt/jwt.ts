@@ -1,10 +1,6 @@
-import { JWT_ACCESS_TOKEN_EXP } from '@src/constants';
 import jwt from 'jsonwebtoken';
 
-export async function signJwt(
-  payload: object,
-  expiresInSec: number = Number(JWT_ACCESS_TOKEN_EXP)
-): Promise<string> {
+export async function signJwt(payload: object, expiresInSec: number): Promise<string> {
   const secret = process.env.JWT_SECRET;
 
   if (!secret) {

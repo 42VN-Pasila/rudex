@@ -7,6 +7,8 @@ module.exports = {
   preset: "ts-jest",
   testEnvironment: "node",
   testRegex: ".spec.ts$",
+  // Load environment variables before tests run
+  setupFiles: ["<rootDir>/tests/setupEnv.ts"],
   setupFilesAfterEnv: [],
   collectCoverageFrom: ["src/**/*.ts", "!src/**/*.generated.ts"],
   coverageReporters: ["json"],
