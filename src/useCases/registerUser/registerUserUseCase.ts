@@ -62,6 +62,8 @@ export class    RegisterUserUseCase implements IRegisterUserUseCase{
                                 googleUserId: email, 
                                 password: password});
 
-        return ok(user.id);
+        const response: IRegisterUserResponse = {rudexUserId: user.id};
+
+        return ok(response);
     }
 }
