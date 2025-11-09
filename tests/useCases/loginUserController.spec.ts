@@ -19,12 +19,15 @@ describe('LoginUserController', () => {
     const request = { body: { username: user.username, password: user.password } } as const;
 
     const useCaseResponse = {
-      id: user.id,
+      userId: user.id,
       accessToken: user.accessToken!,
       refreshToken: user.refreshToken!,
       accessTokenExpiryDate: user.accessTokenExpiryDate!
     };
-    const expectedHttpResponse = useCaseResponse; // Controller returns raw domain response
+    const expectedHttpResponse = {
+      ...useCaseResponse,
+      accessTokenExpiryDate: useCaseResponse.accessTokenExpiryDate.toISOString()
+    };
 
     useCase.execute.mockReturnValueOnce(ok(useCaseResponse));
 

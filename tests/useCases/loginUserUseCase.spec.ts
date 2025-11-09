@@ -64,7 +64,7 @@ describe('LoginUserUseCase', () => {
     const payload = result.unwrap();
     expect(payload).toEqual(
       expect.objectContaining({
-        id: dbUser.id,
+        userId: dbUser.id,
         accessToken: expect.any(String),
         refreshToken: expect.any(String),
         accessTokenExpiryDate: expect.any(Date)

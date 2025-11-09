@@ -3,8 +3,10 @@ import type { components } from '@src/gen/server';
 import { ILoginUserUseCase } from './loginUserUseCase';
 import { UserNotFoundError, InvalidCredentialsError } from '@domain/error';
 import { ILoginUserRequest } from './loginUserRequest';
+import { UserMapper } from '@mappers/userMapper';
 
-type Response = HttpResponse<undefined, components['schemas']['LoginResponseBody']>;
+type ResponseDto = components['schemas']['LoginResponseBody'];
+type Response = HttpResponse<undefined, ResponseDto>;
 
 export class LoginUserController extends IBaseController<HttpRequest, Response> {
   private readonly loginUserUseCase: ILoginUserUseCase;
@@ -32,6 +34,8 @@ export class LoginUserController extends IBaseController<HttpRequest, Response> 
       return this.badRequest(error.message);
     }
 
-    return this.ok(result.unwrap());
+    const response = UserMapper.toResponseDto(result.unwrap());
+
+    return this.ok<ResponseDto>(response);
   }
 }

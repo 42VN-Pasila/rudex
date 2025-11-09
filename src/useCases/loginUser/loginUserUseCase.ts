@@ -47,7 +47,7 @@ export class LoginUserUseCase implements ILoginUserUseCase {
     const accessTokenExpiryDate = new Date(Date.now() + JWT_ACCESS_TOKEN_EXP * 1000);
 
     const response: ILoginUserResponse = {
-      id: rudexUser.id,
+      userId: rudexUser.id,
       accessToken,
       accessTokenExpiryDate,
       refreshToken
