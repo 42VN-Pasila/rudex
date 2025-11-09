@@ -2,7 +2,7 @@ import { components } from "@src/gen/server";
 import { HttpRequest, HttpResponse, IBaseController } from "@useCases/common";
 import { IRegisterUserRequest } from "./registerUserRequest";
 import {RegisterUserUseCase} from "./registerUserUseCase";
-import { ExistedUsernameError, InvalidEmailError, InvalidPasswordError } from "@domain/error/userError";
+import { ExistedEmailError, ExistedUsernameError } from "@domain/error/userError";
 
 type Response = HttpResponse<undefined, components['schemas']['RegisterResponseBody']>;
 
@@ -26,7 +26,7 @@ export class RegisterUserController extends IBaseController<HttpRequest, Respons
         if (result.isErr()) {
             const error: Error = result.unwrapErr()
             
-            if (error instanceof ExistedUsernameError)
+            if (error instanceof ExistedUsernameError || error instanceof ExistedEmailError)
                 return this.conflict(error.message);
             return this.badRequest(error.message);
         }

@@ -1,9 +1,10 @@
-import { err, IBaseUseCase, Result } from "@useCases/common";
+import { IBaseUseCase } from "@useCases/common/baseUseCase";
 import { IRegisterUserResponse } from "./registerUserResponse";
 import { ExistedEmailError, ExistedUsernameError, InvalidEmailError, InvalidPasswordError, InvalidUsernameError } from "@domain/error/userError";
 import { IRegisterUserRequest } from "./registerUserRequest";
 import { IUserRepo } from "@repository/interfaces/userRepo";
 import { ValidationUser } from "@useCases/utils/validationUserUseCase";
+import { Result, ok, err } from '@useCases/common';
 
 type IResponse = Result<IRegisterUserResponse,InvalidUsernameError | ExistedUsernameError | InvalidEmailError | ExistedEmailError | InvalidPasswordError>;
 
@@ -61,6 +62,6 @@ export class    RegisterUserUseCase implements IRegisterUserUseCase{
                                 googleUserId: email, 
                                 password: password});
 
-        return this.ok(user);
+        return ok(user.id);
     }
 }
