@@ -6,8 +6,8 @@ const { compilerOptions } = require("./tsconfig.json");
 module.exports = {
   preset: "ts-jest",
   testEnvironment: "node",
-  testRegex: ".spec.ts$",
-  setupFilesAfterEnv: [],
+  testRegex: ".test.ts$",
+  setupFilesAfterEnv: ["<rootDir>/tests/jest-e2e.setup.ts"],
   collectCoverageFrom: ["src/**/*.ts", "!src/**/*.generated.ts"],
   coverageReporters: ["json"],
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, {

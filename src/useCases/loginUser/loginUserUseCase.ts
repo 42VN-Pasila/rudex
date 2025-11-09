@@ -23,7 +23,7 @@ export class LoginUserUseCase implements ILoginUserUseCase {
 
     const { username, password, googleUserId } = request;
 
-    const rudexUser = await this.userRepo.getByUsername(username);
+    const rudexUser = await this.userRepo.checkExistsByUsername(username);
     if (!rudexUser) {
       return err(UserNotFoundError.create(username));
     }

@@ -1,3 +1,4 @@
+import { UserNotFoundError } from '@domain/error';
 import { User } from '@domain/user/user';
 import { IUserRepo } from '@repository/interfaces/userRepo';
 import sql from '@src/db/prisma';
@@ -10,19 +11,7 @@ export class SQLUserRepo implements IUserRepo {
     });
 
     if (!dbRecord) {
-      throw new Error(`User with id ${userId} not found`);
-    }
-
-    return UserMapper.prismaToDomain(dbRecord);
-  }
-
-  async getByUsername(username: string): Promise<User | null> {
-    const dbRecord = await sql.user.findUnique({
-      where: { username }
-    });
-
-    if (!dbRecord) {
-      return null;
+      throw UserNotFoundError.create(userId);
     }
 
     return UserMapper.prismaToDomain(dbRecord);
@@ -40,25 +29,49 @@ export class SQLUserRepo implements IUserRepo {
     return UserMapper.prismaToDomain(dbRecord);
   }
 
+  async checkExistsByUsername(username: string): Promise<User | null> {
+    const dbRecord = await sql.user.findUnique({
+      where: { username }
+    });
+
+    if (!dbRecord) {
+      return null;
+    }
+
+    return UserMapper.prismaToDomain(dbRecord);
+  }
+
   async save({
+    username,
+    password,
     googleUserId,
     googleUserName,
-    refreshToken,
-    username
+    refreshToken
   }: {
-    googleUserId: string;
+    username: string;
+    password?: string;
+    googleUserId?: string;
     googleUserName?: string;
     refreshToken?: string;
-    username: string;
   }): Promise<User> {
     const now = new Date();
-    const dbRecord = await sql.user.create({
-      data: {
+
+    const dbRecord = await sql.user.upsert({
+      where: { username },
+      create: {
         username,
-        googleUserId,
+        password: password ?? null,
+        googleUserId: googleUserId ?? null,
         googleUserName: googleUserName ?? null,
         refreshToken: refreshToken ?? null,
         createdAt: now,
+        updatedAt: now
+      },
+      update: {
+        password: password ?? undefined,
+        googleUserId: googleUserId ?? undefined,
+        googleUserName: googleUserName ?? undefined,
+        refreshToken: refreshToken ?? undefined,
         updatedAt: now
       }
     });
