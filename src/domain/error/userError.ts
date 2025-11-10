@@ -28,14 +28,6 @@ export class InvalidCredentialsError extends BaseError {
   }
 }
 
-export class InvalidUsernameError extends BaseError {
-  type!: UserErrors.InvalidUsernameError;
-
-  public static create(error: string): InvalidUsernameError {
-    return new this(UserErrors.InvalidUsernameError, error);
-  }
-}
-
 export class ExistedUsernameError extends BaseError {
   type!: UserErrors.ExistedUsernameError;
 
@@ -49,21 +41,5 @@ export class ExistedEmailError extends BaseError {
 
   public static create(): ExistedUsernameError {
     return new this(UserErrors.ExistedEmailError, 'This email is registered');
-  }
-}
-
-export class InvalidEmailError extends BaseError {
-  type!: UserErrors.InvalidEmailError;
-
-  public static create(error: string): InvalidEmailError {
-    return new this(UserErrors.InvalidEmailError, error);
-  }
-}
-
-export class InvalidPasswordError extends BaseError {
-  type!: UserErrors.InvalidPasswordError;
-
-  public static create(error: string): InvalidPasswordError {
-    return new this(UserErrors.InvalidPasswordError, error);
   }
 }
