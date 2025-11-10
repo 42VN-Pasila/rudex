@@ -1,15 +1,15 @@
 import { components } from '@src/gen/server';
 import { HttpRequest, HttpResponse, IBaseController } from '@useCases/common';
 import { IRegisterUserRequest } from './registerUserRequest';
-import { RegisterUserUseCase } from './registerUserUseCase';
+import { IRegisterUserUseCase } from './registerUserUseCase';
 import { ExistedEmailError, ExistedUsernameError } from '@domain/error/userError';
 
 type Response = HttpResponse<undefined, components['schemas']['RegisterResponseBody']>;
 
 export class RegisterUserController extends IBaseController<HttpRequest, Response> {
-  private readonly registerUserUseCase: RegisterUserUseCase;
+  private readonly registerUserUseCase: IRegisterUserUseCase;
 
-  constructor(registerUserUseCase: RegisterUserUseCase) {
+  constructor(registerUserUseCase: IRegisterUserUseCase) {
     super();
     this.registerUserUseCase = registerUserUseCase;
   }

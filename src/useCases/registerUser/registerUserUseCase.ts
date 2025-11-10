@@ -12,7 +12,7 @@ import { IUserRepo } from '@repository/interfaces/userRepo';
 import { ValidationUser } from '@useCases/utils/validationUserUseCase';
 import { Result, ok, err } from '@useCases/common';
 
-type IResponse = Result<
+export type IResponse = Result<
   IRegisterUserResponse,
   | InvalidUsernameError
   | ExistedUsernameError
@@ -21,7 +21,7 @@ type IResponse = Result<
   | InvalidPasswordError
 >;
 
-type IRegisterUserUseCase = IBaseUseCase<IRegisterUserRequest, IResponse>;
+export type IRegisterUserUseCase = IBaseUseCase<IRegisterUserRequest, IResponse>;
 
 export class RegisterUserUseCase implements IRegisterUserUseCase {
   private readonly userRepo: IUserRepo;
