@@ -14,7 +14,7 @@ export class ValidationUser {
   private emailRules = [
     { regex: /^[^\s'"\\]+$/, error: 'Email cannot contain whitspace, quote and backflash' },
     {
-      regex: /^[A-Za-z0-9._%+-]+@gmail\.com$/,
+      regex: /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/,
       error: 'Email must be a valid address (ex: email@gmail.com)'
     }
   ];
