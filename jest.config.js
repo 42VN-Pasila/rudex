@@ -7,7 +7,6 @@ module.exports = {
   preset: "ts-jest",
   testEnvironment: "node",
   testRegex: ".spec.ts$",
-  setupFiles: ["<rootDir>/tests/setupEnv.ts"],
   setupFilesAfterEnv: [],
   collectCoverageFrom: ["src/**/*.ts", "!src/**/*.generated.ts"],
   coverageReporters: ["json"],
