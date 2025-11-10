@@ -1,17 +1,17 @@
-export class ValidationUser {
-  private usernameRules = [
+export class ValidateUser {
+  private static usernameRules = [
     { regex: /.{8,16}/, error: 'Username length must be 8-16.' },
     { regex: /^[a-zA-Z0-9_.-]+$/, error: 'Username can only contains letters, numbers, or [_.-]' }
   ];
 
-  public validateUsername(username: string): string | null {
+  public static validateUsername(username: string): string | null {
     const error = this.usernameRules
       .filter((rule) => !rule.regex.test(username))
       .map((rule) => rule.error);
     return error.length > 0 ? error[0] : null;
   }
 
-  private emailRules = [
+  private static emailRules = [
     { regex: /^[^\s'"\\]+$/, error: 'Email cannot contain whitspace, quote and backflash' },
     {
       regex: /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/,
@@ -19,14 +19,14 @@ export class ValidationUser {
     }
   ];
 
-  public validateEmail(email: string): string | null {
+  public static validateEmail(email: string): string | null {
     const error = this.emailRules
       .filter((rule) => !rule.regex.test(email))
       .map((rule) => rule.error);
     return error.length > 0 ? error[0] : null;
   }
 
-  private passwordRules = [
+  private static passwordRules = [
     { regex: /.{8,16}/, error: 'Password length must be 8-16' },
     { regex: /[a-z]/, error: 'Password requires at least 1 lowercase letter' },
     { regex: /[A-Z]/, error: 'Password requires at least 1 uppercase letter' },
@@ -35,7 +35,7 @@ export class ValidationUser {
     { regex: /^[^\s'"\\;]+$/, error: 'Password cannot contain quotes, backflash or whitespace' }
   ];
 
-  public validatePassword(password: string): string | null {
+  public static validatePassword(password: string): string | null {
     const error = this.passwordRules
       .filter((rule) => !rule.regex.test(password))
       .map((rule) => rule.error);
