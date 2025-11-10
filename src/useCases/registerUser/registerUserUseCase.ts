@@ -7,7 +7,7 @@ import {
 import { IRegisterUserRequest } from './registerUserRequest';
 import { IUserRepo } from '@repository/interfaces/userRepo';
 import { Result, ok, err } from '@useCases/common';
-import { hashPassword } from '@tests/factories';
+import argon2 from 'argon2';
 
 export type IResponse = Result<
   IRegisterUserResponse,
@@ -37,7 +37,7 @@ export class RegisterUserUseCase implements IRegisterUserUseCase {
     const rudexUserEmail = await this.userRepo.getByGoogleUserId(email);
     if (rudexUserEmail) return err(ExistedEmailError.create());
 
-    const hashedPassword = await hashPassword(password);
+    const hashedPassword = await argon2.hash(password);
 
     const user = await this.userRepo.save({
       username: username,
