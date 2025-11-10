@@ -1,5 +1,4 @@
 export class ValidationUser {
-  //Username Validation
   private usernameRules = [
     { regex: /.{8,16}/, error: 'Username length must be 8-16.' },
     { regex: /^[a-zA-Z0-9_.-]+$/, error: 'Username can only contains letters, numbers, or [_.-]' }
@@ -12,7 +11,6 @@ export class ValidationUser {
     return error.length > 0 ? error[0] : null;
   }
 
-  //Email Validation
   private emailRules = [
     { regex: /^[^\s'"\\]+$/, error: 'Email cannot contain whitspace, quote and backflash' },
     {
@@ -28,7 +26,6 @@ export class ValidationUser {
     return error.length > 0 ? error[0] : null;
   }
 
-  //Pasword Validation
   private passwordRules = [
     { regex: /.{8,16}/, error: 'Password length must be 8-16' },
     { regex: /[a-z]/, error: 'Password requires at least 1 lowercase letter' },

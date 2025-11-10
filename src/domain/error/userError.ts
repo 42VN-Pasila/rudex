@@ -10,7 +10,6 @@ export enum UserErrors {
   ExistedEmailError = 'ExistedEmailError'
 }
 
-//Login
 export class UserNotFoundError extends BaseError {
   type!: UserErrors.UserNotFoundError;
 
@@ -29,7 +28,6 @@ export class InvalidCredentialsError extends BaseError {
   }
 }
 
-//Register
 export class InvalidUsernameError extends BaseError {
   type!: UserErrors.InvalidUsernameError;
 
