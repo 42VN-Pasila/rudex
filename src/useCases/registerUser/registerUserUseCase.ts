@@ -11,6 +11,7 @@ import { IRegisterUserRequest } from './registerUserRequest';
 import { IUserRepo } from '@repository/interfaces/userRepo';
 import { ValidationUser } from '@useCases/utils/validationUserUseCase';
 import { Result, ok, err } from '@useCases/common';
+import { hashPassword } from '@tests/factories';
 
 export type IResponse = Result<
   IRegisterUserResponse,
@@ -58,10 +59,12 @@ export class RegisterUserUseCase implements IRegisterUserUseCase {
     const passwordError = this.userValidate.validatePassword(password);
     if (passwordError) return err(InvalidPasswordError.create(passwordError));
 
+    const hashedPassword = await hashPassword(password);
+
     const user = await this.userRepo.save({
       username: username,
       googleUserId: email,
-      password: password
+      password: hashedPassword
     });
 
     const response: IRegisterUserResponse = { rudexUserId: user.id };

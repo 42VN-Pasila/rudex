@@ -4,7 +4,8 @@ import { IRegisterUserRequest } from './registerUserRequest';
 import { IRegisterUserUseCase } from './registerUserUseCase';
 import { ExistedEmailError, ExistedUsernameError } from '@domain/error/userError';
 
-type Response = HttpResponse<undefined, components['schemas']['RegisterResponseBody']>;
+type okResponse = components['schemas']['RegisterResponseBody'];
+type Response = HttpResponse<undefined, okResponse>;
 
 export class RegisterUserController extends IBaseController<HttpRequest, Response> {
   private readonly registerUserUseCase: IRegisterUserUseCase;
@@ -33,6 +34,6 @@ export class RegisterUserController extends IBaseController<HttpRequest, Respons
 
     const responseBody = result.unwrap();
 
-    return this.ok(responseBody);
+    return this.ok<okResponse>(responseBody);
   }
 }
