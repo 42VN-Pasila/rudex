@@ -1,3 +1,3 @@
-export interface IRegisterUserResponse{
-    rudexUserId: string;
+export interface IRegisterUserResponse {
+  rudexUserId: string;
 }
