@@ -34,9 +34,9 @@ export class ExistedUsernameError extends BaseError {
 }
 
 export class ExistedEmailError extends BaseError {
-  type!: UserErrors.ExistedUsernameError;
+  type!: UserErrors.ExistedEmailError;
 
-  public static create(): ExistedUsernameError {
+  public static create(): ExistedEmailError {
     return new this(UserErrors.ExistedEmailError, 'This email is registered');
   }
 }

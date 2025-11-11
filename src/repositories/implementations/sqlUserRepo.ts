@@ -41,15 +41,29 @@ export class SQLUserRepo implements IUserRepo {
     return UserMapper.prismaToDomain(dbRecord);
   }
 
+  async checkExistsByEmail(email: string): Promise<User | null> {
+    const dbRecord = await sql.user.findUnique({
+      where: { email }
+    });
+
+    if (!dbRecord) {
+      return null;
+    }
+
+    return UserMapper.prismaToDomain(dbRecord);
+  }
+
   async save({
     username,
     password,
+    email,
     googleUserId,
     googleUserName,
     refreshToken
   }: {
     username: string;
     password?: string;
+    email: string;
     googleUserId?: string;
     googleUserName?: string;
     refreshToken?: string;
@@ -61,6 +75,7 @@ export class SQLUserRepo implements IUserRepo {
       create: {
         username,
         password: password ?? null,
+        email,
         googleUserId: googleUserId ?? null,
         googleUserName: googleUserName ?? null,
         refreshToken: refreshToken ?? null,

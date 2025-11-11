@@ -63,19 +63,18 @@ yarn gen
 Run the app
 
 ```bash
-yarn db:dev
 yarn dev
 ```
 
 ## 🧪 Testing
 
-Run unit tests (Not implemented)
+Run unit tests
 
 ```bash
 yarn test
 ```
 
-Run integration tests (Not implemented)
+Run integration tests
 
 ```bash
 yarn test:e2e
