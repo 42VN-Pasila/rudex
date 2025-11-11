@@ -1,7 +1,4 @@
-import { config } from 'dotenv';
 import { AllowedEnvironments } from './enum';
-
-config({ path: './.env' });
 
 const currentEnvironment = getEnvironment('NODE_ENV');
 

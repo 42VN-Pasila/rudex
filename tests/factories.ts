@@ -39,11 +39,8 @@ export function verifyPassword(password: string, stored: string): boolean {
  * @param secret HMAC secret
  * @param expiresInSec expiry time in seconds
  */
-export function generateJwtToken(
-  payload: Record<string, unknown>,
-  secret: string = 'JWT_SECRET',
-  expiresInSec = 3600
-): string {
+export function generateJwtToken(payload: Record<string, unknown>, expiresInSec = 3600): string {
+  const secret: string = 'JWT_SECRET';
   const header = { alg: 'HS256', typ: 'JWT' };
   const now = Math.floor(Date.now() / 1000);
   const body = { ...payload, iat: now, exp: now + expiresInSec };
@@ -67,4 +64,13 @@ export function generateJwtToken(
     .replace(/\+/g, '-')
     .replace(/\//g, '_');
   return `${data}.${sig}`;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function createRequest(body: any) {
+  return {
+    body: {
+      value: body
+    }
+  };
 }
