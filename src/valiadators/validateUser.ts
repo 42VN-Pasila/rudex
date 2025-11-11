@@ -1,14 +1,17 @@
+import { ValidatorEmailError, ValidatorPasswordError, ValidatorUsernameError } from "@domain/error/validatorError";
+
 export class ValidateUser {
   private static usernameRules = [
     { regex: /.{8,16}/, error: 'Username length must be 8-16.' },
     { regex: /^[a-zA-Z0-9_.-]+$/, error: 'Username can only contains letters, numbers, or [_.-]' }
   ];
 
-  static  validateUsername(username: string): string | null {
+  static  validateUsername(username: string): ValidatorUsernameError | void {
     const error = this.usernameRules
       .filter((rule) => !rule.regex.test(username))
       .map((rule) => rule.error);
-    return error.length > 0 ? error[0] : null;
+    if (error.length > 0)
+      ValidatorUsernameError.create(error[0]);
   }
 
   private static emailRules = [
@@ -19,11 +22,12 @@ export class ValidateUser {
     }
   ];
 
-   static validateEmail(email: string): string | null {
+   static validateEmail(email: string): ValidatorEmailError | void {
     const error = this.emailRules
       .filter((rule) => !rule.regex.test(email))
       .map((rule) => rule.error);
-    return error.length > 0 ? error[0] : null;
+    if (error.length > 0)
+      ValidatorEmailError.create(error[0]);
   }
 
   private static passwordRules = [
@@ -35,10 +39,11 @@ export class ValidateUser {
     { regex: /^[^\s'"\\;]+$/, error: 'Password cannot contain quotes, backflash or whitespace' }
   ];
 
-   static validatePassword(password: string): string | null {
+   static validatePassword(password: string): ValidatorPasswordError | void {
     const error = this.passwordRules
       .filter((rule) => !rule.regex.test(password))
       .map((rule) => rule.error);
-    return error.length > 0 ? error[0] : null;
+    if (error.length > 0)
+      ValidatorPasswordError.create(error[0]);
   }
 }
