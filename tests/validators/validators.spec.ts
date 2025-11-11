@@ -6,7 +6,6 @@ describe('ValidateUser', () => {
       const username = 'user';
       const result = ValidateUser.validateUsername(username);
 
-      console.log('Testing @username: ', username);
       expect(result).toBe('Username length must be 8-16.');
     });
 
@@ -14,7 +13,6 @@ describe('ValidateUser', () => {
       const username = '"user" OR 1=1';
       const result = ValidateUser.validateUsername(username);
 
-      console.log('Testing @username: ', username);
       expect(result).toBe('Username can only contains letters, numbers, or [_.-]');
     });
 
@@ -22,7 +20,6 @@ describe('ValidateUser', () => {
       const username = 'username';
       const result = ValidateUser.validateUsername(username);
 
-      console.log('Testing @username: ', username);
       expect(result).toBe(null);
     });
   });
@@ -32,7 +29,6 @@ describe('ValidateUser', () => {
       const email = 'this is email@gmail.com';
       const result = ValidateUser.validateEmail(email);
 
-      console.log('Testing @email: ', email);
       expect(result).toBe('Email cannot contain whitspace, quote and backflash');
     });
 
@@ -40,7 +36,6 @@ describe('ValidateUser', () => {
       const email = 'ft_transecendenceEmail';
       const result = ValidateUser.validateEmail(email);
 
-      console.log('Testing @email: ', email);
       expect(result).toBe('Email must be a valid address (ex: email@gmail.com)');
     });
 
@@ -48,7 +43,6 @@ describe('ValidateUser', () => {
       const email = 'thisisemail@test.vn';
       const result = ValidateUser.validateEmail(email);
 
-      console.log('Testing @email: ', email);
       expect(result).toBe(null);
     });
   });
@@ -58,7 +52,6 @@ describe('ValidateUser', () => {
       const password = 'hello';
       const result = ValidateUser.validatePassword(password);
 
-      console.log('Testing @password: ', password);
       expect(result).toBe('Password length must be 8-16');
     });
 
@@ -66,7 +59,6 @@ describe('ValidateUser', () => {
       const password = 'THISISPASSWORD';
       const result = ValidateUser.validatePassword(password);
 
-      console.log('Testing @password: ', password);
       expect(result).toBe('Password requires at least 1 lowercase letter');
     });
 
@@ -74,7 +66,6 @@ describe('ValidateUser', () => {
       const password = 'thisispassword';
       const result = ValidateUser.validatePassword(password);
 
-      console.log('Testing @password: ', password);
       expect(result).toBe('Password requires at least 1 uppercase letter');
     });
 
@@ -82,7 +73,6 @@ describe('ValidateUser', () => {
       const password = 'thisisPASSWORD';
       const result = ValidateUser.validatePassword(password);
 
-      console.log('Testing @password: ', password);
       expect(result).toBe('Password requires at least 1 number');
     });
 
@@ -90,7 +80,6 @@ describe('ValidateUser', () => {
       const password = 'th1s1sPASSWORD';
       const result = ValidateUser.validatePassword(password);
 
-      console.log('Testing @password: ', password);
       expect(result).toBe('Password requires at least 1 special character');
     });
 
@@ -98,7 +87,6 @@ describe('ValidateUser', () => {
       const password = 'th1s !s PASSWORD';
       const result = ValidateUser.validatePassword(password);
 
-      console.log('Testing @password: ', password);
       expect(result).toBe('Password cannot contain quotes, backflash or whitespace');
     });
 
@@ -106,7 +94,6 @@ describe('ValidateUser', () => {
       const password = 'th1s!sPASSWORD';
       const result = ValidateUser.validatePassword(password);
 
-      console.log('Testing @password: ', password);
       expect(result).toBe(null);
     });
   });
