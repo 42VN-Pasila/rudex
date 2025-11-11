@@ -4,9 +4,6 @@ export enum UserErrors {
   UserNotFoundError = 'UserNotFoundError',
   InvalidCredentialsError = 'InvalidCredentialsError',
   ExistedUsernameError = 'ExistedUsername',
-  InvalidUsernameError = 'InvalidUsernameError',
-  InvalidEmailError = 'InvalidEmailError',
-  InvalidPasswordError = 'InvalidPasswordError',
   ExistedEmailError = 'ExistedEmailError'
 }
 
