@@ -1,7 +1,7 @@
 import crypto from 'crypto';
 
 export function generateString(): string {
-  return crypto.randomBytes(20).toString('hex');
+  return crypto.randomBytes(10).toString('hex');
 }
 
 export function generateUUID(): string {
@@ -11,6 +11,11 @@ export function generateUUID(): string {
 export function generatePassword(): string {
   const buf = crypto.randomBytes(20);
   return buf.toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+
+export function generateEmail(): string {
+  const generateShortString = () => crypto.randomBytes(2).toString('hex');
+  return generateShortString() + '.' + generateShortString() + '@gmail.com';
 }
 
 /**

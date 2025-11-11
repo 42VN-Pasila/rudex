@@ -23,11 +23,20 @@ describe('SQLUserRepo (unit test)', () => {
     });
   });
 
-  describe('getByUsecheckExistsByUsernamername', () => {
+  describe('checkExistsByUsername', () => {
     it('returns an existing user', async () => {
       const dbUser: User = createMockUser();
       repo.checkExistsByUsername.mockResolvedValue(dbUser);
       const user = await repo.checkExistsByUsername(dbUser.username);
+      expect(user).toEqual(dbUser);
+    });
+  });
+
+  describe('checkExistsByEmail', () => {
+    it('returns an existing email', async () => {
+      const dbUser: User = createMockUser();
+      repo.checkExistsByEmail.mockResolvedValue(dbUser);
+      const user = await repo.checkExistsByEmail(dbUser.email);
       expect(user).toEqual(dbUser);
     });
   });

@@ -2,7 +2,7 @@ export type User = {
   id: string;
   username: string;
   password?: string;
-  email?: string;
+  email: string;
   googleUserId?: string;
   googleUserName?: string;
   accessToken?: string;

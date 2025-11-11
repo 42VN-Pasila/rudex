@@ -33,6 +33,13 @@ describe('SQLUserRepo (integration test)', () => {
     });
   });
 
+  describe('checkExistsByEmail', () => {
+    it('returns null for missing email', async () => {
+      const user = await repo.checkExistsByEmail('missing-email');
+      expect(user).toBeNull();
+    });
+  });
+
   describe('save', () => {
     it('saves google user and fetches by googleUserId', async () => {
       const user = createMockUser();

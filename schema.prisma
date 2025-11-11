@@ -15,6 +15,7 @@ model User {
   id                     String    @id @default(uuid())
   username               String    @unique
   password               String?   @map("password")
+  email                  String    @unique @map("email")
   googleUserId           String?   @unique @map("google_user_id")
   googleUserName         String?   @map("google_user_name")
   accessToken            String?   @map("access_token")

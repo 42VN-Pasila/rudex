@@ -61,7 +61,7 @@ paths:
                 $ref: "#/components/schemas/RegisterResponseBody"
         "400":
           $ref: "#/components/responses/APIErrorResponse"
-        "401":
+        "409":
           $ref: "#/components/responses/APIErrorResponse"
         "500":
           $ref: "#/components/responses/APIErrorResponse"
