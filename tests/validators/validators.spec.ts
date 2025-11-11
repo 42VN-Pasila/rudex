@@ -5,8 +5,6 @@ import {
 } from '@domain/error/validatorError';
 import { ValidateUser } from '@src/valiadators/validateUser';
 
-// Proper Jest patterns using toThrow with message matching and method spies
-
 describe('ValidateUser', () => {
   afterEach(() => {
     jest.restoreAllMocks();
