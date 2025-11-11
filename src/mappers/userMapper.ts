@@ -1,3 +1,4 @@
+import { ILoginUserResponse } from '@useCases/loginUser/loginUserResponse';
 import type { UserModel as PrismaUser } from '../gen/db/prisma/models';
 import { User } from '@domain/user/user';
 
@@ -16,12 +17,15 @@ export class UserMapper {
       updatedAt: u.updatedAt
     };
   }
-  static domainToLoginDto(u: Partial<User>) {
+  static toResponseDto(u: ILoginUserResponse) {
+    if (!u.accessToken || !u.refreshToken || !u.accessTokenExpiryDate) {
+      throw new Error('User domain object is missing required token fields');
+    }
     return {
-      userId: u.id,
-      accessToken: u.accessToken ?? null,
-      accessTokenExpiryDate: u.accessTokenExpiryDate ?? null,
-      refreshToken: u.refreshToken ?? null
+      userId: u.userId,
+      accessToken: u.accessToken,
+      accessTokenExpiryDate: u.accessTokenExpiryDate.toISOString(),
+      refreshToken: u.refreshToken
     };
   }
 }

@@ -4,13 +4,15 @@ import { ILoginUserResponse } from './loginUserResponse';
 import { IUserRepo } from '@repository/interfaces/userRepo';
 import { UserNotFoundError, InvalidCredentialsError } from '@domain/error';
 import { Result, ok, err } from '@useCases/common';
+import { signJwt } from '@services/jwt/jwt';
+import { JWT_ACCESS_TOKEN_EXP, JWT_REFRESH_TOKEN_EXP } from '@src/constants';
 
-type IResponse = Result<ILoginUserResponse, UserNotFoundError | InvalidCredentialsError>;
+export type IResponse = Result<ILoginUserResponse, UserNotFoundError | InvalidCredentialsError>;
 
-type ILoginUserUseCase = IBaseUseCase<ILoginUserRequest, IResponse>;
+export type ILoginUserUseCase = IBaseUseCase<ILoginUserRequest, IResponse>;
 
 export class LoginUserUseCase implements ILoginUserUseCase {
-  private userRepo: IUserRepo;
+  private readonly userRepo: IUserRepo;
 
   constructor(userRepo: IUserRepo) {
     this.userRepo = userRepo;
@@ -40,12 +42,12 @@ export class LoginUserUseCase implements ILoginUserUseCase {
       return err(InvalidCredentialsError.create());
     }
 
-    const accessToken = 'generated-access-token';
-    const refreshToken = 'generated-refresh-token';
-    const accessTokenExpiryDate = new Date(Date.now() + 3600000); // 1 hour from now
+    const accessToken = await signJwt({ userId: rudexUser.id }, JWT_ACCESS_TOKEN_EXP);
+    const refreshToken = await signJwt({ userId: rudexUser.id }, JWT_REFRESH_TOKEN_EXP);
+    const accessTokenExpiryDate = new Date(Date.now() + JWT_ACCESS_TOKEN_EXP * 1000);
 
     const response: ILoginUserResponse = {
-      id: rudexUser.id,
+      userId: rudexUser.id,
       accessToken,
       accessTokenExpiryDate,
       refreshToken

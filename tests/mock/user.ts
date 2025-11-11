@@ -4,6 +4,8 @@ import { generateString, generateUUID } from '@tests/factories';
 export const createMockUser = (options?: Partial<User>): User => ({
   id: generateUUID(),
   username: generateString(),
+  password: generateString(),
+  email: generateString(),
   googleUserId: generateUUID(),
   googleUserName: generateString(),
   accessToken: generateString(),

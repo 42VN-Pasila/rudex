@@ -1,16 +1,17 @@
 import { IBaseController, HttpResponse, HttpRequest } from '@useCases/common';
 import type { components } from '@src/gen/server';
-import { LoginUserUseCase } from './loginUserUseCase';
+import { ILoginUserUseCase } from './loginUserUseCase';
 import { UserNotFoundError, InvalidCredentialsError } from '@domain/error';
-import { UserMapper } from '@mappers/userMapper';
 import { ILoginUserRequest } from './loginUserRequest';
+import { UserMapper } from '@mappers/userMapper';
 
-type Response = HttpResponse<undefined, components['schemas']['LoginResponseBody']>;
+type ResponseDto = components['schemas']['LoginResponseBody'];
+type Response = HttpResponse<undefined, ResponseDto>;
 
 export class LoginUserController extends IBaseController<HttpRequest, Response> {
-  private readonly loginUserUseCase: LoginUserUseCase;
+  private readonly loginUserUseCase: ILoginUserUseCase;
 
-  constructor(loginUserUseCase: LoginUserUseCase) {
+  constructor(loginUserUseCase: ILoginUserUseCase) {
     super();
     this.loginUserUseCase = loginUserUseCase;
   }
@@ -33,8 +34,8 @@ export class LoginUserController extends IBaseController<HttpRequest, Response> 
       return this.badRequest(error.message);
     }
 
-    const responseBody = UserMapper.domainToLoginDto(result.unwrap());
+    const response = UserMapper.toResponseDto(result.unwrap());
 
-    return this.ok(responseBody);
+    return this.ok<ResponseDto>(response);
   }
 }
