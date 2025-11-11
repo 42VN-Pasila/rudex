@@ -4,7 +4,7 @@ export class ValidateUser {
     { regex: /^[a-zA-Z0-9_.-]+$/, error: 'Username can only contains letters, numbers, or [_.-]' }
   ];
 
-  public static validateUsername(username: string): string | null {
+  static  validateUsername(username: string): string | null {
     const error = this.usernameRules
       .filter((rule) => !rule.regex.test(username))
       .map((rule) => rule.error);
@@ -19,7 +19,7 @@ export class ValidateUser {
     }
   ];
 
-  public static validateEmail(email: string): string | null {
+   static validateEmail(email: string): string | null {
     const error = this.emailRules
       .filter((rule) => !rule.regex.test(email))
       .map((rule) => rule.error);
@@ -35,7 +35,7 @@ export class ValidateUser {
     { regex: /^[^\s'"\\;]+$/, error: 'Password cannot contain quotes, backflash or whitespace' }
   ];
 
-  public static validatePassword(password: string): string | null {
+   static validatePassword(password: string): string | null {
     const error = this.passwordRules
       .filter((rule) => !rule.regex.test(password))
       .map((rule) => rule.error);
