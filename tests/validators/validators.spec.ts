@@ -78,7 +78,7 @@ describe('ValidateUser', () => {
         ValidateUser.validatePassword(password);
         throw new Error('Expected to be failed');
       } catch (err) {
-        if (!(err instanceof ValidateEmailError)) throw new Error('Wrong type error');
+        if (!(err instanceof ValidatePasswordError)) throw new Error('Wrong type error');
         expect(err.message).toBe('Password length must be 8-16');
       }
     });
