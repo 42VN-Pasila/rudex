@@ -1,31 +1,31 @@
 import { BaseError } from './baseError';
 
-export enum ValidatorError {
+export enum ValidateError {
   InvalidUsernameError = 'InvalidUsernameError',
   InvalidEmailError = 'InvalidEmailError',
   InvaildPassWordError = 'InvaildPassWordError'
 }
 
-export class ValidatorUsernameError extends BaseError {
-  type!: ValidatorError.InvalidUsernameError;
+export class ValidateUsernameError extends BaseError {
+  type!: ValidateError.InvalidUsernameError;
 
-  static create(error: string): ValidatorUsernameError {
-    return new this(ValidatorError.InvalidUsernameError, error);
+  static create(error: string): ValidateUsernameError {
+    return new this(ValidateError.InvalidUsernameError, error);
   }
 }
 
-export class ValidatorEmailError extends BaseError {
-  type!: ValidatorError.InvalidEmailError;
+export class ValidateEmailError extends BaseError {
+  type!: ValidateError.InvalidEmailError;
 
-  static create(error: string): ValidatorEmailError {
-    return new this(ValidatorError.InvalidEmailError, error);
+  static create(error: string): ValidateEmailError {
+    return new this(ValidateError.InvalidEmailError, error);
   }
 }
 
-export class ValidatorPasswordError extends BaseError {
-  type!: ValidatorError.InvaildPassWordError;
+export class ValidatePasswordError extends BaseError {
+  type!: ValidateError.InvaildPassWordError;
 
-  static create(error: string): ValidatorPasswordError {
-    return new this(ValidatorError.InvaildPassWordError, error);
+  static create(error: string): ValidatePasswordError {
+    return new this(ValidateError.InvaildPassWordError, error);
   }
 }
