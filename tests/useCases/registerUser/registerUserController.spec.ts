@@ -10,6 +10,20 @@ describe('RegisterUserController', () => {
   const useCase = mockUseCase<IRegisterUserRequest, IResponse>();
   const controller = new RegisterUserController(useCase);
 
+  const createRequest = (user = createMockUser()) => ({
+    body: {
+      username: user.username,
+      password: user.password,
+      email: user.email
+    }
+  });
+
+  const expectedUsedParam = (request: any) => ({
+    username: request.body.username,
+    password: request.body.password,
+    email: request.body.email
+  });
+
   beforeEach(async () => {
     jest.resetAllMocks();
   });
@@ -17,9 +31,7 @@ describe('RegisterUserController', () => {
   it('returns 201 and succesful register', async () => {
     const user = createMockUser();
 
-    const request = {
-      body: { username: user.username, password: user.password, email: user.email }
-    } as const;
+    const request = createRequest(user);
 
     const useCaseResponse = {
       rudexUserId: user.id
@@ -31,19 +43,11 @@ describe('RegisterUserController', () => {
 
     expect(result.statusCode).toEqual(201);
     expect(result.data).toEqual(useCaseResponse);
-    expect(useCase.execute).toHaveBeenNthCalledWith(1, {
-      username: request.body.username,
-      password: request.body.password,
-      email: request.body.email
-    });
+    expect(useCase.execute).toHaveBeenNthCalledWith(1, expectedUsedParam(request));
   });
 
   it('returns 409 and existed username error', async () => {
-    const user = createMockUser();
-
-    const request = {
-      body: { username: user.username, password: user.password, email: user.email }
-    } as const;
+    const request = createRequest();
 
     const error = ExistedUsernameError.create();
 
@@ -53,19 +57,11 @@ describe('RegisterUserController', () => {
 
     expect(result.statusCode).toEqual(409);
     expect(result.data).toEqual({ type: 'Conflict', message: error.message, info: {} });
-    expect(useCase.execute).toHaveBeenNthCalledWith(1, {
-      username: request.body.username,
-      password: request.body.password,
-      email: request.body.email
-    });
+    expect(useCase.execute).toHaveBeenNthCalledWith(1, expectedUsedParam(request));
   });
 
   it('returns 409 and existed email error', async () => {
-    const user = createMockUser();
-
-    const request = {
-      body: { username: user.username, password: user.password, email: user.email }
-    } as const;
+    const request = createRequest();
 
     const error = ExistedEmailError.create();
 
@@ -75,10 +71,6 @@ describe('RegisterUserController', () => {
 
     expect(result.statusCode).toEqual(409);
     expect(result.data).toEqual({ type: 'Conflict', message: error.message, info: {} });
-    expect(useCase.execute).toHaveBeenNthCalledWith(1, {
-      username: request.body.username,
-      password: request.body.password,
-      email: request.body.email
-    });
+    expect(useCase.execute).toHaveBeenNthCalledWith(1, expectedUsedParam(request));
   });
 });
