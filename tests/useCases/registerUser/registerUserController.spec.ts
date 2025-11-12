@@ -52,7 +52,7 @@ describe('RegisterUserController', () => {
     const result = await controller.execute(request);
 
     expect(result.statusCode).toEqual(409);
-    expect(result.data).toEqual({ message: error.message });
+    expect(result.data).toEqual({ type: 'Conflict', message: error.message, info: {} });
     expect(useCase.execute).toHaveBeenNthCalledWith(1, {
       username: request.body.username,
       password: request.body.password,
@@ -74,7 +74,7 @@ describe('RegisterUserController', () => {
     const result = await controller.execute(request);
 
     expect(result.statusCode).toEqual(409);
-    expect(result.data).toEqual({ message: error.message });
+    expect(result.data).toEqual({ type: 'Conflict', message: error.message, info: {} });
     expect(useCase.execute).toHaveBeenNthCalledWith(1, {
       username: request.body.username,
       password: request.body.password,
