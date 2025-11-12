@@ -34,6 +34,6 @@ export class RegisterUserController extends IBaseController<HttpRequest, Respons
 
     const responseBody = result.unwrap();
 
-    return this.ok<okResponse>(responseBody);
+    return this.created<okResponse>(responseBody);
   }
 }

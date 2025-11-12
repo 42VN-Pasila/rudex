@@ -8,6 +8,7 @@ export class UserMapper {
       id: u.id,
       username: u.username,
       password: u.password ?? undefined,
+      email: u.email,
       googleUserId: u.googleUserId ?? undefined,
       googleUserName: u.googleUserName ?? undefined,
       accessToken: u.accessToken ?? undefined,
