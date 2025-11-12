@@ -13,7 +13,7 @@ describe('RegisterUserController', () => {
     jest.resetAllMocks();
   });
 
-  it('returns 200 and succesful register', async () => {
+  it('returns 201 and succesful register', async () => {
     const user = createMockUser();
 
     const request = {
@@ -24,15 +24,20 @@ describe('RegisterUserController', () => {
       rudexUserId: user.id
     };
 
-    const expectedHttpResponse = {
-      ...useCaseResponse
-    };
-
     useCase.execute.mockReturnValueOnce(ok(useCaseResponse));
 
     const result = await controller.execute(request);
 
-    expect(result.statusCode).toEqual(200);
-    expect(result.data).toEqual(expectedHttpResponse);
+    expect(result.statusCode).toEqual(201);
+    expect(result.data).toEqual(useCaseResponse);
+    expect(useCase.execute).toHaveBeenCalledWith(1, {
+      username: request.body.username,
+      password: request.body.password,
+      email: request.body.email
+    });
+  });
+
+  it('returns 409 and existed username error', async () => {
+    
   });
 });
