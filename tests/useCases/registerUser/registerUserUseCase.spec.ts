@@ -10,17 +10,17 @@ describe('RegisterUserUseCase', () => {
   const makeUseCase = () => new RegisterUserUseCase(userRepo);
 
   beforeEach(() => {
-   jest.resetAllMocks();
+    jest.resetAllMocks();
   });
-  
+
   it('returns ExistedUsernameError when username already exists', async () => {
     const dbUser = {
       username: generateString(),
       password: generatePassword(),
       email: generateEmail()
     };
-    (userRepo.checkExistsByUsername as jest.Mock).mockResolvedValue(true);
-    
+    jest.mocked(userRepo.checkExistsByUsername).mockResolvedValue(true);
+
     const useCase = makeUseCase();
     const result = await useCase.execute({
       username: dbUser.username,

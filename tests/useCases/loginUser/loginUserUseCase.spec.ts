@@ -13,7 +13,7 @@ describe('LoginUserUseCase', () => {
   });
 
   it('returns UserNotFoundError when user does not exist', async () => {
-    (userRepo.checkExistsByUsername as jest.Mock).mockResolvedValue(null);
+    userRepo.checkExistsByUsername.mockResolvedValue(null);
 
     const usecase = makeUseCase();
 
@@ -31,7 +31,7 @@ describe('LoginUserUseCase', () => {
       username: generateString(),
       password: hashPassword(generateString())
     };
-    (userRepo.checkExistsByUsername as jest.Mock).mockResolvedValue(dbUser);
+    userRepo.checkExistsByUsername.mockResolvedValue(dbUser);
 
     const usecase = makeUseCase();
 
