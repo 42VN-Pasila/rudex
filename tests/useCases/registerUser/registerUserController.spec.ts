@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 import { ExistedEmailError, ExistedUsernameError } from '@domain/error';
 import { mockUseCase } from '@mock/useCase';
 import { createMockUser } from '@mock/user';
