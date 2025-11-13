@@ -17,8 +17,8 @@ describe('RegisterUserController', () => {
       email: user.email
     }
   });
-
-  const expectedUsedParam = (request: { body: { username: string; password: string; email: string } }) => ({
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const expectedUsedParam = (request: any) => ({
     username: request.body.username,
     password: request.body.password,
     email: request.body.email
