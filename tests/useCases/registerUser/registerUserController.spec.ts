@@ -1,4 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 import { ExistedEmailError, ExistedUsernameError } from '@domain/error';
 import { mockUseCase } from '@mock/useCase';
 import { createMockUser } from '@mock/user';
@@ -19,7 +18,7 @@ describe('RegisterUserController', () => {
     }
   });
 
-  const expectedUsedParam = (request: any) => ({
+  const expectedUsedParam = (request: { body: { username: string; password: string; email: string } }) => ({
     username: request.body.username,
     password: request.body.password,
     email: request.body.email
