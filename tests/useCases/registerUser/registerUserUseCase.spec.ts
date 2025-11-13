@@ -19,7 +19,8 @@ describe('RegisterUserUseCase', () => {
       password: generatePassword(),
       email: generateEmail()
     };
-    (userRepo.checkExistsByUsername as jest.Mock).mockResolvedValue(true);
+
+    jest.mocked(userRepo.checkExistsByUsername).mockResolvedValue(true);
     
     const useCase = makeUseCase();
     const result = await useCase.execute({
@@ -39,8 +40,8 @@ describe('RegisterUserUseCase', () => {
       password: generatePassword(),
       email: generateEmail()
     };
-    (userRepo.checkExistsByUsername as jest.Mock).mockResolvedValue(false);
-    (userRepo.checkExistsByEmail as jest.Mock).mockResolvedValue(true);
+    jest.mocked(userRepo.checkExistsByUsername).mockResolvedValue(false);
+    jest.mocked(userRepo.checkExistsByEmail).mockResolvedValue(true);
 
     const useCase = makeUseCase();
     const result = await useCase.execute({
@@ -59,7 +60,7 @@ describe('RegisterUserUseCase', () => {
     (userRepo.checkExistsByEmail as jest.Mock).mockResolvedValue(false);
 
     const newUser = createMockUser();
-    (userRepo.save as jest.Mock).mockResolvedValue(newUser);
+    jest.mocked(userRepo.save).mockResolvedValue(newUser);
 
     const useCase = makeUseCase();
     const result = await useCase.execute({
