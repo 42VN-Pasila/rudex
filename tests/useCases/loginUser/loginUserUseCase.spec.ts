@@ -1,7 +1,7 @@
 import { mockUserRepo } from '@mock/repos';
 import { LoginUserUseCase } from '@useCases/loginUser/loginUserUseCase';
 import { UserNotFoundError, InvalidCredentialsError } from '@domain/error';
-import { generateString, generateUUID, hashPassword } from '@tests/factories';
+import { generatePassword, generateString, generateUUID } from '@tests/factories';
 
 describe('LoginUserUseCase', () => {
   const userRepo = mockUserRepo();
@@ -29,7 +29,7 @@ describe('LoginUserUseCase', () => {
     const dbUser = {
       id: generateUUID(),
       username: generateString(),
-      password: hashPassword(generateString())
+      password: generatePassword()
     };
     userRepo.checkExistsByUsername.mockResolvedValue(dbUser);
 
@@ -37,7 +37,7 @@ describe('LoginUserUseCase', () => {
 
     const result = await usecase.execute({
       username: dbUser.username,
-      password: hashPassword(generateString())
+      password: generatePassword()
     });
 
     expect(result.isErr()).toBe(true);
@@ -49,7 +49,7 @@ describe('LoginUserUseCase', () => {
     const dbUser = {
       id: generateUUID(),
       username: generateString(),
-      password: hashPassword(generateString())
+      password: generatePassword()
     };
     userRepo.checkExistsByUsername.mockResolvedValue(dbUser);
 

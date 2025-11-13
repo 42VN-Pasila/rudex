@@ -19,7 +19,8 @@ describe('RegisterUserUseCase', () => {
       password: generatePassword(),
       email: generateEmail()
     };
-    jest.mocked(userRepo.checkExistsByUsername).mockResolvedValue(true);
+
+    userRepo.checkExistsByUsername.mockResolvedValue(true);
 
     const useCase = makeUseCase();
     const result = await useCase.execute({
@@ -39,8 +40,8 @@ describe('RegisterUserUseCase', () => {
       password: generatePassword(),
       email: generateEmail()
     };
-    (userRepo.checkExistsByUsername as jest.Mock).mockResolvedValue(false);
-    (userRepo.checkExistsByEmail as jest.Mock).mockResolvedValue(true);
+    userRepo.checkExistsByUsername.mockResolvedValue(false);
+    userRepo.checkExistsByEmail.mockResolvedValue(true);
 
     const useCase = makeUseCase();
     const result = await useCase.execute({
@@ -55,11 +56,11 @@ describe('RegisterUserUseCase', () => {
   });
 
   it('returns Ok with new user when registration succeeds', async () => {
-    (userRepo.checkExistsByUsername as jest.Mock).mockResolvedValue(false);
-    (userRepo.checkExistsByEmail as jest.Mock).mockResolvedValue(false);
+    userRepo.checkExistsByUsername.mockResolvedValue(false);
+    userRepo.checkExistsByEmail.mockResolvedValue(false);
 
     const newUser = createMockUser();
-    (userRepo.save as jest.Mock).mockResolvedValue(newUser);
+    userRepo.save.mockResolvedValue(newUser);
 
     const useCase = makeUseCase();
     const result = await useCase.execute({
@@ -71,10 +72,8 @@ describe('RegisterUserUseCase', () => {
     expect(result.isOk()).toBe(true);
     const payload = result.unwrap();
 
-    expect(payload).toEqual(
-      expect.objectContaining({
-        rudexUserId: newUser.id
-      })
-    );
+    expect(payload).toEqual({
+      rudexUserId: newUser.id
+    });
   });
 });
