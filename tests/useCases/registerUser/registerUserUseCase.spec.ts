@@ -1,7 +1,7 @@
 import { mockUserRepo } from '@mock/repos';
 import { RegisterUserUseCase } from '@useCases/registerUser/registerUserUseCase';
 import { ExistedEmailError, ExistedUsernameError } from '@domain/error';
-import { generateString, generateEmail, hashPassword } from '@tests/factories';
+import { generateString, generateEmail, generatePassword } from '@tests/factories';
 import { beforeEach } from 'node:test';
 import { createMockUser } from '@mock/user';
 
@@ -16,7 +16,7 @@ describe('RegisterUserUseCase', () => {
   it('returns ExistedUsernameError when username already exists', async () => {
     const dbUser = {
       username: generateString(),
-      password: hashPassword(generateString()),
+      password: generatePassword(),
       email: generateEmail()
     };
     (userRepo.checkExistsByUsername as jest.Mock).mockResolvedValue(true);
@@ -24,7 +24,7 @@ describe('RegisterUserUseCase', () => {
     const useCase = makeUseCase();
     const result = await useCase.execute({
       username: dbUser.username,
-      password: hashPassword(generateString()),
+      password: generatePassword(),
       email: generateEmail()
     });
 
@@ -36,7 +36,7 @@ describe('RegisterUserUseCase', () => {
   it('returns ExistedEmailError when email already exists', async () => {
     const dbUser = {
       username: generateString(),
-      password: hashPassword(generateString()),
+      password: generatePassword(),
       email: generateEmail()
     };
     (userRepo.checkExistsByUsername as jest.Mock).mockResolvedValue(false);
@@ -45,7 +45,7 @@ describe('RegisterUserUseCase', () => {
     const useCase = makeUseCase();
     const result = await useCase.execute({
       username: generateString(),
-      password: hashPassword(generateString()),
+      password: generatePassword(),
       email: dbUser.email
     });
 
