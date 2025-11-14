@@ -19,26 +19,6 @@ export function generateEmail(): string {
 }
 
 /**
- * Hash a password using PBKDF2 (native, salted)
- */
-export function hashPassword(
-  password: string,
-  salt = crypto.randomBytes(16).toString('hex')
-): string {
-  const hash = crypto.pbkdf2Sync(password, salt, 310000, 32, 'sha256').toString('hex');
-  return `${salt}:${hash}`;
-}
-
-/**
- * Verify password against stored hash
- */
-export function verifyPassword(password: string, stored: string): boolean {
-  const [salt, originalHash] = stored.split(':');
-  const hash = crypto.pbkdf2Sync(password, salt, 310000, 32, 'sha256').toString('hex');
-  return crypto.timingSafeEqual(Buffer.from(hash, 'hex'), Buffer.from(originalHash, 'hex'));
-}
-
-/**
  * Generate a minimal JWT
  * @param payload object to encode
  * @param secret HMAC secret

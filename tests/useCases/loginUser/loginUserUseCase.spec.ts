@@ -1,7 +1,7 @@
 import { mockUserRepo } from '@mock/repos';
 import { LoginUserUseCase } from '@useCases/loginUser/loginUserUseCase';
 import { UserNotFoundError, InvalidCredentialsError } from '@domain/error';
-import { generateString, generateUUID, hashPassword } from '@tests/factories';
+import { generatePassword, generateString, generateUUID } from '@tests/factories';
 
 describe('LoginUserUseCase', () => {
   const userRepo = mockUserRepo();
@@ -13,7 +13,7 @@ describe('LoginUserUseCase', () => {
   });
 
   it('returns UserNotFoundError when user does not exist', async () => {
-    (userRepo.checkExistsByUsername as jest.Mock).mockResolvedValue(null);
+    userRepo.checkExistsByUsername.mockResolvedValue(null);
 
     const usecase = makeUseCase();
 
@@ -29,15 +29,15 @@ describe('LoginUserUseCase', () => {
     const dbUser = {
       id: generateUUID(),
       username: generateString(),
-      password: hashPassword(generateString())
+      password: generatePassword()
     };
-    (userRepo.checkExistsByUsername as jest.Mock).mockResolvedValue(dbUser);
+    userRepo.checkExistsByUsername.mockResolvedValue(dbUser);
 
     const usecase = makeUseCase();
 
     const result = await usecase.execute({
       username: dbUser.username,
-      password: hashPassword(generateString())
+      password: generatePassword()
     });
 
     expect(result.isErr()).toBe(true);
@@ -49,7 +49,7 @@ describe('LoginUserUseCase', () => {
     const dbUser = {
       id: generateUUID(),
       username: generateString(),
-      password: hashPassword(generateString())
+      password: generatePassword()
     };
     userRepo.checkExistsByUsername.mockResolvedValue(dbUser);
 
