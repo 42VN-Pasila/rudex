@@ -13,11 +13,52 @@ const app = fastify({
   keepAliveTimeout: 72000
 });
 
-app.register(async function (fastify) {
-  await fastify.register(fastifyCors, {
-    origin: configuration.service.currentEnvironment.isDevelopment ? true : [configuration.baseUrl],
-    credentials: true
+app.addHook('onRequest', (request, _reply, done) => {
+  logger.info('incoming request', {
+    method: request.method,
+    url: request.url,
+    id: request.id,
+    body: request.body
   });
+  done();
+});
+
+app.addHook('onSend', (request, reply, payload, done) => {
+  let body: unknown = payload;
+
+  if (Buffer.isBuffer(payload)) {
+    body = payload.toString('utf8');
+  } else if (typeof payload === 'string') {
+    body = payload.startsWith('{') || payload.startsWith('[') ? JSON.parse(payload) : payload;
+  }
+
+  const serialized = typeof body === 'string' ? body : JSON.stringify(body);
+  const MAX = 2000;
+  const output = serialized.length > MAX ? serialized.slice(0, MAX) + '...<truncated>' : body;
+
+  logger.info('response body', {
+    method: request.method,
+    url: request.url,
+    id: request.id,
+    statusCode: reply.statusCode,
+    body: output
+  });
+  done();
+});
+
+app.register(fastifyCors, {
+  origin: (origin, cb) => {
+    if (configuration.service.currentEnvironment.isDevelopment) return cb(null, true);
+    if (!origin) return cb(null, false);
+    const whitelist = [configuration.baseUrl];
+    if (whitelist.includes(origin)) return cb(null, true);
+    return cb(new Error('Not allowed by CORS'), false);
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'x-request-id'],
+  exposedHeaders: ['Content-Length', 'X-Request-Id'],
+  credentials: true,
+  maxAge: 86400
 });
 
 app.setErrorHandler(async (error, request, reply) => {
