@@ -13,6 +13,13 @@ const app = fastify({
   keepAliveTimeout: 72000
 });
 
+app.register(async function (fastify) {
+  await fastify.register(fastifyCors, {
+    origin: configuration.service.currentEnvironment.isDevelopment ? true : [configuration.baseUrl],
+    credentials: true
+  });
+});
+
 app.setErrorHandler(async (error, request, reply) => {
   const statusCode = error.statusCode || 500;
 
@@ -33,12 +40,7 @@ app.setErrorHandler(async (error, request, reply) => {
     path: request.url
   });
 });
-app.register(async function (fastify) {
-  await fastify.register(fastifyCors, {
-    origin: configuration.service.currentEnvironment.isDevelopment ? true : [configuration.baseUrl],
-    credentials: true
-  });
-});
+
 app.register(router);
 
 export default app;
