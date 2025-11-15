@@ -19,12 +19,6 @@ const loggerConfig: pino.LoggerOptions = {
     }
   }),
 
-  base: {
-    service: configuration.service.name,
-    version: configuration.service.appVersion,
-    environment: configuration.service.currentEnvironment.get
-  },
-
   serializers: {
     req: pino.stdSerializers.req,
     res: pino.stdSerializers.res,
