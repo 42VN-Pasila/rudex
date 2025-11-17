@@ -3,7 +3,6 @@ import { configuration } from './config';
 import logger from './logger';
 import fastifyCors from '@fastify/cors';
 import router from './routes/router';
-import { redactBody } from './utils/redact';
 
 const app = fastify({
   trustProxy: true,
@@ -31,7 +30,7 @@ app.addHook('preHandler', (request, _reply, done) => {
     method: request.method,
     url: request.url,
     id: request.id,
-    body: redactBody(request.body)
+    body: request.body
   });
   done();
 });
