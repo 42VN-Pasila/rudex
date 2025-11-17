@@ -13,6 +13,9 @@ export const configuration = {
   host: getValueFromEnv('HOST', '127.0.0.1'),
   database: {
     url: getValueFromEnv('DATABASE_URL')
+  },
+  frontend: {
+    url: getValueFromEnv('FRONTEND_URL')
   }
 };
 

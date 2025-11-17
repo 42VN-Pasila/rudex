@@ -3,6 +3,7 @@ import { configuration } from './config';
 import logger from './logger';
 import fastifyCors from '@fastify/cors';
 import router from './routes/router';
+import { redactBody } from './utils/redact';
 
 const app = fastify({
   trustProxy: true,
@@ -13,52 +14,37 @@ const app = fastify({
   keepAliveTimeout: 72000
 });
 
-app.addHook('onRequest', (request, _reply, done) => {
-  logger.info('incoming request', {
+app.register(fastifyCors, {
+  hook: 'preHandler',
+  delegator: (req, callback) => {
+    if (configuration.service.currentEnvironment.isDevelopment) {
+      return callback(null, { origin: true });
+    }
+    callback(null, {
+      origin: [configuration.baseUrl]
+    });
+  }
+});
+
+app.addHook('preHandler', (request, _reply, done) => {
+  logger.info('Incoming request', {
     method: request.method,
     url: request.url,
     id: request.id,
-    body: request.body
+    body: redactBody(request.body)
   });
   done();
 });
 
 app.addHook('onSend', (request, reply, payload, done) => {
-  let body: unknown = payload;
-
-  if (Buffer.isBuffer(payload)) {
-    body = payload.toString('utf8');
-  } else if (typeof payload === 'string') {
-    body = payload.startsWith('{') || payload.startsWith('[') ? JSON.parse(payload) : payload;
-  }
-
-  const serialized = typeof body === 'string' ? body : JSON.stringify(body);
-  const MAX = 2000;
-  const output = serialized.length > MAX ? serialized.slice(0, MAX) + '...<truncated>' : body;
-
-  logger.info('response body', {
+  logger.info('Outgoing response body', {
     method: request.method,
     url: request.url,
     id: request.id,
     statusCode: reply.statusCode,
-    body: output
+    body: typeof payload === 'string' ? JSON.parse(payload) : payload
   });
   done();
-});
-
-app.register(fastifyCors, {
-  origin: (origin, cb) => {
-    if (configuration.service.currentEnvironment.isDevelopment) return cb(null, true);
-    if (!origin) return cb(null, false);
-    const whitelist = [configuration.baseUrl];
-    if (whitelist.includes(origin)) return cb(null, true);
-    return cb(new Error('Not allowed by CORS'), false);
-  },
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'x-request-id'],
-  exposedHeaders: ['Content-Length', 'X-Request-Id'],
-  credentials: true,
-  maxAge: 86400
 });
 
 app.setErrorHandler(async (error, request, reply) => {
