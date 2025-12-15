@@ -42,7 +42,7 @@ describe('RegisterUserController', () => {
   });
 
   it('returns 409 and existed username error', async () => {
-    const user = createMockUser({ username: 'existingUser' });
+    //const user = createMockUser({ username: 'existingUser' });
     const request = {
       body: {
         username: 'existingUser',
@@ -67,7 +67,7 @@ describe('RegisterUserController', () => {
   });
 
   it('returns 409 and existed email error', async () => {
-    const user = createMockUser({ email: 'existing@example.com' });
+    //const user = createMockUser({ email: 'existing@example.com' });
     const request = {
       body: {
         username: user.username,
