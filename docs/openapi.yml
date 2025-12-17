@@ -39,12 +39,12 @@ paths:
         "500":
           $ref: "#/components/responses/APIErrorResponse"
 
-  /resgister:
+  /register:
     post:
-      summary: Resgister an user
+      summary: Register an user
       description: >
         Create a new user with provided input.
-      tags: 
+      tags:
         - User registration
       requestBody:
         required: true
@@ -68,7 +68,7 @@ paths:
 
 components:
   parameters:
-    rudexUserId:
+    rudexUserIdQuery:
       name: rudexUserId
       in: query
       description: Unique ID of a Rudex user (optional)
@@ -138,8 +138,8 @@ components:
       required:
         - rudexUserId
       properties:
-        rudexUserId: 
-           $ref: "#/components/schemas/rudexUserId"
+        rudexUserId:
+          $ref: "#/components/schemas/rudexUserId"
 
   responses:
     APIErrorResponse:
