@@ -19,10 +19,10 @@ export class DatabaseConnectionError extends BaseError {
 export class DatabaseOperationError extends BaseError {
   type!: DatabaseErrors.DatabaseOperationError;
 
-  public static create(operation: string): DatabaseOperationError {
+  public static create(operation: string, detail?: unknown): DatabaseOperationError {
     return new this(
       DatabaseErrors.DatabaseOperationError,
-      `Database operation failed: ${operation}`
+      `Database operation failed: ${operation}`, {detail}
     );
   }
 }
