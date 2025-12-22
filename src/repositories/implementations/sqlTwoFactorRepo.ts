@@ -24,7 +24,7 @@ export class SQLTwoFactorRepo implements ITwoFactorRepo {
 
       return user?.twoFactorKey || null;
     } catch (error) {
-      return TwoFactorErrorHandler(error, 'Get Two Factor Key', userId);
+      throw TwoFactorErrorHandler(error, 'Get Two Factor Key', userId);
     }
   }
 
@@ -47,7 +47,7 @@ export class SQLTwoFactorRepo implements ITwoFactorRepo {
       });
       return user?.twoFactorEnabled || false;
     } catch (error) {
-      return TwoFactorErrorHandler(error, 'Is Two Factor Enabled', userId);
+      throw TwoFactorErrorHandler(error, 'Is Two Factor Enabled', userId);
     }
   }
 }
