@@ -25,4 +25,4 @@ export class DatabaseOperationError extends BaseError {
       `Database operation failed: ${operation}`, {detail}
     );
   }
-}
+} 
