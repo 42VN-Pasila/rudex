@@ -4,27 +4,27 @@ import { ITwoFactorRepo } from '@repository/interfaces/twoFactorRepo';
 import sql from '@src/db/prisma';
 
 export class SQLTwoFactorRepo implements ITwoFactorRepo {
-  async saveTwoFactorKey(userId: string, key: string): Promise<void> {
+  async saveTwoFactorSecret(userId: string, Secret: string): Promise<void> {
     try {
       await sql.user.update({
         where: { id: userId },
-        data: { twoFactorKey: key }
+        data: { twoFactorSecret: Secret }
       });
     } catch (error) {
-      TwoFactorErrorHandler(error, 'Save Two Factor Key', userId);
+      TwoFactorErrorHandler(error, 'Save Two Factor Secret', userId);
     }
   }
 
-  async getTwoFactorKey(userId: string): Promise<string | null> {
+  async getTwoFactorSecret(userId: string): Promise<string | null> {
     try {
       const user = await sql.user.findUnique({
         where: { id: userId },
-        select: { twoFactorKey: true }
+        select: { twoFactorSecret: true }
       });
 
-      return user?.twoFactorKey || null;
+      return user?.twoFactorSecret || null;
     } catch (error) {
-      throw TwoFactorErrorHandler(error, 'Get Two Factor Key', userId);
+      throw TwoFactorErrorHandler(error, 'Get Two Factor Secret', userId);
     }
   }
 

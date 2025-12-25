@@ -23,6 +23,6 @@ model User {
   refreshToken           String?   @map("refresh_token")
   createdAt              DateTime  @map("created_at")
   updatedAt              DateTime  @map("updated_at")
-  twoFactorKey           String?   @map("two_factor_key")
+  twoFactorSecret        String?   @map("two_factor_secret")
   twoFactorEnabled       Boolean   @default(false) @map("two_factor_enabled")
 }
