@@ -66,6 +66,33 @@ paths:
         "500":
           $ref: "#/components/responses/APIErrorResponse"
 
+  /2fa/setup:
+    post:
+      summary: Setup Two-Factor Authentication
+      description: >
+        Generate a secret and QR code for setting up 2FA.
+        User needs to scan the QR code with Google Authenticator app to enable 2FA.
+      tag: -Two-Factor Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SetUpTwoFactorRequestBody"
+      responses:
+        "201":
+          description: Sucessfully enabling 2FA
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SetUpTwoFactorResponseBody"
+      "400":
+        $ref: "#/components/responses/APIErrorResponse"
+      "409":
+        $ref: "#/components/responses/APIErrorResponse"
+      "500":
+        $ref: "#/components/responses/APIErrorResponse"
+
 components:
   parameters:
     rudexUserId:
@@ -140,6 +167,35 @@ components:
       properties:
         rudexUserId:
           $ref: "#/components/schemas/rudexUserId"
+
+    SetUpTwoFactorRequestBody:
+      type: object
+      additionalProperties: false
+      required:
+        - userId
+        - userEmail
+      properties:
+        userId:
+          type: string
+          description: User ID
+        userEmail:
+          type: string
+          format: email
+          description: User email for 2FA setting up
+
+      SetUpTwoFactorResponseBody:
+        type: object
+        additionalProperties: false
+        required:
+          - secret
+          - qrCode
+        properties:
+          secret:
+            type: string
+            description: Base42 encoded secret key
+          qrCode:
+            type: string
+            description: Base64 encoded QR code image (data URL)
 
   responses:
     APIErrorResponse:
