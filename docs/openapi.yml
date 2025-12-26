@@ -72,7 +72,8 @@ paths:
       description: >
         Generate a secret and QR code for setting up 2FA.
         User needs to scan the QR code with Google Authenticator app to enable 2FA.
-      tag: -Two-Factor Authentication
+      tags: 
+        -Two-Factor Authentication
       requestBody:
         required: true
         content:
@@ -86,12 +87,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/SetUpTwoFactorResponseBody"
-      "400":
-        $ref: "#/components/responses/APIErrorResponse"
-      "409":
-        $ref: "#/components/responses/APIErrorResponse"
-      "500":
-        $ref: "#/components/responses/APIErrorResponse"
+        "400":
+          $ref: "#/components/responses/APIErrorResponse"
+        "409":
+          $ref: "#/components/responses/APIErrorResponse"
+        "500":
+          $ref: "#/components/responses/APIErrorResponse"
 
 components:
   parameters:
@@ -183,19 +184,19 @@ components:
           format: email
           description: User email for 2FA setting up
 
-      SetUpTwoFactorResponseBody:
-        type: object
-        additionalProperties: false
-        required:
-          - secret
-          - qrCode
-        properties:
-          secret:
-            type: string
-            description: Base42 encoded secret key
-          qrCode:
-            type: string
-            description: Base64 encoded QR code image (data URL)
+    SetUpTwoFactorResponseBody:
+      type: object
+      additionalProperties: false
+      required:
+        - secret
+        - qrCode
+      properties:
+        secret:
+          type: string
+          description: Base42 encoded secret key
+        qrCode:
+          type: string
+          description: Base64 encoded QR code image (data URL)
 
   responses:
     APIErrorResponse:
