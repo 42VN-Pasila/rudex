@@ -11,7 +11,7 @@ export class SQLTwoFactorRepo implements ITwoFactorRepo {
         data: { twoFactorSecret: Secret }
       });
     } catch (error) {
-      TwoFactorErrorHandler(error, 'Save Two Factor Secret', userId);
+      return TwoFactorErrorHandler(error, 'Save Two Factor Secret', userId);
     }
   }
 
@@ -24,7 +24,7 @@ export class SQLTwoFactorRepo implements ITwoFactorRepo {
 
       return user?.twoFactorSecret || null;
     } catch (error) {
-      throw TwoFactorErrorHandler(error, 'Get Two Factor Secret', userId);
+      return TwoFactorErrorHandler(error, 'Get Two Factor Secret', userId);
     }
   }
 
@@ -35,7 +35,7 @@ export class SQLTwoFactorRepo implements ITwoFactorRepo {
         data: { twoFactorEnabled: true }
       });
     } catch (error) {
-      TwoFactorErrorHandler(error, 'Set Two Factor Enabled', userId);
+      return TwoFactorErrorHandler(error, 'Set Two Factor Enabled', userId);
     }
   }
 
@@ -47,7 +47,7 @@ export class SQLTwoFactorRepo implements ITwoFactorRepo {
       });
       return user?.twoFactorEnabled || false;
     } catch (error) {
-      throw TwoFactorErrorHandler(error, 'Is Two Factor Enabled', userId);
+      return TwoFactorErrorHandler(error, 'Is Two Factor Enabled', userId);
     }
   }
 }

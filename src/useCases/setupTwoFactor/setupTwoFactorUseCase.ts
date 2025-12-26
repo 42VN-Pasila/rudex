@@ -31,7 +31,6 @@ export class SetUpTwoFactorUseCase implements ISetUpTwoFactorUseCase {
 
     try {
       const secret = this.totpService.generateSecret(userEmail);
-      if (!secret) throw new Error('Generating secret failed');
 
       await this.twoFactorRepo.saveTwoFactorSecret(userId, secret.base32);
 
