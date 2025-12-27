@@ -39,6 +39,34 @@ paths:
         "500":
           $ref: "#/components/responses/APIErrorResponse"
 
+  /login/google:
+    post:
+      summary: Login with Google and return authentication tokens
+      description: >
+        Authenticates a user using a Google ID token (credential) from Google Identity Services,
+        returning a short-lived access token and a refresh token.
+      tags:
+        - User login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GoogleLoginRequestBody"
+      responses:
+        "200":
+          description: Successful login response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GoogleLoginRequestBody"
+        "400":
+          $ref: "#/components/responses/APIErrorResponse"
+        "401":
+          $ref: "#/components/responses/APIErrorResponse"
+        "500":
+          $ref: "#/components/responses/APIErrorResponse"
+
   /register:
     post:
       summary: Register a user
@@ -95,6 +123,16 @@ components:
           format: password
         googleUserId:
           type: string
+
+    GoogleLoginRequestBody:
+      type: object
+      additionalProperties: false
+      required:
+        - credential
+      properties:
+        credential:
+          type: string
+          description: Google ID token (JWT) returned by Google Identity Services.
 
     LoginResponseBody:
       type: object
