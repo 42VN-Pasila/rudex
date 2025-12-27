@@ -80,8 +80,10 @@ export class LoginGoogleUserUseCase implements ILoginGoogleUserUseCase {
     const accessTokenExpiryDate = new Date(Date.now() + JWT_ACCESS_TOKEN_EXP * 1000);
     
     return ok({
-        userId: user.id;
-        accessToken
+        userId: user.id,
+        accessToken,
+        accessTokenExpiryDate,
+        refreshToken,
     })
   }
 }
