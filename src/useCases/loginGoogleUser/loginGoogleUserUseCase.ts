@@ -6,9 +6,9 @@ import { signJwt } from '@services/jwt/jwt';
 import { JWT_ACCESS_TOKEN_EXP, JWT_REFRESH_TOKEN_EXP } from '@src/constants';
 import { verifyGoogleIdToken } from '@services/google/verifyGoogleIdToken';
 import { ILoginGoogleUserRequest } from './loginGoogleUserRequest';
-import { ILoginUserResponse } from '@useCases/loginUser/loginUserResponse';
+import { ILoginGoogleUserResponse } from './loginGoogleUserResponse';
 
-export type IResponse = Result<ILoginUserResponse, InvalidCredentialsError>;
+export type IResponse = Result<ILoginGoogleUserResponse, InvalidCredentialsError>;
 export type ILoginGoogleUserUseCase = IBaseUseCase<ILoginGoogleUserRequest, IResponse>;
 
 function makeBaseUsernameFromEmail(email: string): string {
@@ -26,7 +26,7 @@ export class LoginGoogleUserUseCase implements ILoginGoogleUserUseCase {
 
   async execute(request?: ILoginGoogleUserRequest): Promise<IResponse> {
     if (!request) {
-      throw new Error('LoginGoogleUserUseCase: Missing reques');
+      throw new Error('Missing request');
     }
 
     const { credential } = request;
@@ -75,15 +75,15 @@ export class LoginGoogleUserUseCase implements ILoginGoogleUserUseCase {
       }
     }
 
-    const accessToken = await signJwt({userId: user.id}, JWT_ACCESS_TOKEN_EXP);
-    const refreshToken = await signJwt({userId: user.id}, JWT_REFRESH_TOKEN_EXP);
+    const accessToken = await signJwt({ userId: user.id }, JWT_ACCESS_TOKEN_EXP);
+    const refreshToken = await signJwt({ userId: user.id }, JWT_REFRESH_TOKEN_EXP);
     const accessTokenExpiryDate = new Date(Date.now() + JWT_ACCESS_TOKEN_EXP * 1000);
-    
+
     return ok({
-        userId: user.id,
-        accessToken,
-        accessTokenExpiryDate,
-        refreshToken,
-    })
+      userId: user.id,
+      accessToken,
+      accessTokenExpiryDate,
+      refreshToken
+    });
   }
 }
