@@ -3,6 +3,7 @@ import { configuration } from './config';
 import logger from './logger';
 import fastifyCors from '@fastify/cors';
 import router from './routes/router';
+import fastifyCookie from '@fastify/cookie';
 
 const app = fastify({
   trustProxy: true,
@@ -26,23 +27,77 @@ app.register(fastifyCors, {
 });
 
 app.addHook('preHandler', (request, _reply, done) => {
+  const safeUrl = (() => {
+    if (request.url.startsWith('/auth/google/callback')) return '/auth/google/callback?[redacted]';
+    return request.url;
+  })();
+
   logger.info('Incoming request', {
     method: request.method,
-    url: request.url,
+    // url: request.url,
+    url: safeUrl,
     id: request.id,
     body: request.body
   });
   done();
 });
 
+// app.addHook('onSend', (request, reply, payload, done) => {
+//   logger.info('Outgoing response body', {
+//     method: request.method,
+//     url: request.url,
+//     id: request.id,
+//     statusCode: reply.statusCode,
+//     body: typeof payload === 'string' ? JSON.parse(payload) : payload
+//   });
+//   done();
+// });
+
+// app.addHook('onSend', (request, reply, payload, done) => {
+//   let body: unknown = payload;
+
+//   if (typeof payload === 'string') {
+//     try {
+//       body = payload ? JSON.parse(payload) : payload;
+//     } catch {
+//       body = payload;
+//     }
+//   }
+
+//   logger.info('Outgoing response body', {
+//     method: request.method,
+//     url: request.url,
+//     id: request.id,
+//     statusCode: reply.statusCode,
+//     body
+//   });
+//   done();
+// });
+
 app.addHook('onSend', (request, reply, payload, done) => {
-  logger.info('Outgoing response body', {
+  const safeUrl = request.url.startsWith('/auth/google/callback')
+    ? '/auth/google/callback?[redacted]'
+    : request.url;
+
+  let body: unknown = payload;
+
+  if (typeof payload === 'string') {
+    try {
+      body = payload ? JSON.parse(payload) : payload;
+    } catch {
+      body = payload;
+    }
+  }
+
+  logger.info('Outgoing response', {
     method: request.method,
-    url: request.url,
+    url: safeUrl,
     id: request.id,
     statusCode: reply.statusCode,
-    body: typeof payload === 'string' ? JSON.parse(payload) : payload
+    body,
+    location: reply.getHeader('location')
   });
+
   done();
 });
 
@@ -65,6 +120,10 @@ app.setErrorHandler(async (error, request, reply) => {
     timestamp: new Date().toISOString(),
     path: request.url
   });
+});
+
+app.register(fastifyCookie, {
+  secret: process.env.COOKIE_SECRET || 'your-default-secret'
 });
 
 app.register(router);

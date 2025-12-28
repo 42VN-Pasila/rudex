@@ -26,6 +26,7 @@
     "env:test": "node scripts/setup-env.js test"
   },
   "dependencies": {
+    "@fastify/cookie": "^11.0.2",
     "@fastify/cors": "^11.1.0",
     "@prisma/adapter-better-sqlite3": "^6.19.0",
     "@prisma/client": "^6.18.0",
