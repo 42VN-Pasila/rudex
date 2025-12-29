@@ -1,7 +1,7 @@
 import { UserNotFoundError } from '@domain/error';
 import { ISetUpTwoFactorResponse } from './setupTwoFactorResponse';
 import { DatabaseConnectionError, DatabaseOperationError } from '@domain/error/databaseError';
-import { IBaseUseCase, ok, Result } from '@useCases/common';
+import { err, IBaseUseCase, ok, Result } from '@useCases/common';
 import { ISetUpTwoFactorRequest } from './setupTwoFactorRequest';
 import { ITwoFactorRepo } from '@repository/interfaces/twoFactorRepo';
 import { TOTPService } from '@services/jwt/toptpService';
@@ -43,7 +43,7 @@ export class SetUpTwoFactorUseCase implements ISetUpTwoFactorUseCase {
 
       return ok(response);
     } catch (error) {
-      throw error;
+      return err(error as Error);
     }
   }
 }
