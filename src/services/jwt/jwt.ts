@@ -19,7 +19,3 @@ export async function verifyJwt(token: string): Promise<object | null> {
   const decoded = jwt.verify(token, secret);
   return typeof decoded === 'object' ? decoded : null;
 }
-
-export async function verifyExpirationJwt(token: string | null): boolean => {
-  
-}
