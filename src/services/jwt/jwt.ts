@@ -16,6 +16,10 @@ export async function verifyJwt(token: string): Promise<object | null> {
     throw new Error('JWT secret is not defined');
   }
 
-  const decoded = jwt.verify(token, secret);
-  return typeof decoded === 'object' ? decoded : null;
+  try {
+    const decoded = jwt.verify(token, secret);
+    return typeof decoded === 'object' ? decoded : null;
+  } catch (error) {
+    throw error;
+  }
 }
