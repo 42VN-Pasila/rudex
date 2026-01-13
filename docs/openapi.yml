@@ -65,6 +65,30 @@ paths:
           $ref: "#/components/responses/APIErrorResponse"
         "500":
           $ref: "#/components/responses/APIErrorResponse"
+    /refreshToken:
+      post:
+        summary: Refresh access token and refresh token if it's gonna be expired in 1 hour.
+        description: >
+          Refresh access token when refresh token is still valid.
+        tags:
+          - Refresh new access token
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+              $ref:"#/components/schemas/RefreshTokenRequestBody"
+        responses:
+          "201":
+          description: New access token created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RefreshTokenResponseBody"
+          "400":
+            $ref: "#.components/responses/APIErrorResponse"
+          "401":
+            $ref: "#/components/responses/APIErrorResponse"
 
 components:
   parameters:
