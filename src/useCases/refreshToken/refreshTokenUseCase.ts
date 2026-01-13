@@ -1,11 +1,11 @@
 import { InvalidTokenError } from '@domain/error/tokenError';
 import { IRefreshTokenResponse } from './refreshTokenResponse';
-import { err, IBaseUseCase, Result } from '@useCases/common';
+import { err, IBaseUseCase, ok, Result } from '@useCases/common';
 import { IRefreshTokenRequest } from './refreshTokenRequest';
 import { UserNotFoundError } from '@domain/error';
 import { IUserRepo } from '@repository/interfaces/userRepo';
 import { signJwt, verifyJwt } from '@services/jwt/jwt';
-import { JWT_ACCESS_TOKEN_EXP } from '@src/constants';
+import { JWT_ACCESS_TOKEN_EXP, JWT_REFRESH_TOKEN_EXP } from '@src/constants';
 
 const ONE_HOUR_IN_SECONDS = 3600;
 
@@ -41,12 +41,22 @@ export class RefreshTokenUseCase implements IRefreshTokenUseCase {
 
       if (!user) return err(UserNotFoundError.create('User not found'));
 
+      const newAccessToken = await signJwt({ userId: userId }, JWT_ACCESS_TOKEN_EXP);
+      const accessTokenExpiryDate = new Date(Date.now() + JWT_ACCESS_TOKEN_EXP * 1000);
 
-      const newAccessToken = await signJwt({userId: userId}, JWT_ACCESS_TOKEN_EXP);
-      const accessTokenExpiryDate = new Date(Date.now() + JWT_ACCESS_TOKEN_EXP*1000);
+      const response: IRefreshTokenResponse = {
+        accessToken: newAccessToken,
+        accessTokenExpiryDate
+      };
+      const now = Math.floor(Date.now() / 1000);
 
-      
-
-    } catch (error: any) {}
+      if (exp - now < ONE_HOUR_IN_SECONDS) {
+        const newRefreshToken = await signJwt({ userId: userId }, JWT_REFRESH_TOKEN_EXP);
+        response.refreshToken = newRefreshToken;
+      }
+      return ok(response);
+    } catch (error: any) {
+      return err(InvalidTokenError.create());
+    }
   }
 }
