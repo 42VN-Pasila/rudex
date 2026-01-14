@@ -65,30 +65,30 @@ paths:
           $ref: "#/components/responses/APIErrorResponse"
         "500":
           $ref: "#/components/responses/APIErrorResponse"
-    /refreshToken:
-      post:
-        summary: Refresh access token and refresh token if it's gonna be expired in 1 hour.
-        description: >
-          Refresh access token when refresh token is still valid.
-        tags:
-          - Refresh new access token
-        requestBody:
-          required: true
-          content:
-            application/json:
-              schema:
-              $ref:"#/components/schemas/RefreshTokenRequestBody"
-        responses:
-          "201":
+  /refreshToken:
+    post:
+      summary: Refresh access token and refresh token if it's gonna be expired in 1 hour.
+      description: >
+        Refresh access token when refresh token is still valid.
+      tags:
+        - Refresh new access token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RefreshTokenRequestBody"
+      responses:
+        "201":
           description: New access token created
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/RefreshTokenResponseBody"
-          "400":
-            $ref: "#.components/responses/APIErrorResponse"
-          "401":
-            $ref: "#/components/responses/APIErrorResponse"
+        "400":
+          $ref: "#/components/responses/APIErrorResponse"
+        "401":
+          $ref: "#/components/responses/APIErrorResponse"
 
 components:
   parameters:
@@ -164,6 +164,32 @@ components:
       properties:
         rudexUserId:
           $ref: "#/components/schemas/rudexUserId"
+
+    RefreshTokenRequestBody:
+      type: object
+      additionalProperties: false
+      required:
+        - refreshToken
+      properties:
+        refreshToken:
+          type: string
+    RefreshTokenResponseBody:
+      type: object
+      additionalProperties: false
+      required:
+        - accessToken
+        - accessTokenExpiryDate
+      properties:
+        accessToken:
+          type: string
+          description: JWT access token used for authenticated requests.
+        accessTokenExpiryDate:
+          type: string
+          format: date-time
+          description: Expiration date and time of the access token.
+        refreshToken:
+          type: string
+          description: Token used to refresh access tokens.
 
   responses:
     APIErrorResponse:
