@@ -10,7 +10,7 @@ It follows a **Clean Architecture** approach with strict separation of concerns 
 - **Language:** TypeScript
 - **Runtime:** Node.js
 - **Framework:** Fastify
-- **Database:** SQLite (via Prisma ORM)
+- **Database:** PostgreSQL (via Prisma ORM)
 - **Architecture:** Clean Architecture / Hexagonal
 - **API Contract:** OpenAPI (spec-first approach)
 - **Logging:** Pino with pretty output in development

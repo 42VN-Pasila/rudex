@@ -1,6 +1,6 @@
 import { createMockUser } from '@mock/user';
 import { SQLUserRepo } from '@repository/implementations/sqlUserRepo';
-import sql from '@src/db/prisma';
+import sql from '@lib/prisma';
 
 describe('SQLUserRepo (integration test)', () => {
   const repo = new SQLUserRepo();

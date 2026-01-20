@@ -1,7 +1,7 @@
 import { User } from '@domain/user/user';
 import { createMockUser } from '@mock/user';
 import app from '@src/app';
-import prisma from '@src/db/prisma';
+import prisma from '@lib/prisma';
 import { generatePassword, generateString } from '@tests/factories';
 
 async function createUserDb(data?: Partial<User>) {
