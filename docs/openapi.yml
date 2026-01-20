@@ -41,7 +41,7 @@ paths:
 
   /register:
     post:
-      summary: Register an user
+      summary: Register a user
       description: >
         Create a new user with provided input.
       tags:
