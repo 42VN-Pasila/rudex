@@ -4,8 +4,7 @@
 const fs = require("fs");
 const path = require("path");
 
-const argEnv = process.argv[2];
-const nodeEnv = (argEnv || process.env.NODE_ENV || "development").toLowerCase();
+const nodeEnv = (process.env.NODE_ENV || "development").toLowerCase();
 
 const map = {
   development: ".env.dev",

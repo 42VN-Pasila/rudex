@@ -6,13 +6,12 @@ export const configuration = {
   service: {
     containerPort: getNumberFromEnv('PORT'),
     name: getValueFromEnv('SERVICE_NAME', 'rudex'),
-    currentEnvironment,
-    appVersion: getValueFromEnv('APP_VERSION', 'unknown')
+    currentEnvironment
   },
   baseUrl: getValueFromEnv('BASE_URL'),
   host: getValueFromEnv('HOST', '127.0.0.1'),
   database: {
-    url: getValueFromEnv('DATABASE_URL')
+    url: getValueFromEnv('POSTGRES_DATABASE_URL')
   },
   frontend: {
     url: getValueFromEnv('FRONTEND_URL')

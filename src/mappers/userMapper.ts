@@ -1,9 +1,9 @@
 import { ILoginUserResponse } from '@useCases/loginUser/loginUserResponse';
-import type { UserModel as PrismaUser } from '../gen/db/prisma/models';
+import type { userModel } from '../gen/db/prisma/models';
 import { User } from '@domain/user/user';
 
 export class UserMapper {
-  static prismaToDomain(u: PrismaUser): User {
+  static prismaToDomain(u: userModel): User {
     return {
       id: u.id,
       username: u.username,

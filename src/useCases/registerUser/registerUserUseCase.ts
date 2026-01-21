@@ -35,7 +35,6 @@ export class RegisterUserUseCase implements IRegisterUserUseCase {
     const user = await this.userRepo.save({
       username,
       email,
-      googleUserId: email,
       password: hashedPassword
     });
 

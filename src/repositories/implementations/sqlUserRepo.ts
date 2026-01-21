@@ -1,7 +1,7 @@
 import { UserNotFoundError } from '@domain/error';
 import { User } from '@domain/user/user';
 import { IUserRepo } from '@repository/interfaces/userRepo';
-import sql from '@src/db/prisma';
+import sql from '@lib/prisma';
 import { UserMapper } from '@src/mappers/userMapper';
 
 export class SQLUserRepo implements IUserRepo {

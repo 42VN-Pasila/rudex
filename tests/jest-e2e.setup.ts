@@ -2,12 +2,12 @@ import { execSync } from 'child_process';
 import { existsSync, unlinkSync, readdirSync } from 'fs';
 import path from 'path';
 
-import prisma from '@src/db/prisma';
+import prisma from '@lib/prisma';
 
 beforeAll(async () => {
-  const dbUrl = process.env.DATABASE_URL;
+  const dbUrl = process.env.POSTGRES_DATABASE_URL;
   if (!dbUrl) {
-    throw new Error('DATABASE_URL missing for tests');
+    throw new Error('POSTGRES_DATABASE_URL missing for tests');
   }
 
   const migrationsDir = path.resolve(process.cwd(), 'prisma', 'migrations');
@@ -29,13 +29,15 @@ beforeAll(async () => {
 afterAll(async () => {
   await prisma.$disconnect();
 
-  const rawUrl = process.env.DATABASE_URL || 'file:./prisma/data.db';
-  const relativeFile = rawUrl.startsWith('file:') ? rawUrl.replace(/^file:/, '') : rawUrl;
-  const absoluteFile = path.isAbsolute(relativeFile)
-    ? relativeFile
-    : path.resolve(process.cwd(), relativeFile);
+  const rawUrl = process.env.POSTGRES_DATABASE_URL || '';
+  if (rawUrl.startsWith('file:')) {
+    const relativeFile = rawUrl.replace(/^file:/, '');
+    const absoluteFile = path.isAbsolute(relativeFile)
+      ? relativeFile
+      : path.resolve(process.cwd(), relativeFile);
 
-  if (existsSync(absoluteFile)) {
-    unlinkSync(absoluteFile);
+    if (existsSync(absoluteFile)) {
+      unlinkSync(absoluteFile);
+    }
   }
 });

@@ -68,7 +68,7 @@ paths:
 
 components:
   parameters:
-    rudexUserId:
+    rudexUserIdQuery:
       name: rudexUserId
       in: query
       description: Unique ID of a Rudex user (optional)
