@@ -6,6 +6,7 @@
   "author": "Kha Tieu",
   "license": "MIT",
   "scripts": {
+    "prod": "yarn setup:prod && NODE_ENV=production ts-node -r tsconfig-paths/register src/server.ts | pino-pretty",
     "dev": "yarn setup:dev && ts-node -r tsconfig-paths/register src/server.ts | pino-pretty",
     "clean": "rm -rf ./dist/ ./src/gen/",
     "build": "tsc --project tsconfig.build.json",
@@ -20,6 +21,7 @@
     "migrate:deploy": "prisma migrate deploy",
     "migrate:reset": "prisma migrate reset --force",
     "setup:env": "node scripts/setup-env.js dev",
+    "setup:prod": "NODE_ENV=production yarn setup:env && yarn clean && yarn gen && yarn build && yarn migrate:deploy",
     "setup:dev": "NODE_ENV=development yarn setup:env && yarn clean && yarn gen && yarn build && yarn migrate:dev",
     "setup:test": "NODE_ENV=test yarn setup:env && yarn clean && yarn gen && yarn build && yarn migrate:dev"
   },
