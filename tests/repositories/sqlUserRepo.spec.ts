@@ -9,17 +9,17 @@ describe('SQLUserRepo (unit test)', () => {
     jest.clearAllMocks();
   });
 
-  describe('getById', () => {
+  describe('findById', () => {
     it('returns an existing user', async () => {
       const dbUser: User = createMockUser();
-      repo.getById.mockResolvedValue(dbUser);
-      const user = await repo.getById(dbUser.id);
+      repo.findById.mockResolvedValue(dbUser);
+      const user = await repo.findById(dbUser.id);
       expect(user).toEqual(dbUser);
     });
 
     it('throws UserNotFoundError for missing users', async () => {
-      repo.getById.mockRejectedValue(new Error('UserNotFoundError'));
-      await expect(repo.getById('missing-id')).rejects.toThrow('UserNotFoundError');
+      repo.findById.mockRejectedValue(new Error('UserNotFoundError'));
+      await expect(repo.findById('missing-id')).rejects.toThrow('UserNotFoundError');
     });
   });
 

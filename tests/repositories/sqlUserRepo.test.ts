@@ -13,16 +13,16 @@ describe('UserRepository (integration test)', () => {
     await db.deleteFrom('user').execute();
   });
 
-  describe('getById', () => {
+  describe('findById', () => {
     it('fetches the user by id', async () => {
       const user = createMockUser();
       const saved = await repo.save(user);
-      const fetched = await repo.getById(saved.id);
+      const fetched = await repo.findById(saved.id);
       expect(fetched.username).toBe(user.username);
       expect(fetched.password).toBe(user.password);
     });
     it('throws UserNotFoundError for missing users', async () => {
-      await expect(repo.getById('non-existent-id')).rejects.toThrow('User cannot be found');
+      await expect(repo.findById('non-existent-id')).rejects.toThrow('User cannot be found');
     });
   });
 
@@ -44,7 +44,7 @@ describe('UserRepository (integration test)', () => {
     it('saves google user and fetches by googleUserId', async () => {
       const user = createMockUser();
       await repo.save(user);
-      const googleUser = await repo.getByGoogleUserId(user.googleUserId!);
+      const googleUser = await repo.findByGoogleUserId(user.googleUserId!);
       expect(googleUser?.username).toBe(user.username);
       expect(googleUser?.googleUserId).toBe(user.googleUserId);
       expect(googleUser?.refreshToken).toBe(user.refreshToken);

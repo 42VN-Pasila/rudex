@@ -24,11 +24,21 @@ function toUserDomain(row: UserEntity): User {
   };
 }
 
+export interface PaginatedResult<T> {
+  data: T[];
+  total: number;
+}
+
 export interface IUserRepository {
-  getById(userId: string): Promise<User>;
-  getByGoogleUserId(googleUserId: string): Promise<User | null>;
+  findById(userId: string): Promise<User>;
+  findByGoogleUserId(googleUserId: string): Promise<User | null>;
   checkExistsByUsername(username: string): Promise<User | null>;
   checkExistsByEmail(email: string): Promise<User | null>;
+  findUsers(params: {
+    userIds?: string[];
+    offset: number;
+    limit: number;
+  }): Promise<PaginatedResult<User>>;
   save(params: {
     username: string;
     password?: string;
@@ -44,7 +54,7 @@ export class UserRepository extends BaseRepository<DB> implements IUserRepositor
     super(db);
   }
 
-  async getById(userId: string): Promise<User> {
+  async findById(userId: string): Promise<User> {
     let row;
     try {
       row = await this.db
@@ -63,7 +73,7 @@ export class UserRepository extends BaseRepository<DB> implements IUserRepositor
     return toUserDomain(row);
   }
 
-  async getByGoogleUserId(googleUserId: string): Promise<User | null> {
+  async findByGoogleUserId(googleUserId: string): Promise<User | null> {
     const row = await this.db
       .selectFrom('user')
       .selectAll()
@@ -91,6 +101,29 @@ export class UserRepository extends BaseRepository<DB> implements IUserRepositor
       .executeTakeFirst();
 
     return row ? toUserDomain(row) : null;
+  }
+
+  async findUsers({
+    userIds,
+    offset,
+    limit
+  }: {
+    userIds?: string[];
+    offset: number;
+    limit: number;
+  }): Promise<PaginatedResult<User>> {
+    let baseQuery = this.db.selectFrom('user');
+
+    if (userIds && userIds.length > 0) {
+      baseQuery = baseQuery.where('id', 'in', userIds);
+    }
+
+    const [rows, countResult] = await Promise.all([
+      baseQuery.selectAll().offset(offset).limit(limit).execute(),
+      baseQuery.select(this.db.fn.countAll<number>().as('count')).executeTakeFirstOrThrow()
+    ]);
+
+    return { data: rows.map(toUserDomain), total: Number(countResult.count) };
   }
 
   async save({
