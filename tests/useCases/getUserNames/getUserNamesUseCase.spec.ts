@@ -1,6 +1,7 @@
 import { mockUserRepo } from '@mock/repos';
+import { createMockUser } from '@mock/user';
 import { GetUserNamesUseCase } from '@useCases/getUserNames/getUserNamesUseCase';
-import { generateString, generateUUID } from '@tests/factories';
+import { generateUUID } from '@tests/factories';
 
 describe('GetUserNamesUseCase', () => {
   const userRepo = mockUserRepo();
@@ -11,45 +12,82 @@ describe('GetUserNamesUseCase', () => {
     jest.resetAllMocks();
   });
 
-  it('returns all user names when no IDs are provided', async () => {
-    const users = [
-      { id: generateUUID(), username: generateString() },
-      { id: generateUUID(), username: generateString() }
-    ];
-    userRepo.getUserNames.mockResolvedValue(users);
+  it('returns first page of user names with defaults when no pagination provided', async () => {
+    const user1 = createMockUser();
+    const user2 = createMockUser();
+    userRepo.findUsers.mockResolvedValue({ data: [user1, user2], total: 2 });
 
     const useCase = makeUseCase();
     const result = await useCase.execute();
 
     expect(result.isOk()).toBe(true);
-    expect(result.unwrap()).toEqual({ users });
-    expect(userRepo.getUserNames).toHaveBeenCalledWith(undefined);
+    const response = result.unwrap();
+    expect(response).toEqual({
+      users: [
+        { id: user1.id, username: user1.username },
+        { id: user2.id, username: user2.username }
+      ],
+      total: 2,
+      page: 1,
+      limit: 20
+    });
+    expect(userRepo.findUsers).toHaveBeenCalledWith({
+      userIds: undefined,
+      offset: 0,
+      limit: 20
+    });
   });
 
   it('returns filtered user names when IDs are provided', async () => {
-    const id1 = generateUUID();
-    const id2 = generateUUID();
-    const users = [
-      { id: id1, username: generateString() },
-      { id: id2, username: generateString() }
-    ];
-    userRepo.getUserNames.mockResolvedValue(users);
+    const user1 = createMockUser();
+    const user2 = createMockUser();
+    userRepo.findUsers.mockResolvedValue({ data: [user1, user2], total: 2 });
 
     const useCase = makeUseCase();
-    const result = await useCase.execute({ rudexUserIds: [id1, id2] });
+    const result = await useCase.execute({
+      rudexUserIds: [user1.id, user2.id],
+      page: 1,
+      limit: 10
+    });
 
     expect(result.isOk()).toBe(true);
-    expect(result.unwrap()).toEqual({ users });
-    expect(userRepo.getUserNames).toHaveBeenCalledWith([id1, id2]);
+    expect(result.unwrap().users).toEqual([
+      { id: user1.id, username: user1.username },
+      { id: user2.id, username: user2.username }
+    ]);
+    expect(userRepo.findUsers).toHaveBeenCalledWith({
+      userIds: [user1.id, user2.id],
+      offset: 0,
+      limit: 10
+    });
+  });
+
+  it('calculates correct offset for page 2', async () => {
+    userRepo.findUsers.mockResolvedValue({ data: [], total: 25 });
+
+    const useCase = makeUseCase();
+    const result = await useCase.execute({ page: 2, limit: 10 });
+
+    expect(result.isOk()).toBe(true);
+    expect(result.unwrap()).toEqual({ users: [], total: 25, page: 2, limit: 10 });
+    expect(userRepo.findUsers).toHaveBeenCalledWith({
+      userIds: undefined,
+      offset: 10,
+      limit: 10
+    });
   });
 
   it('returns empty array when no users match', async () => {
-    userRepo.getUserNames.mockResolvedValue([]);
+    userRepo.findUsers.mockResolvedValue({ data: [], total: 0 });
 
     const useCase = makeUseCase();
-    const result = await useCase.execute({ rudexUserIds: [generateUUID()] });
+    const result = await useCase.execute({
+      rudexUserIds: [generateUUID()],
+      page: 1,
+      limit: 20
+    });
 
     expect(result.isOk()).toBe(true);
-    expect(result.unwrap()).toEqual({ users: [] });
+    expect(result.unwrap()).toEqual({ users: [], total: 0, page: 1, limit: 20 });
   });
 });

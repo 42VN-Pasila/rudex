@@ -16,8 +16,18 @@ export class GetUserNamesUseCase implements IGetUserNamesUseCase {
   }
 
   async execute(request?: IGetUserNamesRequest): Promise<IResponse> {
-    const userNames = await this.userRepo.getUserNames(request?.rudexUserIds);
+    const page = request?.page ?? 1;
+    const limit = request?.limit ?? 20;
+    const offset = (page - 1) * limit;
 
-    return ok({ users: userNames });
+    const { data, total } = await this.userRepo.findUsers({
+      userIds: request?.rudexUserIds,
+      offset,
+      limit
+    });
+
+    const users = data.map((user) => ({ id: user.id, username: user.username }));
+
+    return ok({ users, total, page, limit });
   }
 }

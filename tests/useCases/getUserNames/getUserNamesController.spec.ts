@@ -13,46 +13,73 @@ describe('GetUserNamesController', () => {
     jest.resetAllMocks();
   });
 
-  it('returns 200 with all users when no query param provided', async () => {
+  it('returns 200 with default pagination when no query params provided', async () => {
     const users = [
       { id: generateUUID(), username: generateString() },
       { id: generateUUID(), username: generateString() }
     ];
-    useCase.execute.mockReturnValueOnce(ok({ users }));
+    useCase.execute.mockReturnValueOnce(ok({ users, total: 2, page: 1, limit: 20 }));
 
     const result = await controller.execute({});
 
     expect(result.statusCode).toEqual(200);
-    expect(result.data).toEqual({ users });
-    expect(useCase.execute).toHaveBeenCalledWith({ rudexUserIds: undefined });
+    expect(result.data).toEqual({ users, total: 2, page: 1, limit: 20 });
+    expect(useCase.execute).toHaveBeenCalledWith({
+      rudexUserIds: undefined,
+      page: 1,
+      limit: 20
+    });
   });
 
-  it('returns 200 with filtered users when rudexUserIds query param is provided', async () => {
+  it('parses rudexUserIds, page, and limit from query params', async () => {
     const id1 = generateUUID();
     const id2 = generateUUID();
     const users = [
       { id: id1, username: generateString() },
       { id: id2, username: generateString() }
     ];
-    useCase.execute.mockReturnValueOnce(ok({ users }));
+    useCase.execute.mockReturnValueOnce(ok({ users, total: 2, page: 2, limit: 5 }));
 
     const result = await controller.execute({
-      queryParams: { rudexUserIds: `${id1},${id2}` }
+      queryParams: { rudexUserIds: `${id1},${id2}`, page: '2', limit: '5' }
     });
 
     expect(result.statusCode).toEqual(200);
-    expect(result.data).toEqual({ users });
-    expect(useCase.execute).toHaveBeenCalledWith({ rudexUserIds: [id1, id2] });
+    expect(result.data).toEqual({ users, total: 2, page: 2, limit: 5 });
+    expect(useCase.execute).toHaveBeenCalledWith({
+      rudexUserIds: [id1, id2],
+      page: 2,
+      limit: 5
+    });
   });
 
-  it('returns 200 with empty array when no users match', async () => {
-    useCase.execute.mockReturnValueOnce(ok({ users: [] }));
+  it('clamps limit to max 100', async () => {
+    useCase.execute.mockReturnValueOnce(ok({ users: [], total: 0, page: 1, limit: 100 }));
 
     const result = await controller.execute({
-      queryParams: { rudexUserIds: generateUUID() }
+      queryParams: { limit: '999' }
     });
 
     expect(result.statusCode).toEqual(200);
-    expect(result.data).toEqual({ users: [] });
+    expect(useCase.execute).toHaveBeenCalledWith({
+      rudexUserIds: undefined,
+      page: 1,
+      limit: 100
+    });
+  });
+
+  it('clamps page to minimum 1 for invalid values', async () => {
+    useCase.execute.mockReturnValueOnce(ok({ users: [], total: 0, page: 1, limit: 20 }));
+
+    const result = await controller.execute({
+      queryParams: { page: '-5' }
+    });
+
+    expect(result.statusCode).toEqual(200);
+    expect(useCase.execute).toHaveBeenCalledWith({
+      rudexUserIds: undefined,
+      page: 1,
+      limit: 20
+    });
   });
 });

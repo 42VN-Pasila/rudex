@@ -72,7 +72,7 @@ paths:
       operationId: getUserNames
       summary: Get all user names
       description: >
-        Get all user names based on .
+        Get user names with optional filtering by user IDs and pagination.
       tags:
         - Users
       parameters:
@@ -85,6 +85,23 @@ paths:
             type: array
             items:
               $ref: "#/components/schemas/rudexUserId"
+        - in: query
+          name: page
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+          description: Page number (1-indexed)
+        - in: query
+          name: limit
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 10
+            default: 10
+          description: Number of items per page
       responses:
         "200":
           $ref: "#/components/responses/GetUserNamesResponseBody"
@@ -174,6 +191,9 @@ components:
       additionalProperties: false
       required:
         - users
+        - total
+        - page
+        - limit
       properties:
         users:
           type: array
@@ -185,6 +205,15 @@ components:
                 type: string
               id:
                 $ref: "#/components/schemas/rudexUserId"
+        total:
+          type: integer
+          description: Total number of matching users
+        page:
+          type: integer
+          description: Current page number
+        limit:
+          type: integer
+          description: Items per page
   responses:
     GetUserNamesResponseBody:
       description: Successful response with user names
