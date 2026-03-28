@@ -1,9 +1,9 @@
 import { migrate, destroyDb } from '@src/database';
 
 beforeAll(async () => {
-    await migrate();
+  await migrate();
 });
 
 afterAll(async () => {
-    await destroyDb();
+  await destroyDb();
 });

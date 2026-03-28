@@ -21,10 +21,7 @@ export const configuration = {
     url: getValueFromEnv('FRONTEND_URL')
   },
   pg: {
-    url: getValueFromEnv(
-      'DATABASE_URL',
-      'postgres://rudex:password@127.0.0.1:4001/rudex_dev'
-    )
+    url: getValueFromEnv('DATABASE_URL', 'postgres://rudex:password@127.0.0.1:4001/rudex_dev')
   }
 };
 
