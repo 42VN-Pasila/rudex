@@ -10,7 +10,7 @@ It follows a **Clean Architecture** approach with strict separation of concerns 
 - **Language:** TypeScript
 - **Runtime:** Node.js
 - **Framework:** Fastify
-- **Database:** PostgreSQL (via Prisma ORM)
+- **Database:** PostgreSQL (via Kysely query builder + Knex migrations)
 - **Architecture:** Clean Architecture / Hexagonal
 - **API Contract:** OpenAPI (spec-first approach)
 - **Logging:** Pino with pretty output in development
@@ -29,12 +29,12 @@ rudex/
 │ ├─ useCases/ # Application use cases (e.g., loginUser)
 │ ├─ repositories/ # Repository interfaces & implementations
 │ ├─ mappers/ # Domain ↔ persistence mapping
-│ ├─ db/ # Prisma client setup
+│ ├─ database.ts # Kysely client & Knex migration helper
+│ ├─ schema.ts # Generated DB types (kysely-codegen)
 │ ├─ routes/ # Fastify route definitions
 │ ├─ gen/ # Auto-generated OpenAPI types
 │ └─ logger.ts # Pino logger configuration
-├─ prisma/
-│ └─ schema.prisma # Prisma data model
+├─ migrations/ # Knex SQL migrations
 ├─ docs/
 │ └─ openapi.yml # API definition (source of truth)
 ├─ tests/ # Unit & integration tests

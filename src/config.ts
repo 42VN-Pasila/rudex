@@ -1,4 +1,8 @@
+import path from 'node:path';
 import { AllowedEnvironments } from './enum';
+import dotenv from 'dotenv';
+
+dotenv.config({ path: path.join(__dirname, '..', '.env') });
 
 const currentEnvironment = getEnvironment('NODE_ENV');
 
@@ -11,10 +15,16 @@ export const configuration = {
   baseUrl: getValueFromEnv('BASE_URL'),
   host: getValueFromEnv('HOST', '127.0.0.1'),
   database: {
-    url: getValueFromEnv('POSTGRES_DATABASE_URL')
+    url: getValueFromEnv('DATABASE_URL')
   },
   frontend: {
     url: getValueFromEnv('FRONTEND_URL')
+  },
+  pg: {
+    url: getValueFromEnv(
+      'DATABASE_URL',
+      'postgres://rudex:password@127.0.0.1:4001/rudex_dev'
+    )
   }
 };
 

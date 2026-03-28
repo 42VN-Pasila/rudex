@@ -1,0 +1,17 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres:16.2-alpine
+    container_name: rudex_postgres_db
+    restart: always
+    environment:
+      POSTGRES_USER: rudex
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: rudex_dev
+    ports:
+      - "4001:5432"
+    volumes:
+      - pgdata_rudex_dev:/var/lib/postgresql/data
+volumes:
+  pgdata_rudex_dev:
