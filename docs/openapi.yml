@@ -13,6 +13,7 @@ servers:
 paths:
   /login:
     post:
+      operationId: loginUser
       summary: Login a user and return authentication tokens
       description: >
         Authenticates a user using email/username and password, returning
@@ -41,6 +42,7 @@ paths:
 
   /register:
     post:
+      operationId: registerUser
       summary: Register a user
       description: >
         Create a new user with provided input.
@@ -62,6 +64,33 @@ paths:
         "400":
           $ref: "#/components/responses/APIErrorResponse"
         "409":
+          $ref: "#/components/responses/APIErrorResponse"
+        "500":
+          $ref: "#/components/responses/APIErrorResponse"
+  /users/usernames:
+    get:
+      operationId: getUserNames
+      summary: Get all user names
+      description: >
+        Get all user names based on .
+      tags:
+        - Users
+      parameters:
+        - in: query
+          name: rudexUserIds
+          required: false
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              $ref: "#/components/schemas/rudexUserId"
+      responses:
+        "200":
+          $ref: "#/components/responses/GetUserNamesResponseBody"
+        "400":
+          $ref: "#/components/responses/APIErrorResponse"
+        "404":
           $ref: "#/components/responses/APIErrorResponse"
         "500":
           $ref: "#/components/responses/APIErrorResponse"
@@ -140,8 +169,29 @@ components:
       properties:
         rudexUserId:
           $ref: "#/components/schemas/rudexUserId"
-
+    GetUserNamesResponseBody:
+      type: object
+      additionalProperties: false
+      required:
+        - users
+      properties:
+        users:
+          type: array
+          items:
+            type: object
+            additionalProperties: false
+            properties:
+              username:
+                type: string
+              id:
+                $ref: "#/components/schemas/rudexUserId"
   responses:
+    GetUserNamesResponseBody:
+      description: Successful response with user names
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GetUserNamesResponseBody"
     APIErrorResponse:
       description: API error response
       content:

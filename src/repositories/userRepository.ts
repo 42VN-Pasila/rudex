@@ -24,11 +24,17 @@ function toUserDomain(row: UserEntity): User {
   };
 }
 
+export interface UserName {
+  id: string;
+  username: string;
+}
+
 export interface IUserRepository {
   getById(userId: string): Promise<User>;
   getByGoogleUserId(googleUserId: string): Promise<User | null>;
   checkExistsByUsername(username: string): Promise<User | null>;
   checkExistsByEmail(email: string): Promise<User | null>;
+  getUserNames(userIds?: string[]): Promise<UserName[]>;
   save(params: {
     username: string;
     password?: string;
@@ -91,6 +97,16 @@ export class UserRepository extends BaseRepository<DB> implements IUserRepositor
       .executeTakeFirst();
 
     return row ? toUserDomain(row) : null;
+  }
+
+  async getUserNames(userIds?: string[]): Promise<UserName[]> {
+    let query = this.db.selectFrom('user').select(['id', 'username']);
+
+    if (userIds && userIds.length > 0) {
+      query = query.where('id', 'in', userIds);
+    }
+
+    return await query.execute();
   }
 
   async save({
