@@ -1,16 +1,16 @@
 import { createMockUser } from '@mock/user';
-import { SQLUserRepo } from '@repository/implementations/sqlUserRepo';
-import sql from '@lib/prisma';
+import { UserRepository } from '@src/repositories/userRepository';
+import { db } from '@src/database';
 
-describe('SQLUserRepo (integration test)', () => {
-  const repo = new SQLUserRepo();
+describe('UserRepository (integration test)', () => {
+  const repo = new UserRepository(db);
 
   beforeAll(async () => {
-    await sql.user.deleteMany({});
+    await db.deleteFrom('user').execute();
   });
 
   afterAll(async () => {
-    await sql.user.deleteMany({});
+    await db.deleteFrom('user').execute();
   });
 
   describe('getById', () => {

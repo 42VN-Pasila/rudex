@@ -2,7 +2,7 @@ import { IBaseUseCase } from '@useCases/common/baseUseCase';
 import { IRegisterUserResponse } from './registerUserResponse';
 import { ExistedEmailError, ExistedUsernameError } from '@domain/error/userError';
 import { IRegisterUserRequest } from './registerUserRequest';
-import { IUserRepo } from '@repository/interfaces/userRepo';
+import { IUserRepository } from '@src/repositories/userRepository';
 import { Result, ok, err } from '@useCases/common';
 import argon2 from 'argon2';
 
@@ -11,9 +11,9 @@ export type IResponse = Result<IRegisterUserResponse, ExistedUsernameError | Exi
 export type IRegisterUserUseCase = IBaseUseCase<IRegisterUserRequest, IResponse>;
 
 export class RegisterUserUseCase implements IRegisterUserUseCase {
-  private readonly userRepo: IUserRepo;
+  private readonly userRepo: IUserRepository;
 
-  constructor(userRepo: IUserRepo) {
+  constructor(userRepo: IUserRepository) {
     this.userRepo = userRepo;
   }
 

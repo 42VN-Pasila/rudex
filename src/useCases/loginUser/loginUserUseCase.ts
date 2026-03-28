@@ -1,7 +1,7 @@
 import { IBaseUseCase } from '@useCases/common/baseUseCase';
 import { ILoginUserRequest } from './loginUserRequest';
 import { ILoginUserResponse } from './loginUserResponse';
-import { IUserRepo } from '@repository/interfaces/userRepo';
+import { IUserRepository } from '@src/repositories/userRepository';
 import { UserNotFoundError, InvalidCredentialsError } from '@domain/error';
 import { Result, ok, err } from '@useCases/common';
 import { signJwt } from '@services/jwt/jwt';
@@ -12,9 +12,9 @@ export type IResponse = Result<ILoginUserResponse, UserNotFoundError | InvalidCr
 export type ILoginUserUseCase = IBaseUseCase<ILoginUserRequest, IResponse>;
 
 export class LoginUserUseCase implements ILoginUserUseCase {
-  private readonly userRepo: IUserRepo;
+  private readonly userRepo: IUserRepository;
 
-  constructor(userRepo: IUserRepo) {
+  constructor(userRepo: IUserRepository) {
     this.userRepo = userRepo;
   }
 

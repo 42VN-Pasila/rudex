@@ -1,12 +1,13 @@
 import { FastifyInstance, FastifyReply } from 'fastify';
 import { LoginUserUseCase } from '../useCases/loginUser/loginUserUseCase';
-import { SQLUserRepo } from '../repositories/implementations/sqlUserRepo';
+import { UserRepository } from '../repositories/userRepository';
 import { LoginUserController } from '../useCases/loginUser/loginUserController';
 import { HttpRequest } from '@useCases/common';
 import { RegisterUserController } from '@useCases/registerUser/registerUserController';
 import { RegisterUserUseCase } from '@useCases/registerUser/registerUserUseCase';
+import { db } from '@src/database';
 
-const userRepo = new SQLUserRepo();
+const userRepo = new UserRepository(db);
 const loginUserUseCase = new LoginUserUseCase(userRepo);
 const loginUserController = new LoginUserController(loginUserUseCase);
 const registerUserUseCase = new RegisterUserUseCase(userRepo);

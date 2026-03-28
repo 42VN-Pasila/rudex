@@ -1,18 +1,36 @@
 import { User } from '@domain/user/user';
 import { createMockUser } from '@mock/user';
 import app from '@src/app';
-import prisma from '@lib/prisma';
+import { db } from '@src/database';
 import { generatePassword, generateString } from '@tests/factories';
 
 async function createUserDb(data?: Partial<User>) {
-  return prisma.user.create({
-    data: createMockUser(data)
-  });
+  const user = createMockUser(data);
+  const row = await db
+    .insertInto('user')
+    .values({
+      id: user.id,
+      username: user.username,
+      password: user.password ?? null,
+      email: user.email,
+      google_user_id: user.googleUserId ?? null,
+      google_user_name: user.googleUserName ?? null,
+      access_token: user.accessToken ?? null,
+      access_token_expiry_date: user.accessTokenExpiryDate ?? null,
+      refresh_token: user.refreshToken ?? null,
+      created_at: user.createdAt,
+      updated_at: user.updatedAt
+    })
+    .returningAll()
+    .executeTakeFirstOrThrow();
+
+  return { ...user, id: row.id };
 }
+
 describe('User routes', () => {
   afterEach(async () => {
     jest.clearAllMocks();
-    await prisma.user.deleteMany({});
+    await db.deleteFrom('user').execute();
   });
 
   describe('POST /login', () => {
@@ -24,7 +42,7 @@ describe('User routes', () => {
     });
 
     afterAll(async () => {
-      await prisma.user.deleteMany({ where: { username } });
+      await db.deleteFrom('user').where('username', '=', username).execute();
     });
 
     it('returns 200 and tokens on valid password login', async () => {
@@ -90,7 +108,6 @@ describe('User routes', () => {
     });
     it.only('returns 409 for existing username', async () => {
       const existedUser = await createUserDb();
-      console.log(existedUser);
       const res = await app.inject({
         method: 'POST',
         url: '/register',
