@@ -20,7 +20,7 @@
     "start:worker": "NODE_ENV=production node dist/worker.js",
     "gen": "yarn gen:openapi",
     "gen:openapi": "openapi-typescript docs/openapi.yml --output src/gen/server.d.ts",
-    "gen:db": "DATABASE_URL=postgresql://director:password@localhost:12001/director_dev kysely-codegen --dialect postgres --out-file src/schema.ts && prettier --write src/schema.ts",
+    "gen:db": "DATABASE_URL=postgresql://rudex:password@localhost:4020/rudex_dev kysely-codegen --dialect postgres --out-file src/schema.ts && prettier --write src/schema.ts",
     "db:up": "docker compose up -d",
     "db:down": "docker compose down",
     "db:down:volumes": "docker compose down -v",

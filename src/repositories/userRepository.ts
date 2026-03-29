@@ -1,10 +1,10 @@
 import { User } from '@domain/user/user';
 import { UserNotFoundError } from '@domain/error';
-import { DB, UserTable } from '@src/schema';
+import { DB, Users } from '@src/schema';
 import { Kysely, Selectable } from 'kysely';
 import { BaseRepository } from './baseRepository';
 
-type UserEntity = Selectable<UserTable>;
+type UserEntity = Selectable<Users>;
 
 function toUserDomain(row: UserEntity): User {
     return {
@@ -66,7 +66,7 @@ export class UserRepository extends BaseRepository<DB> implements IUserRepositor
         let row;
         try {
             row = await this.db
-                .selectFrom('user')
+                .selectFrom('users')
                 .selectAll()
                 .where('id', '=', userId)
                 .executeTakeFirst();
@@ -83,7 +83,7 @@ export class UserRepository extends BaseRepository<DB> implements IUserRepositor
 
     async findByGoogleUserId(googleUserId: string): Promise<User | null> {
         const row = await this.db
-            .selectFrom('user')
+            .selectFrom('users')
             .selectAll()
             .where('google_user_id', '=', googleUserId)
             .executeTakeFirst();
@@ -93,7 +93,7 @@ export class UserRepository extends BaseRepository<DB> implements IUserRepositor
 
     async checkExistsByUsername(username: string): Promise<User | null> {
         const row = await this.db
-            .selectFrom('user')
+            .selectFrom('users')
             .selectAll()
             .where('username', '=', username)
             .executeTakeFirst();
@@ -103,7 +103,7 @@ export class UserRepository extends BaseRepository<DB> implements IUserRepositor
 
     async checkExistsByEmail(email: string): Promise<User | null> {
         const row = await this.db
-            .selectFrom('user')
+            .selectFrom('users')
             .selectAll()
             .where('email', '=', email)
             .executeTakeFirst();
@@ -120,7 +120,7 @@ export class UserRepository extends BaseRepository<DB> implements IUserRepositor
         offset: number;
         limit: number;
     }): Promise<PaginatedResult<User>> {
-        let baseQuery = this.db.selectFrom('user');
+        let baseQuery = this.db.selectFrom('users');
 
         if (userIds && userIds.length > 0) {
             baseQuery = baseQuery.where('id', 'in', userIds);
@@ -136,7 +136,7 @@ export class UserRepository extends BaseRepository<DB> implements IUserRepositor
 
     async findByConfirmationToken(token: string): Promise<User | null> {
         const row = await this.db
-            .selectFrom('user')
+            .selectFrom('users')
             .selectAll()
             .where('confirmation_token', '=', token)
             .executeTakeFirst();
@@ -146,7 +146,7 @@ export class UserRepository extends BaseRepository<DB> implements IUserRepositor
 
     async setConfirmationToken(userId: string, token: string, expiresAt: Date): Promise<void> {
         await this.db
-            .updateTable('user')
+            .updateTable('users')
             .set({
                 confirmation_token: token,
                 confirmation_token_expires_at: expiresAt,
@@ -158,7 +158,7 @@ export class UserRepository extends BaseRepository<DB> implements IUserRepositor
 
     async confirmEmail(userId: string): Promise<void> {
         await this.db
-            .updateTable('user')
+            .updateTable('users')
             .set({
                 email_confirmed: true,
                 confirmation_token: null,
@@ -187,7 +187,7 @@ export class UserRepository extends BaseRepository<DB> implements IUserRepositor
         const now = new Date();
 
         const row = await this.db
-            .insertInto('user')
+            .insertInto('users')
             .values({
                 username,
                 password: password ?? null,

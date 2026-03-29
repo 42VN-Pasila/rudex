@@ -29,7 +29,10 @@ export const configuration = {
   smtp: {
     host: getValueFromEnv('SMTP_HOST', 'localhost'),
     port: getNumberFromEnv('SMTP_PORT', 1025),
-    from: getValueFromEnv('SMTP_FROM', 'noreply@rudex.dev')
+    secure: getNumberFromEnv('SMTP_PORT', 1025) === 465,
+    from: getValueFromEnv('SMTP_FROM', 'noreply@rudex.dev'),
+    user: process.env.SMTP_USER || '',
+    pass: process.env.SMTP_PASS || ''
   }
 };
 
