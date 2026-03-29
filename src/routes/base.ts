@@ -83,7 +83,9 @@ export default async function baseRoutes(fastify: FastifyInstance) {
   );
 
   fastify.get<{
-    Querystring: operations['confirmEmail']['parameters']['query'];
+    Querystring: {
+      token: string;
+    };
   }>(
     '/mail/confirm',
     {
