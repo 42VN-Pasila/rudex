@@ -67,6 +67,36 @@ paths:
           $ref: "#/components/responses/APIErrorResponse"
         "500":
           $ref: "#/components/responses/APIErrorResponse"
+  /confirm:
+    get:
+      operationId: confirmEmail
+      summary: Confirm a user's email address
+      description: >
+        Validates the confirmation token from the email link and marks
+        the user's email as confirmed.
+      tags:
+        - Email confirmation
+      parameters:
+        - in: query
+          name: token
+          required: true
+          schema:
+            type: string
+          description: The confirmation token sent via email
+      responses:
+        "200":
+          description: Email confirmed successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConfirmEmailResponseBody"
+        "400":
+          $ref: "#/components/responses/APIErrorResponse"
+        "409":
+          $ref: "#/components/responses/APIErrorResponse"
+        "500":
+          $ref: "#/components/responses/APIErrorResponse"
+
   /users/usernames:
     get:
       operationId: getUserNames
@@ -186,6 +216,16 @@ components:
       properties:
         rudexUserId:
           $ref: "#/components/schemas/rudexUserId"
+
+    ConfirmEmailResponseBody:
+      type: object
+      additionalProperties: false
+      required:
+        - message
+      properties:
+        message:
+          type: string
+
     GetUserNamesResponseBody:
       type: object
       additionalProperties: false

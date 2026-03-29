@@ -1,4 +1,4 @@
-export interface IGetUserNamesRequest {
+export type GetUserNamesRequest = {
   rudexUserIds?: string[];
   page: number;
   limit: number;

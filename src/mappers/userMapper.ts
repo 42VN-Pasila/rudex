@@ -1,7 +1,7 @@
-import { ILoginUserResponse } from '@useCases/loginUser/loginUserResponse';
+import { LoginUserResponse } from '@useCases/loginUser/loginUserResponse';
 
 export class UserMapper {
-  static toResponseDto(u: ILoginUserResponse) {
+  static toResponseDto(u: LoginUserResponse) {
     if (!u.accessToken || !u.refreshToken || !u.accessTokenExpiryDate) {
       throw new Error('User domain object is missing required token fields');
     }

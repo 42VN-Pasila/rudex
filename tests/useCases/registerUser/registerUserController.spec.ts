@@ -16,78 +16,55 @@ describe('RegisterUserController', () => {
 
   it('returns 201 and succesful register', async () => {
     const user = createMockUser();
-    const request = {
-      body: {
-        username: user.username,
-        password: user.password,
-        email: user.email
-      }
+    const request: IRegisterUserRequest = {
+      username: user.username,
+      password: user.password!,
+      email: user.email
     };
 
-    const useCaseResponse = {
-      rudexUserId: user.id
-    };
-
+    const useCaseResponse = { rudexUserId: user.id };
     useCase.execute.mockReturnValueOnce(ok(useCaseResponse));
 
     const result = await controller.execute(request);
 
     expect(result.statusCode).toEqual(201);
     expect(result.data).toEqual(useCaseResponse);
-    expect(useCase.execute).toHaveBeenNthCalledWith(1, {
-      username: request.body.username,
-      password: request.body.password,
-      email: request.body.email
-    });
+    expect(useCase.execute).toHaveBeenNthCalledWith(1, request);
   });
 
   it('returns 409 and existed username error', async () => {
     const user = createMockUser({ username: 'existingUser' });
-    const request = {
-      body: {
-        username: 'existingUser',
-        password: user.password,
-        email: user.email
-      }
+    const request: IRegisterUserRequest = {
+      username: 'existingUser',
+      password: user.password!,
+      email: user.email
     };
 
     const error = ExistedUsernameError.create();
-
     useCase.execute.mockReturnValueOnce(err(error));
 
     const result = await controller.execute(request);
 
     expect(result.statusCode).toEqual(409);
     expect(result.data).toEqual({ type: 'Conflict', message: error.message, info: {} });
-    expect(useCase.execute).toHaveBeenNthCalledWith(1, {
-      username: request.body.username,
-      password: request.body.password,
-      email: request.body.email
-    });
+    expect(useCase.execute).toHaveBeenNthCalledWith(1, request);
   });
 
   it('returns 409 and existed email error', async () => {
     const user = createMockUser({ email: 'existing@example.com' });
-    const request = {
-      body: {
-        username: user.username,
-        password: user.password,
-        email: 'existing@example.com'
-      }
+    const request: IRegisterUserRequest = {
+      username: user.username,
+      password: user.password!,
+      email: 'existing@example.com'
     };
 
     const error = ExistedEmailError.create();
-
     useCase.execute.mockReturnValueOnce(err(error));
 
     const result = await controller.execute(request);
 
     expect(result.statusCode).toEqual(409);
     expect(result.data).toEqual({ type: 'Conflict', message: error.message, info: {} });
-    expect(useCase.execute).toHaveBeenNthCalledWith(1, {
-      username: request.body.username,
-      password: request.body.password,
-      email: request.body.email
-    });
+    expect(useCase.execute).toHaveBeenNthCalledWith(1, request);
   });
 });

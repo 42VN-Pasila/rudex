@@ -2,8 +2,11 @@ import { mockUserRepo } from '@mock/repos';
 import { RegisterUserUseCase } from '@useCases/registerUser/registerUserUseCase';
 import { ExistedEmailError, ExistedUsernameError } from '@domain/error';
 import { generateString, generateEmail, generatePassword } from '@tests/factories';
-import { beforeEach } from 'node:test';
 import { createMockUser } from '@mock/user';
+
+jest.mock('@src/queues/producer', () => ({
+  addJob: jest.fn().mockResolvedValue({ id: '1' })
+}));
 
 describe('RegisterUserUseCase', () => {
   const userRepo = mockUserRepo();
@@ -14,17 +17,11 @@ describe('RegisterUserUseCase', () => {
   });
 
   it('returns ExistedUsernameError when username already exists', async () => {
-    const dbUser = {
-      username: generateString(),
-      password: generatePassword(),
-      email: generateEmail()
-    };
-
     userRepo.checkExistsByUsername.mockResolvedValue(true);
 
     const useCase = makeUseCase();
     const result = await useCase.execute({
-      username: dbUser.username,
+      username: generateString(),
       password: generatePassword(),
       email: generateEmail()
     });
@@ -35,11 +32,6 @@ describe('RegisterUserUseCase', () => {
   });
 
   it('returns ExistedEmailError when email already exists', async () => {
-    const dbUser = {
-      username: generateString(),
-      password: generatePassword(),
-      email: generateEmail()
-    };
     userRepo.checkExistsByUsername.mockResolvedValue(false);
     userRepo.checkExistsByEmail.mockResolvedValue(true);
 
@@ -47,7 +39,7 @@ describe('RegisterUserUseCase', () => {
     const result = await useCase.execute({
       username: generateString(),
       password: generatePassword(),
-      email: dbUser.email
+      email: generateEmail()
     });
 
     expect(result.isErr()).toBe(true);
@@ -58,6 +50,7 @@ describe('RegisterUserUseCase', () => {
   it('returns Ok with new user when registration succeeds', async () => {
     userRepo.checkExistsByUsername.mockResolvedValue(false);
     userRepo.checkExistsByEmail.mockResolvedValue(false);
+    userRepo.setConfirmationToken.mockResolvedValue(undefined);
 
     const newUser = createMockUser();
     userRepo.save.mockResolvedValue(newUser);
@@ -75,5 +68,11 @@ describe('RegisterUserUseCase', () => {
     expect(payload).toEqual({
       rudexUserId: newUser.id
     });
+
+    expect(userRepo.setConfirmationToken).toHaveBeenCalledWith(
+      newUser.id,
+      expect.any(String),
+      expect.any(Date)
+    );
   });
 });

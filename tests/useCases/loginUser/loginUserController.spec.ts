@@ -3,11 +3,11 @@ import { mockUseCase } from '@mock/useCase';
 import { createMockUser } from '@mock/user';
 import { err, ok } from '@useCases/common';
 import { LoginUserController } from '@useCases/loginUser/loginUserController';
-import { ILoginUserRequest } from '@useCases/loginUser/loginUserRequest';
+import { LoginUserRequest } from '@useCases/loginUser/loginUserRequest';
 import { IResponse } from '@useCases/loginUser/loginUserUseCase';
 
 describe('LoginUserController', () => {
-  const useCase = mockUseCase<ILoginUserRequest, IResponse>();
+  const useCase = mockUseCase<LoginUserRequest, IResponse>();
   const controller = new LoginUserController(useCase);
 
   beforeEach(async () => {
@@ -17,7 +17,10 @@ describe('LoginUserController', () => {
   it('returns 200 and tokens on successful login (standard)', async () => {
     const user = createMockUser();
 
-    const request = { body: { username: user.username, password: user.password } };
+    const request: LoginUserRequest = {
+      username: user.username,
+      password: user.password
+    };
 
     const useCaseResponse = {
       userId: user.id,
@@ -36,16 +39,16 @@ describe('LoginUserController', () => {
 
     expect(result.statusCode).toEqual(200);
     expect(result.data).toEqual(expectedHttpResponse);
-    expect(useCase.execute).toHaveBeenNthCalledWith(1, {
-      username: request.body.username,
-      password: request.body.password
-    });
+    expect(useCase.execute).toHaveBeenNthCalledWith(1, request);
   });
 
   it('returns 401 on wrong password(standard)', async () => {
     const user = createMockUser();
 
-    const request = { body: { username: user.username, password: 'wrong-password' } };
+    const request: LoginUserRequest = {
+      username: user.username,
+      password: 'wrong-password'
+    };
 
     useCase.execute.mockReturnValueOnce(err(InvalidCredentialsError.create()));
 
@@ -57,9 +60,6 @@ describe('LoginUserController', () => {
       message: 'Invalid user credentials',
       info: {}
     });
-    expect(useCase.execute).toHaveBeenNthCalledWith(1, {
-      username: request.body.username,
-      password: request.body.password
-    });
+    expect(useCase.execute).toHaveBeenNthCalledWith(1, request);
   });
 });

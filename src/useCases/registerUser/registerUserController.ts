@@ -1,5 +1,5 @@
 import { components } from '@src/gen/server';
-import { HttpRequest, HttpResponse, IBaseController } from '@useCases/common';
+import { HttpResponse, IBaseController } from '@useCases/common';
 import { IRegisterUserRequest } from './registerUserRequest';
 import { IRegisterUserUseCase } from './registerUserUseCase';
 import { ExistedEmailError, ExistedUsernameError } from '@domain/error/userError';
@@ -7,7 +7,7 @@ import { ExistedEmailError, ExistedUsernameError } from '@domain/error/userError
 type okResponse = components['schemas']['RegisterResponseBody'];
 type Response = HttpResponse<undefined, okResponse>;
 
-export class RegisterUserController extends IBaseController<HttpRequest, Response> {
+export class RegisterUserController extends IBaseController<IRegisterUserRequest, Response> {
   private readonly registerUserUseCase: IRegisterUserUseCase;
 
   constructor(registerUserUseCase: IRegisterUserUseCase) {
@@ -15,14 +15,8 @@ export class RegisterUserController extends IBaseController<HttpRequest, Respons
     this.registerUserUseCase = registerUserUseCase;
   }
 
-  async execute(request: HttpRequest): Promise<Response> {
-    const registerUserRequest: IRegisterUserRequest = {
-      username: request.body.username,
-      password: request.body.password,
-      email: request.body.email
-    };
-
-    const result = await this.registerUserUseCase.execute(registerUserRequest);
+  async execute(request: IRegisterUserRequest): Promise<Response> {
+    const result = await this.registerUserUseCase.execute(request);
 
     if (result.isErr()) {
       const error: Error = result.unwrapErr();

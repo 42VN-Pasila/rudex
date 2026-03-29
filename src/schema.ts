@@ -12,6 +12,9 @@ export interface UserTable {
   access_token: string | null;
   access_token_expiry_date: Timestamp | null;
   refresh_token: string | null;
+  email_confirmed: Generated<boolean>;
+  confirmation_token: string | null;
+  confirmation_token_expires_at: Timestamp | null;
   created_at: Timestamp;
   updated_at: Timestamp;
 }

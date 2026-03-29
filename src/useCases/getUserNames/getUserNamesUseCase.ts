@@ -1,12 +1,12 @@
 import { IBaseUseCase } from '@useCases/common/baseUseCase';
-import { IGetUserNamesRequest } from './getUserNamesRequest';
-import { IGetUserNamesResponse } from './getUserNamesResponse';
+import type { GetUserNamesRequest } from './getUserNamesRequest';
+import { GetUserNamesResponse } from './getUserNamesResponse';
 import { IUserRepository } from '@src/repositories/userRepository';
 import { Result, ok } from '@useCases/common';
 
-export type IResponse = Result<IGetUserNamesResponse, never>;
+export type IResponse = Result<GetUserNamesResponse, never>;
 
-export type IGetUserNamesUseCase = IBaseUseCase<IGetUserNamesRequest, IResponse>;
+export type IGetUserNamesUseCase = IBaseUseCase<GetUserNamesRequest, IResponse>;
 
 export class GetUserNamesUseCase implements IGetUserNamesUseCase {
   private readonly userRepo: IUserRepository;
@@ -15,7 +15,7 @@ export class GetUserNamesUseCase implements IGetUserNamesUseCase {
     this.userRepo = userRepo;
   }
 
-  async execute(request?: IGetUserNamesRequest): Promise<IResponse> {
+  async execute(request?: GetUserNamesRequest): Promise<IResponse> {
     const page = request?.page ?? 1;
     const limit = request?.limit ?? 20;
     const offset = (page - 1) * limit;
