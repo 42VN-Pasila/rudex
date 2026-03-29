@@ -14,7 +14,7 @@
     "test": "NODE_ENV=test jest --config ./jest.config.js --setupFiles dotenv/config --forceExit",
     "test:e2e": "NODE_ENV=test jest --config ./jest-e2e.config.js --setupFiles dotenv/config --runInBand --forceExit",
     "typecheck": "yarn gen && yarn tsc --noEmit",
-    "dev": "NODE_ENV=development node -r tsconfig-paths/register src/server.ts",
+    "dev": "NODE_ENV=development ts-node -r tsconfig-paths/register src/server.ts",
     "start": "NODE_ENV=production node dist/server.js",
     "gen": "yarn gen:openapi",
     "gen:openapi": "openapi-typescript docs/openapi.yml --output src/gen/server.d.ts",
