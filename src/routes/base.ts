@@ -5,7 +5,11 @@ import { LoginUserController } from '../useCases/loginUser/loginUserController';
 import { RegisterUserController } from '@useCases/registerUser/registerUserController';
 import { RegisterUserUseCase } from '@useCases/registerUser/registerUserUseCase';
 import { GetUserNamesUseCase } from '@useCases/getUserNames/getUserNamesUseCase';
-import { DEFAULT_LIMIT, DEFAULT_PAGE, GetUserNamesController } from '@useCases/getUserNames/getUserNamesController';
+import {
+  DEFAULT_LIMIT,
+  DEFAULT_PAGE,
+  GetUserNamesController
+} from '@useCases/getUserNames/getUserNamesController';
 import { ConfirmEmailUseCase } from '@useCases/confirmEmail/confirmEmailUseCase';
 import { ConfirmEmailController } from '@useCases/confirmEmail/confirmEmailController';
 import { db } from '@src/database';
@@ -81,7 +85,7 @@ export default async function baseRoutes(fastify: FastifyInstance) {
   fastify.get<{
     Querystring: operations['confirmEmail']['parameters']['query'];
   }>(
-    '/confirm',
+    '/mail/confirm',
     {
       schema: {
         querystring: {
@@ -126,7 +130,7 @@ export default async function baseRoutes(fastify: FastifyInstance) {
       const controllerResponse = await getUserNamesController.execute({
         rudexUserIds: request.query?.rudexUserIds,
         page: request.query?.page ?? DEFAULT_PAGE,
-        limit: request.query?.limit ?? DEFAULT_LIMIT,
+        limit: request.query?.limit ?? DEFAULT_LIMIT
       });
       return reply.status(controllerResponse.statusCode).send(controllerResponse.data);
     }

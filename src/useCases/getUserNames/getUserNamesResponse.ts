@@ -5,4 +5,4 @@ export type GetUserNamesResponse = {
   total: number;
   page: number;
   limit: number;
-}
+};

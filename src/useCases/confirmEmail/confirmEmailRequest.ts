@@ -1,3 +1,3 @@
 export type ConfirmEmailRequest = {
-    token: string;
-}
+  token: string;
+};

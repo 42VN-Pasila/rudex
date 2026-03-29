@@ -67,7 +67,7 @@ paths:
           $ref: "#/components/responses/APIErrorResponse"
         "500":
           $ref: "#/components/responses/APIErrorResponse"
-  /confirm:
+  /mail/confirm:
     get:
       operationId: confirmEmail
       summary: Confirm a user's email address

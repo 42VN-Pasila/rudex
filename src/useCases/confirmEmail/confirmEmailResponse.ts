@@ -1,3 +1,3 @@
 export type ConfirmEmailResponse = {
-    message: string;
-}
+  message: string;
+};

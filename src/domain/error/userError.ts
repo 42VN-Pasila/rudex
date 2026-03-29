@@ -55,6 +55,9 @@ export class InvalidConfirmationTokenError extends BaseError {
   type!: UserErrors.InvalidConfirmationTokenError;
 
   public static create(): InvalidConfirmationTokenError {
-    return new this(UserErrors.InvalidConfirmationTokenError, 'Confirmation token is invalid or expired');
+    return new this(
+      UserErrors.InvalidConfirmationTokenError,
+      'Confirmation token is invalid or expired'
+    );
   }
 }

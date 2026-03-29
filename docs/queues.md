@@ -31,20 +31,20 @@ src/queues/
 
 ## Job Types
 
-| Queue Name | Payload | Trigger |
-|---|---|---|
+| Queue Name                | Payload                       | Trigger           |
+| ------------------------- | ----------------------------- | ----------------- |
 | `send-confirmation-email` | `{ userId, email, username }` | User registration |
 
 ## Enqueuing a Job
 
 ```ts
-import { addJob } from '@src/queues/producer';
-import { JobTypes } from '@src/queues/jobTypes';
+import { addJob } from "@src/queues/producer";
+import { JobTypes } from "@src/queues/jobTypes";
 
 await addJob(JobTypes.SendConfirmationEmail, {
-  userId: 'abc-123',
-  email: 'user@example.com',
-  username: 'johndoe'
+  userId: "abc-123",
+  email: "user@example.com",
+  username: "johndoe",
 });
 ```
 
