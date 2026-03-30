@@ -3,12 +3,15 @@ dotenv.config({ path: '.env' });
 import app from './app';
 import { configuration } from './config';
 import logger from './logger';
+import { initSchedulers, closeSchedulers } from './schedulers';
 
 const { containerPort } = configuration.service;
 const { host } = configuration;
 
 async function start(): Promise<void> {
   try {
+    initSchedulers();
+
     logger.info(`Starting server on port ${containerPort}...`);
     await app.listen({
       port: containerPort,
@@ -22,6 +25,12 @@ async function start(): Promise<void> {
 }
 
 async function close(): Promise<void> {
+  try {
+    await closeSchedulers();
+  } catch (err) {
+    logger.error('Error closing schedulers', { err });
+  }
+
   if (app) {
     try {
       await app.close();

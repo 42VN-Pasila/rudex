@@ -8,6 +8,7 @@ import { Result, ok, err } from '@useCases/common';
 import { sendConfirmationEmailScheduler } from '@src/schedulers';
 import type { SendConfirmationEmailJobPayload } from '@src/schedulers/jobs/sendConfirmationEmail/sendConfirmationEmailJobPayload';
 import argon2 from 'argon2';
+import { directorClient } from '@services/director/directorClient';
 
 const TOKEN_EXPIRY_HOURS = 24;
 
@@ -53,6 +54,8 @@ export class RegisterUserUseCase implements IRegisterUserUseCase {
       username,
       confirmationToken
     } satisfies SendConfirmationEmailJobPayload);
+
+    await directorClient.createUser(user.id);
 
     const response: IRegisterUserResponse = { rudexUserId: user.id };
 

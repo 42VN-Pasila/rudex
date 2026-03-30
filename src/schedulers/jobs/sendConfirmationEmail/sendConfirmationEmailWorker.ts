@@ -4,11 +4,11 @@ import { SendConfirmationEmailJobPayload } from './sendConfirmationEmailJobPaylo
 import { SendConfirmationEmailProcessor } from './sendConfirmationEmailProcesor';
 
 export function SendConfirmationEmailWorker(
-    connection: ConnectionOptions
+  connection: ConnectionOptions
 ): Worker<SendConfirmationEmailJobPayload> {
-    return new Worker<SendConfirmationEmailJobPayload>(
-        JobTypes.SendConfirmationEmail,
-        (job) => SendConfirmationEmailProcessor(job),
-        { connection }
-    );
+  return new Worker<SendConfirmationEmailJobPayload>(
+    JobTypes.SendConfirmationEmail,
+    (job) => SendConfirmationEmailProcessor(job),
+    { connection }
+  );
 }

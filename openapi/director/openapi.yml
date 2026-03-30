@@ -7,7 +7,7 @@ info:
   x-displayName: Game service
 
 servers:
-  - url: https://app.42pasila.vn/director
+  - url: http://localhost:5000
     description: Production
 
 paths:

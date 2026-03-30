@@ -1,10 +1,9 @@
-import { SendConfirmationEmailJobPayload } from "./jobs/sendConfirmationEmail/sendConfirmationEmailJobPayload";
+import { SendConfirmationEmailJobPayload } from './jobs/sendConfirmationEmail/sendConfirmationEmailJobPayload';
 
 export enum JobTypes {
-    SendConfirmationEmail = 'send-confirmation-email'
+  SendConfirmationEmail = 'send-confirmation-email'
 }
 
-
 export type JobToPayloadMap = {
-    [JobTypes.SendConfirmationEmail]: SendConfirmationEmailJobPayload;
+  [JobTypes.SendConfirmationEmail]: SendConfirmationEmailJobPayload;
 };
