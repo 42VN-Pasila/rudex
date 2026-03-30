@@ -4,11 +4,11 @@ import { UsersService } from '@src/gen/director';
 import logger from '@src/logger';
 
 export class DirectorClient {
-  async createUser(rudexUserId: string): Promise<void> {
+  async createUser(username: string): Promise<void> {
     try {
       await UsersService.postUsers({
         requestBody: {
-          rudexUserId
+          username
         }
       });
     } catch (error: unknown) {

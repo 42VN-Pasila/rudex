@@ -67,52 +67,6 @@ paths:
           $ref: "#/components/responses/APIErrorResponse"
         "500":
           $ref: "#/components/responses/APIErrorResponse"
-
-  /users/usernames:
-    get:
-      operationId: getUserNames
-      summary: Get all user names
-      description: >
-        Get user names with optional filtering by user IDs and pagination.
-      tags:
-        - Users
-      parameters:
-        - in: query
-          name: rudexUserIds
-          required: false
-          style: form
-          explode: false
-          schema:
-            type: array
-            items:
-              $ref: "#/components/schemas/rudexUserId"
-        - in: query
-          name: page
-          required: false
-          schema:
-            type: integer
-            minimum: 1
-            default: 1
-          description: Page number (1-indexed)
-        - in: query
-          name: limit
-          required: false
-          schema:
-            type: integer
-            minimum: 1
-            maximum: 10
-            default: 10
-          description: Number of items per page
-      responses:
-        "200":
-          $ref: "#/components/responses/GetUserNamesResponseBody"
-        "400":
-          $ref: "#/components/responses/APIErrorResponse"
-        "404":
-          $ref: "#/components/responses/APIErrorResponse"
-        "500":
-          $ref: "#/components/responses/APIErrorResponse"
-
 components:
   parameters:
     rudexUserIdQuery:
@@ -188,44 +142,7 @@ components:
         rudexUserId:
           $ref: "#/components/schemas/rudexUserId"
 
-    GetUserNamesResponseBody:
-      type: object
-      additionalProperties: false
-      required:
-        - users
-        - total
-        - page
-        - limit
-      properties:
-        users:
-          type: array
-          items:
-            type: object
-            additionalProperties: false
-            required:
-              - username
-              - id
-            properties:
-              username:
-                type: string
-              id:
-                $ref: "#/components/schemas/rudexUserId"
-        total:
-          type: integer
-          description: Total number of matching users
-        page:
-          type: integer
-          description: Current page number
-        limit:
-          type: integer
-          description: Items per page
   responses:
-    GetUserNamesResponseBody:
-      description: Successful response with user names
-      content:
-        application/json:
-          schema:
-            $ref: "#/components/schemas/GetUserNamesResponseBody"
     APIErrorResponse:
       description: API error response
       content:

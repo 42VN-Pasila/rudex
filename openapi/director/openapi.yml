@@ -60,7 +60,7 @@ paths:
       operationId: searchByExactUserId
       parameters:
         - in: query
-          name: rudexUserId
+          name: username
           required: true
           schema:
             type: string
@@ -699,9 +699,9 @@ components:
     CreateUserRequestBody:
       type: object
       required:
-        - rudexUserId
+        - username
       properties:
-        rudexUserId:
+        username:
           type: string
     CreateUserResponse:
       type: object
@@ -745,7 +745,7 @@ components:
         - status
         - relationship
         - direction
-        - rudexUserId
+        - username
       properties:
         id:
           type: string
@@ -762,10 +762,10 @@ components:
           type: string
           enum: ["In", "Out", "None"]
           description: "Direction of the friend request if exists"
-        rudexUserId:
+        username:
           type: string
           nullable: true
-          description: "Rudex User ID for display purposes"
+          description: "Username for display purposes"
         requestFriendStatus:
           type: string
           nullable: true
