@@ -2,12 +2,12 @@ import dotenv from 'dotenv';
 dotenv.config({ path: '.env' });
 
 import Fastify from 'fastify';
-import { initQueues, closeQueues } from './queues';
-import { registerWorkers, closeWorkers } from './queues/worker';
-import { configuration, getNumberFromEnv } from './config';
+import { configuration } from './config';
 import logger from './logger';
+import { db } from './database';
+import { closeSchedulers, initSchedulers } from './schedulers';
 
-const workerPort = getNumberFromEnv('WORKER_PORT', 4010);
+const workerPort = configuration.workerApp.port;
 
 const app = Fastify({ logger: false });
 
@@ -17,8 +17,7 @@ app.get('/health', async (_request, reply) => {
 
 async function start(): Promise<void> {
     try {
-        await initQueues();
-        registerWorkers();
+        await initSchedulers(db);
 
         await app.listen({ port: workerPort, host: configuration.host });
         logger.info(`Worker server listening on port ${workerPort}`);
@@ -33,8 +32,7 @@ async function shutdown(signal: string): Promise<void> {
     logger.info(`Received ${signal}. Shutting down worker...`);
     try {
         await app.close();
-        await closeWorkers();
-        await closeQueues();
+        await closeSchedulers();
         logger.info('Worker shut down gracefully');
         process.exit(0);
     } catch (err) {

@@ -4,8 +4,10 @@ import { ExistedEmailError, ExistedUsernameError } from '@domain/error';
 import { generateString, generateEmail, generatePassword } from '@tests/factories';
 import { createMockUser } from '@mock/user';
 
-jest.mock('@src/queues/producer', () => ({
-  addJob: jest.fn().mockResolvedValue({ id: '1' })
+jest.mock('@src/schedulers', () => ({
+  sendConfirmationEmailScheduler: {
+    addJob: jest.fn().mockResolvedValue('1')
+  }
 }));
 
 describe('RegisterUserUseCase', () => {

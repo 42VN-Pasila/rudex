@@ -21,14 +21,14 @@
       "@mappers/*": ["./src/mappers/*"],
       "@services/*": ["./src/services/*"],
       "@useCases/*": ["./src/useCases/*"],
-      "@queues/*": ["./src/queues/*"],
       "@mock/*": ["./tests/mock/*"],
       "@src/*": ["./src/*"],
       "@tests/*": ["./tests/*"],
       "@gen/*": ["./src/gen/*"],
       "@dto/*": ["./src/dtos/*"],
       "@queries/*": ["./src/queries/*"],
-      "@middleware/*": ["./src/middleware/*"]
+      "@middleware/*": ["./src/middleware/*"],
+      "@schedulers/*": ["./src/schedulers/*"]
     }
   },
   "exclude": ["./coverage/**", "./dist/**", "jest*"]
