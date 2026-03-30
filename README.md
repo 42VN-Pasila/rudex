@@ -66,6 +66,12 @@ Run the app
 yarn dev
 ```
 
+Run the worker
+
+```bash
+yarn dev:worder
+```
+
 ## 🧪 Testing
 
 Run unit tests

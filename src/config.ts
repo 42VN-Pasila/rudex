@@ -21,7 +21,18 @@ export const configuration = {
     url: getValueFromEnv('FRONTEND_URL')
   },
   pg: {
-    url: getValueFromEnv('DATABASE_URL', 'postgres://rudex:password@127.0.0.1:4001/rudex_dev')
+    url: getValueFromEnv('DATABASE_URL', 'postgres://rudex:password@127.0.0.1:4020/rudex_dev')
+  },
+  redis: {
+    url: getValueFromEnv('REDIS_URL', 'redis://127.0.0.1:4030')
+  },
+  smtp: {
+    host: getValueFromEnv('SMTP_HOST', 'localhost'),
+    port: getNumberFromEnv('SMTP_PORT', 1025),
+    secure: getNumberFromEnv('SMTP_PORT', 1025) === 465,
+    from: getValueFromEnv('SMTP_FROM', 'noreply@rudex.dev'),
+    user: process.env.SMTP_USER || '',
+    pass: process.env.SMTP_PASS || ''
   }
 };
 

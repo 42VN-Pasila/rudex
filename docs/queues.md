@@ -1,39 +1,55 @@
-# Background jobs (BullMQ)
+# Background Jobs (Bull)
 
-This project uses BullMQ for background jobs. The repository includes a minimal queue setup in `src/queues` with a scheduler, worker, and a small producer helper.
+This project uses [Bull](https://github.com/OptimalBits/bull) (v4) backed by Redis for background job processing.
 
-Quick setup
+## Setup
 
-- Install dependencies:
+1. Start Redis via Docker Compose:
 
 ```bash
-npm install bullmq ioredis
-# or
-yarn add bullmq ioredis
+yarn db:up
 ```
 
-- Ensure Redis is available. Default connection: `redis://127.0.0.1:6379`.
-  Set `REDIS_URL` to override.
+2. Ensure `REDIS_URL` is set in `.env` (defaults to `redis://127.0.0.1:6379`).
 
-What we added
+## Architecture
 
-- `src/queues/config.ts` — redis connection config.
-- `src/queues/index.ts` — `initQueues()` and `closeQueues()` helpers and exported `getQueue()`.
-- `src/queues/worker.ts` — example worker process function (handles `send-email`).
-- `src/queues/producer.ts` — helper `addJob(name, data, opts)` to push jobs.
+```
+src/queues/
+├── config.ts              — Redis connection options
+├── index.ts               — initQueues(), closeQueues(), getQueue()
+├── jobTypes.ts            — Job type enum (queue names)
+├── producer.ts            — addJob() helper to enqueue jobs
+├── worker.ts              — Registers processors for each queue
+└── processors/
+    └── sendConfirmationEmail.ts — Handles confirmation email jobs
+```
 
-Usage
+- **Queues are initialized** in `src/server.ts` on startup via `initQueues()`.
+- **Queues are closed** on graceful shutdown via `closeQueues()`.
+- **Workers run in-process** alongside the Fastify server.
 
-- Start the server normally (`node dist/server.js` or `npm run start`). The server initializes queues automatically.
-- To enqueue a job from code:
+## Job Types
+
+| Queue Name                | Payload                       | Trigger           |
+| ------------------------- | ----------------------------- | ----------------- |
+| `send-confirmation-email` | `{ userId, email, username }` | User registration |
+
+## Enqueuing a Job
 
 ```ts
-import { addJob } from "../src/queues/producer";
+import { addJob } from "@src/queues/producer";
+import { JobTypes } from "@src/queues/jobTypes";
 
-await addJob("send-email", { to: "foo@example.com", subject: "Hello" });
+await addJob(JobTypes.SendConfirmationEmail, {
+  userId: "abc-123",
+  email: "user@example.com",
+  username: "johndoe",
+});
 ```
 
-Notes
+## Adding a New Job Type
 
-- Worker code in `src/queues/worker.ts` is intentionally simple; replace with real business logic.
-- The Worker runs inside the main process; for production, consider running the worker in a separate process to isolate CPU and memory.
+1. Add a new entry to `JobTypes` enum in `src/queues/jobTypes.ts`
+2. Create a processor in `src/queues/processors/`
+3. Register it in `src/queues/worker.ts`

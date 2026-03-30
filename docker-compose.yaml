@@ -10,8 +10,27 @@ services:
       POSTGRES_PASSWORD: password
       POSTGRES_DB: rudex_dev
     ports:
-      - "4001:5432"
+      - "4020:5432"
     volumes:
       - pgdata_rudex_dev:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    container_name: rudex_redis
+    restart: always
+    ports:
+      - "4030:6379"
+    volumes:
+      - redis_rudex_dev:/data
+
+  mailhog:
+    image: mailhog/mailhog
+    container_name: rudex_mailhog
+    restart: always
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+
 volumes:
   pgdata_rudex_dev:
+  redis_rudex_dev:

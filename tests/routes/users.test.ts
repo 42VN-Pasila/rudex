@@ -7,7 +7,7 @@ import { generatePassword, generateString } from '@tests/factories';
 async function createUserDb(data?: Partial<User>) {
   const user = createMockUser(data);
   const row = await db
-    .insertInto('user')
+    .insertInto('users')
     .values({
       id: user.id,
       username: user.username,
@@ -30,7 +30,7 @@ async function createUserDb(data?: Partial<User>) {
 describe('User routes', () => {
   afterEach(async () => {
     jest.clearAllMocks();
-    await db.deleteFrom('user').execute();
+    await db.deleteFrom('users').execute();
   });
 
   describe('POST /login', () => {
@@ -42,7 +42,7 @@ describe('User routes', () => {
     });
 
     afterAll(async () => {
-      await db.deleteFrom('user').where('username', '=', username).execute();
+      await db.deleteFrom('users').where('username', '=', username).execute();
     });
 
     it('returns 200 and tokens on valid password login', async () => {

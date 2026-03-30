@@ -1,15 +1,15 @@
 import { IBaseUseCase } from '@useCases/common/baseUseCase';
-import { ILoginUserRequest } from './loginUserRequest';
-import { ILoginUserResponse } from './loginUserResponse';
+import { LoginUserRequest } from './loginUserRequest';
+import { LoginUserResponse } from './loginUserResponse';
 import { IUserRepository } from '@src/repositories/userRepository';
 import { UserNotFoundError, InvalidCredentialsError } from '@domain/error';
 import { Result, ok, err } from '@useCases/common';
 import { signJwt } from '@services/jwt/jwt';
 import { JWT_ACCESS_TOKEN_EXP, JWT_REFRESH_TOKEN_EXP } from '@src/constants';
 
-export type IResponse = Result<ILoginUserResponse, UserNotFoundError | InvalidCredentialsError>;
+export type IResponse = Result<LoginUserResponse, UserNotFoundError | InvalidCredentialsError>;
 
-export type ILoginUserUseCase = IBaseUseCase<ILoginUserRequest, IResponse>;
+export type ILoginUserUseCase = IBaseUseCase<LoginUserRequest, IResponse>;
 
 export class LoginUserUseCase implements ILoginUserUseCase {
   private readonly userRepo: IUserRepository;
@@ -18,7 +18,7 @@ export class LoginUserUseCase implements ILoginUserUseCase {
     this.userRepo = userRepo;
   }
 
-  async execute(request?: ILoginUserRequest): Promise<IResponse> {
+  async execute(request?: LoginUserRequest): Promise<IResponse> {
     if (!request) {
       throw new Error('LoginUserUseCase: Missing request');
     }
@@ -46,7 +46,7 @@ export class LoginUserUseCase implements ILoginUserUseCase {
     const refreshToken = await signJwt({ userId: rudexUser.id }, JWT_REFRESH_TOKEN_EXP);
     const accessTokenExpiryDate = new Date(Date.now() + JWT_ACCESS_TOKEN_EXP * 1000);
 
-    const response: ILoginUserResponse = {
+    const response: LoginUserResponse = {
       userId: rudexUser.id,
       accessToken,
       accessTokenExpiryDate,

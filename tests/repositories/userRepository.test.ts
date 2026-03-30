@@ -6,11 +6,11 @@ describe('UserRepository (integration test)', () => {
   const repo = new UserRepository(db);
 
   beforeAll(async () => {
-    await db.deleteFrom('user').execute();
+    await db.deleteFrom('users').execute();
   });
 
   afterAll(async () => {
-    await db.deleteFrom('user').execute();
+    await db.deleteFrom('users').execute();
   });
 
   describe('findById', () => {

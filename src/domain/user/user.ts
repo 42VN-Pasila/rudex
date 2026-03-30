@@ -8,6 +8,9 @@ export type User = {
   accessToken?: string;
   accessTokenExpiryDate?: Date;
   refreshToken?: string;
+  emailConfirmed: boolean;
+  confirmationToken?: string;
+  confirmationTokenExpiresAt?: Date;
   createdAt: Date;
   updatedAt: Date;
 };

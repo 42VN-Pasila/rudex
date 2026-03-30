@@ -4,7 +4,9 @@ export enum UserErrors {
   UserNotFoundError = 'UserNotFoundError',
   InvalidCredentialsError = 'InvalidCredentialsError',
   ExistedUsernameError = 'ExistedUsername',
-  ExistedEmailError = 'ExistedEmailError'
+  ExistedEmailError = 'ExistedEmailError',
+  UserAlreadyConfirmedError = 'UserAlreadyConfirmedError',
+  InvalidConfirmationTokenError = 'InvalidConfirmationTokenError'
 }
 
 export class UserNotFoundError extends BaseError {
@@ -38,5 +40,24 @@ export class ExistedEmailError extends BaseError {
 
   public static create(): ExistedEmailError {
     return new this(UserErrors.ExistedEmailError, 'This email is registered');
+  }
+}
+
+export class UserAlreadyConfirmedError extends BaseError {
+  type!: UserErrors.UserAlreadyConfirmedError;
+
+  public static create(): UserAlreadyConfirmedError {
+    return new this(UserErrors.UserAlreadyConfirmedError, 'Email is already confirmed');
+  }
+}
+
+export class InvalidConfirmationTokenError extends BaseError {
+  type!: UserErrors.InvalidConfirmationTokenError;
+
+  public static create(): InvalidConfirmationTokenError {
+    return new this(
+      UserErrors.InvalidConfirmationTokenError,
+      'Confirmation token is invalid or expired'
+    );
   }
 }
