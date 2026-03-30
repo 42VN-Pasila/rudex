@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { DirectorClientError } from '@domain/error/externalClientError';
 import { UsersService } from '@src/gen/director';
 import logger from '@src/logger';
