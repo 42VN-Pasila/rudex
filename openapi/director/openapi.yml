@@ -34,8 +34,8 @@ paths:
             schema:
               $ref: "#/components/schemas/CreateUserRequestBody"
       responses:
-        "201":
-          description: User created
+        "202":
+          description: User creation job accepted
           content:
             application/json:
               schema:
@@ -706,9 +706,9 @@ components:
     CreateUserResponse:
       type: object
       required:
-        - userId
+        - jobId
       properties:
-        userId:
+        jobId:
           type: string
     UpdateUserAvatarRequestBody:
       type: object
