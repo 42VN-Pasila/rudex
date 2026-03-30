@@ -55,7 +55,7 @@ export class RegisterUserUseCase implements IRegisterUserUseCase {
       confirmationToken
     } satisfies SendConfirmationEmailJobPayload);
 
-    await directorClient.createUser(user.id);
+    await directorClient.createUser(username);
 
     const response: IRegisterUserResponse = { rudexUserId: user.id };
 
