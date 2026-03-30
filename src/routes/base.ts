@@ -7,6 +7,7 @@ import { RegisterUserUseCase } from '@useCases/registerUser/registerUserUseCase'
 
 import { ConfirmEmailUseCase } from '@useCases/confirmEmail/confirmEmailUseCase';
 import { ConfirmEmailController } from '@useCases/confirmEmail/confirmEmailController';
+import { getPublicKey } from '@services/jwt/jwt';
 import { db } from '@src/database';
 import type { components } from '@src/gen/server';
 
@@ -74,6 +75,10 @@ export default async function baseRoutes(fastify: FastifyInstance) {
       return reply.status(controllerResponse.statusCode).send(controllerResponse.data);
     }
   );
+
+  fastify.get('/.well-known/jwks.json', async (_request, reply: FastifyReply) => {
+    return reply.status(200).send({ publicKey: getPublicKey() });
+  });
 
   fastify.get<{
     Querystring: {

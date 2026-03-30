@@ -56,6 +56,7 @@ Create a `.env` file in the project root from the `.env.local`
 ```bash
 yarn
 yarn gen
+yarn gen:keys
 ```
 
 ## 🧩 Development

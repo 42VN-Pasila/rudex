@@ -21,6 +21,7 @@
     "gen": "yarn gen:openapi && yarn gen:openapi:clients",
     "gen:openapi": "openapi-typescript docs/openapi.yml --output src/gen/server.d.ts",
     "gen:openapi:clients": "openapi --input openapi/director/openapi.yml --output src/gen/director --client axios --useOptions --client axios --useOptions",
+    "gen:keys": "mkdir -p keys && openssl genpkey -algorithm RSA -out keys/private.pem -pkeyopt rsa_keygen_bits:2048 && openssl rsa -in keys/private.pem -pubout -out keys/public.pem",
     "gen:db": "DATABASE_URL=postgresql://rudex:password@localhost:4020/rudex_dev kysely-codegen --dialect postgres --out-file src/schema.ts && prettier --write src/schema.ts",
     "db:up": "docker compose up -d",
     "db:down": "docker compose down",
