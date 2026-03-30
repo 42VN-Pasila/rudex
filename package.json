@@ -36,6 +36,7 @@
     "setup:test": "NODE_ENV=test yarn setup:env && yarn clean && yarn gen && yarn build && yarn migrate:latest"
   },
   "dependencies": {
+    "@fastify/cookie": "^11.0.2",
     "@fastify/cors": "^11.1.0",
     "argon2": "^0.44.0",
     "axios": "^1.14.0",

@@ -3,15 +3,9 @@ import path from 'node:path';
 import jwt from 'jsonwebtoken';
 import { configuration } from '@src/config';
 
-const privateKey = fs.readFileSync(
-  path.resolve(configuration.jwt.privateKeyPath),
-  'utf8'
-);
+const privateKey = fs.readFileSync(path.resolve(configuration.jwt.privateKeyPath), 'utf8');
 
-const publicKey = fs.readFileSync(
-  path.resolve(configuration.jwt.publicKeyPath),
-  'utf8'
-);
+const publicKey = fs.readFileSync(path.resolve(configuration.jwt.publicKeyPath), 'utf8');
 
 export function getPublicKey(): string {
   return publicKey;
