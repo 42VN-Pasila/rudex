@@ -14,6 +14,9 @@ export const configuration = {
   },
   baseUrl: getValueFromEnv('BASE_URL'),
   host: getValueFromEnv('HOST', '127.0.0.1'),
+  workerApp: {
+    port: getNumberFromEnv('WORKER_PORT', 4010)
+  },
   database: {
     url: getValueFromEnv('DATABASE_URL')
   },

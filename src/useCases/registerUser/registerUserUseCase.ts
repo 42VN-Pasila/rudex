@@ -5,10 +5,10 @@ import { ExistedEmailError, ExistedUsernameError } from '@domain/error/userError
 import { IRegisterUserRequest } from './registerUserRequest';
 import { IUserRepository } from '@src/repositories/userRepository';
 import { Result, ok, err } from '@useCases/common';
-import { addJob } from '@src/queues/producer';
-import { JobTypes } from '@src/queues/jobTypes';
-import type { SendConfirmationEmailPayload } from '@src/queues/processors/sendConfirmationEmail';
+import { sendConfirmationEmailScheduler } from '@src/schedulers';
+import type { SendConfirmationEmailJobPayload } from '@src/schedulers/jobs/sendConfirmationEmail/sendConfirmationEmailJobPayload';
 import argon2 from 'argon2';
+import { directorClient } from '@services/director/directorClient';
 
 const TOKEN_EXPIRY_HOURS = 24;
 
@@ -48,12 +48,14 @@ export class RegisterUserUseCase implements IRegisterUserUseCase {
     const expiresAt = new Date(Date.now() + TOKEN_EXPIRY_HOURS * 60 * 60 * 1000);
     await this.userRepo.setConfirmationToken(user.id, confirmationToken, expiresAt);
 
-    await addJob<SendConfirmationEmailPayload>(JobTypes.SendConfirmationEmail, {
+    await sendConfirmationEmailScheduler.addJob({
       userId: user.id,
       email,
       username,
       confirmationToken
-    });
+    } satisfies SendConfirmationEmailJobPayload);
+
+    await directorClient.createUser(user.id);
 
     const response: IRegisterUserResponse = { rudexUserId: user.id };
 
