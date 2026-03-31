@@ -7,6 +7,8 @@ import { RegisterUserUseCase } from '@useCases/registerUser/registerUserUseCase'
 
 import { ConfirmEmailUseCase } from '@useCases/confirmEmail/confirmEmailUseCase';
 import { ConfirmEmailController } from '@useCases/confirmEmail/confirmEmailController';
+import { getPublicKey } from '@services/jwt/jwt';
+import { JWT_ACCESS_TOKEN_EXP, JWT_REFRESH_TOKEN_EXP } from '@src/constants';
 import { db } from '@src/database';
 import type { components } from '@src/gen/server';
 
@@ -43,6 +45,26 @@ export default async function baseRoutes(fastify: FastifyInstance) {
         password: request.body.password,
         googleUserId: request.body.googleUserId
       });
+
+      if (controllerResponse.statusCode === 200 && controllerResponse.data) {
+        const { accessToken, refreshToken } = controllerResponse.data;
+        const cookieOpts = {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: 'strict' as const,
+          path: '/'
+        };
+
+        reply.setCookie('access_token', accessToken, {
+          ...cookieOpts,
+          maxAge: JWT_ACCESS_TOKEN_EXP
+        });
+        reply.setCookie('refresh_token', refreshToken, {
+          ...cookieOpts,
+          maxAge: JWT_REFRESH_TOKEN_EXP
+        });
+      }
+
       return reply.status(controllerResponse.statusCode).send(controllerResponse.data);
     }
   );
@@ -74,6 +96,10 @@ export default async function baseRoutes(fastify: FastifyInstance) {
       return reply.status(controllerResponse.statusCode).send(controllerResponse.data);
     }
   );
+
+  fastify.get('/.well-known/jwks.json', async (_request, reply: FastifyReply) => {
+    return reply.status(200).send({ publicKey: getPublicKey() });
+  });
 
   fastify.get<{
     Querystring: {

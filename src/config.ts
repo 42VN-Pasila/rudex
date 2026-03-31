@@ -29,6 +29,10 @@ export const configuration = {
   redis: {
     url: getValueFromEnv('REDIS_URL', 'redis://127.0.0.1:4030')
   },
+  jwt: {
+    privateKeyPath: getValueFromEnv('JWT_PRIVATE_KEY_PATH', './keys/private.pem'),
+    publicKeyPath: getValueFromEnv('JWT_PUBLIC_KEY_PATH', './keys/public.pem')
+  },
   smtp: {
     host: getValueFromEnv('SMTP_HOST', 'localhost'),
     port: getNumberFromEnv('SMTP_PORT', 1025),

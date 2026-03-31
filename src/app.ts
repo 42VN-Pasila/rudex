@@ -2,6 +2,7 @@ import fastify from 'fastify';
 import { configuration } from './config';
 import logger from './logger';
 import fastifyCors from '@fastify/cors';
+import fastifyCookie from '@fastify/cookie';
 import router from './routes/router';
 
 const app = fastify({
@@ -17,13 +18,16 @@ app.register(fastifyCors, {
   hook: 'preHandler',
   delegator: (req, callback) => {
     if (configuration.service.currentEnvironment.isDevelopment) {
-      return callback(null, { origin: true });
+      return callback(null, { origin: true, credentials: true });
     }
     callback(null, {
-      origin: [configuration.baseUrl]
+      origin: [configuration.baseUrl, configuration.frontend.url],
+      credentials: true
     });
   }
 });
+
+app.register(fastifyCookie);
 
 app.addHook('preHandler', (request, _reply, done) => {
   logger.info('Incoming request', {

@@ -10,6 +10,12 @@ jest.mock('@src/schedulers', () => ({
   }
 }));
 
+jest.mock('@services/director/directorClient', () => ({
+  directorClient: {
+    createUser: jest.fn().mockResolvedValue(undefined)
+  }
+}));
+
 describe('RegisterUserUseCase', () => {
   const userRepo = mockUserRepo();
   const makeUseCase = () => new RegisterUserUseCase(userRepo);
