@@ -23,7 +23,6 @@ describe('LoginUserController', () => {
     };
 
     const useCaseResponse = {
-      userId: user.id,
       accessToken: user.accessToken!,
       refreshToken: user.refreshToken!,
       accessTokenExpiryDate: user.accessTokenExpiryDate!

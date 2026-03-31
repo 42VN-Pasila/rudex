@@ -6,6 +6,7 @@ import { UserNotFoundError, InvalidCredentialsError } from '@domain/error';
 import { Result, ok, err } from '@useCases/common';
 import { signJwt } from '@services/jwt/jwt';
 import { JWT_ACCESS_TOKEN_EXP, JWT_REFRESH_TOKEN_EXP } from '@src/constants';
+import argon2 from 'argon2';
 
 export type IResponse = Result<LoginUserResponse, UserNotFoundError | InvalidCredentialsError>;
 
@@ -31,7 +32,7 @@ export class LoginUserUseCase implements ILoginUserUseCase {
     }
 
     if (password) {
-      if (!rudexUser.password || rudexUser.password !== password) {
+      if (!rudexUser.password || !(await argon2.verify(rudexUser.password, password))) {
         return err(InvalidCredentialsError.create());
       }
     } else if (googleUserId) {
@@ -47,7 +48,6 @@ export class LoginUserUseCase implements ILoginUserUseCase {
     const accessTokenExpiryDate = new Date(Date.now() + JWT_ACCESS_TOKEN_EXP * 1000);
 
     const response: LoginUserResponse = {
-      userId: rudexUser.id,
       accessToken,
       accessTokenExpiryDate,
       refreshToken
