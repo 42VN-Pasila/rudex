@@ -10,11 +10,15 @@ servers:
   - url: http://localhost:5000
     description: Production
 
+security:
+  - BearerAuth: []
+
 paths:
   /_ping:
     get:
       summary: Check if the service is running
       description: Endpoint to ping the service
+      security: []
       responses:
         "200":
           description: Service is running
@@ -27,6 +31,7 @@ paths:
       tags:
         - Users
       summary: Create a user
+      security: []
       requestBody:
         required: true
         content:
@@ -55,17 +60,12 @@ paths:
     get:
       tags:
         - Users
-      summary: Search by exact user id
-      description: Search for a user by their exact user id
-      operationId: searchByExactUserId
+      summary: Search by exact username
+      description: Search for a user by their exact username. Requester is derived from the JWT token.
+      operationId: searchByExactUsername
       parameters:
         - in: query
           name: username
-          required: true
-          schema:
-            type: string
-        - in: query
-          name: requesterId
           required: true
           schema:
             type: string
@@ -90,19 +90,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
-  /users/{userId}/avatar:
+  /users/me/avatar:
     patch:
       tags:
         - Users
-      summary: Update user avatar
-      description: Update the avatar of a specific user
+      summary: Update authenticated user's avatar
       operationId: updateUserAvatar
-      parameters:
-        - in: path
-          name: userId
-          required: true
-          schema:
-            type: string
       requestBody:
         required: true
         content:
@@ -185,7 +178,7 @@ paths:
     get:
       tags:
         - Friends
-      summary: Get incoming/outcoming friend requests
+      summary: Get incoming/outgoing friend requests
       operationId: getAllFriendRequests
       parameters:
         - in: path
@@ -195,7 +188,7 @@ paths:
             type: string
       responses:
         "200":
-          description: User found
+          description: Friend requests list
           content:
             application/json:
               schema:
@@ -331,13 +324,18 @@ paths:
     post:
       tags:
         - Rooms
-      summary: Create a room
+      summary: Create a room (userId derived from JWT)
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/CreateRoomRequestBody"
+              type: object
+              required:
+                - roomName
+              properties:
+                roomName:
+                  type: string
       responses:
         "201":
           description: Room created
@@ -441,7 +439,7 @@ paths:
     post:
       tags:
         - Rooms
-      summary: Connect a user to room
+      summary: Connect authenticated user to room
       operationId: connectRoom
       parameters:
         - in: path
@@ -449,12 +447,6 @@ paths:
           required: true
           schema:
             type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/ConnectRoomRequest"
       responses:
         "200":
           description: Connected successfully
@@ -491,7 +483,7 @@ paths:
     post:
       tags:
         - Rooms
-      summary: Start a match
+      summary: Start a match (ownerId derived from JWT)
       operationId: startMatch
       parameters:
         - in: path
@@ -499,12 +491,6 @@ paths:
           required: true
           schema:
             type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/StartMatchRequest"
       responses:
         "200":
           description: Match started
@@ -534,7 +520,7 @@ paths:
     post:
       tags:
         - Rooms
-      summary: Disconnect a user from room
+      summary: Disconnect authenticated user from room
       operationId: disconnectRoom
       parameters:
         - in: path
@@ -542,12 +528,6 @@ paths:
           required: true
           schema:
             type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/DisconnectRoomRequest"
       responses:
         "204":
           description: Disconnected successfully
@@ -570,20 +550,15 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
-  /rooms/{roomId}/users/{userId}:
+  /rooms/{roomId}/users/me:
     patch:
       tags:
         - Rooms
-      summary: Update room user status
+      summary: Update authenticated user's room status
       operationId: updateRoomUserStatus
       parameters:
         - in: path
           name: roomId
-          required: true
-          schema:
-            type: string
-        - in: path
-          name: userId
           required: true
           schema:
             type: string
@@ -619,6 +594,11 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
     Card:
       type: object
@@ -1000,16 +980,6 @@ components:
           type: string
         endedAt:
           type: string
-    CreateRoomRequestBody:
-      type: object
-      required:
-        - userId
-        - roomName
-      properties:
-        userId:
-          type: string
-        roomName:
-          type: string
     CreateRoomResponse:
       type: object
       required:
@@ -1018,14 +988,6 @@ components:
         room:
           $ref: "#/components/schemas/RoomDto"
 
-    ConnectRoomRequest:
-      type: object
-      required:
-        - userId
-      properties:
-        userId:
-          type: string
-
     ConnectRoomResponse:
       type: object
       required:
@@ -1033,13 +995,6 @@ components:
       properties:
         room:
           $ref: "#/components/schemas/RoomDto"
-    StartMatchRequest:
-      type: object
-      required:
-        - ownerId
-      properties:
-        ownerId:
-          type: string
     StartMatchResponse:
       type: object
       required:
@@ -1073,14 +1028,6 @@ components:
           enum:
             - Ready
             - NotReady
-
-    DisconnectRoomRequest:
-      type: object
-      required:
-        - userId
-      properties:
-        userId:
-          type: string
 
     ErrorResponse:
       type: object

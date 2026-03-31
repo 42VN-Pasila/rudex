@@ -103,7 +103,6 @@ components:
         - accessToken
         - accessTokenExpiryDate
         - refreshToken
-        - userId
       properties:
         accessToken:
           type: string
@@ -115,8 +114,6 @@ components:
         refreshToken:
           type: string
           description: Token used to refresh access tokens.
-        userId:
-          type: string
 
     RegisterRequestBody:
       type: object

@@ -6,7 +6,6 @@ export class UserMapper {
       throw new Error('User domain object is missing required token fields');
     }
     return {
-      userId: u.userId,
       accessToken: u.accessToken,
       accessTokenExpiryDate: u.accessTokenExpiryDate.toISOString(),
       refreshToken: u.refreshToken
