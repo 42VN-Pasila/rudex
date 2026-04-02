@@ -61,8 +61,8 @@ paths:
       tags:
         - Users
       summary: Search by exact username
-      description: Search for a user by their exact username. Requester is derived from the JWT token.
-      operationId: searchByExactUsername
+      description: Search for a user by their exact username
+      operationId: searchByExactUserName
       parameters:
         - in: query
           name: username
@@ -90,7 +90,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
-  /users/me/avatar:
+  /users/avatar:
     patch:
       tags:
         - Users
@@ -121,18 +121,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
-  /users/{userId}/friends:
+  /friends:
     get:
       tags:
         - Friends
-      summary: Get user's friends
+      summary: Get current user's friends (userId from JWT)
       operationId: getUserFriends
-      parameters:
-        - in: path
-          name: userId
-          required: true
-          schema:
-            type: string
       responses:
         "200":
           description: User found
@@ -154,18 +148,13 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
-  /users/{userId}/friends/{otherUserId}:
+  /friends/{otherUserId}:
     delete:
       tags:
         - Friends
-      summary: Remove a friend
+      summary: Remove a friend (userId from JWT)
       operationId: removeFriendship
       parameters:
-        - in: path
-          name: userId
-          required: true
-          schema:
-            type: string
         - in: path
           name: otherUserId
           required: true
@@ -174,18 +163,12 @@ paths:
       responses:
         "204":
           description: Friend removed
-  /users/{userId}/friends/requests:
+  /friends/requests:
     get:
       tags:
         - Friends
-      summary: Get incoming/outgoing friend requests
+      summary: Get incoming/outgoing friend requests (userId from JWT)
       operationId: getAllFriendRequests
-      parameters:
-        - in: path
-          name: userId
-          required: true
-          schema:
-            type: string
       responses:
         "200":
           description: Friend requests list
@@ -198,14 +181,8 @@ paths:
     post:
       tags:
         - Friends
-      summary: Send a friend request
+      summary: Send a friend request (userId from JWT)
       operationId: sendFriendRequest
-      parameters:
-        - in: path
-          name: userId
-          required: true
-          schema:
-            type: string
       requestBody:
         required: true
         content:
@@ -239,18 +216,13 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
-  /users/{userId}/friends/requests/{otherUserId}:
+  /friends/requests/{otherUserId}:
     patch:
       tags:
         - Friends
-      summary: Respond to a friend request
+      summary: Respond to a friend request (userId from JWT)
       operationId: respondToFriendRequest
       parameters:
-        - in: path
-          name: userId
-          required: true
-          schema:
-            type: string
         - in: path
           name: otherUserId
           required: true
@@ -550,7 +522,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
-  /rooms/{roomId}/users/me:
+  /rooms/{roomId}/users/status:
     patch:
       tags:
         - Rooms
@@ -726,6 +698,7 @@ components:
         - relationship
         - direction
         - username
+        - displayName
       properties:
         id:
           type: string
@@ -746,6 +719,10 @@ components:
           type: string
           nullable: true
           description: "Username for display purposes"
+        displayName:
+          type: string
+          nullable: true
+          description: "Display name for frontend rendering"
         requestFriendStatus:
           type: string
           nullable: true
