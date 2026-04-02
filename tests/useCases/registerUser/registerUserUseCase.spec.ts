@@ -97,7 +97,7 @@ describe('RegisterUserUseCase', () => {
     });
 
     expect(result.isOk()).toBe(true);
-    expect(result.unwrap()).toEqual({ rudexUserId: registrationId });
+    expect(result.unwrap()).toEqual({ message: 'Please check your email to confirm your account' });
 
     expect(registrationRepo.create).toHaveBeenCalledWith({
       username: expect.any(String),

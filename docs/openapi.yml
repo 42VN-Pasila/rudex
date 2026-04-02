@@ -52,11 +52,14 @@ paths:
               $ref: "#/components/schemas/RegisterRequestBody"
       responses:
         "201":
-          description: New user created
+          description: Registration created, confirmation email sent
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/RegisterResponseBody"
+                type: object
+                properties:
+                  message:
+                    type: string
         "400":
           $ref: "#/components/responses/APIErrorResponse"
         "409":
@@ -107,15 +110,6 @@ components:
           type: string
         email:
           type: string
-
-    RegisterResponseBody:
-      type: object
-      additionalProperties: false
-      required:
-        - rudexUserId
-      properties:
-        rudexUserId:
-          $ref: "#/components/schemas/rudexUserId"
 
   responses:
     APIErrorResponse:

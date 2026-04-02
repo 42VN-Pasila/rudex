@@ -22,13 +22,13 @@ describe('RegisterUserController', () => {
       email: user.email
     };
 
-    const useCaseResponse = { rudexUserId: user.id };
+    const useCaseResponse = { message: 'Please check your email to confirm your account' };
     useCase.execute.mockReturnValueOnce(ok(useCaseResponse));
 
     const result = await controller.execute(request);
 
     expect(result.statusCode).toEqual(201);
-    expect(result.data).toEqual(useCaseResponse);
+    expect(result.data).toEqual({ message: 'Please check your email to confirm your account' });
     expect(useCase.execute).toHaveBeenNthCalledWith(1, request);
   });
 

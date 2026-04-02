@@ -63,8 +63,6 @@ export class RegisterUserUseCase implements IRegisterUserUseCase {
       confirmationToken
     } satisfies SendConfirmationEmailJobPayload);
 
-    const response: IRegisterUserResponse = { rudexUserId: registration.id };
-
-    return ok(response);
+    return ok({ message: 'Please check your email to confirm your account' });
   }
 }
