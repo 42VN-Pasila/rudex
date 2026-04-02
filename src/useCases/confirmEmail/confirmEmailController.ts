@@ -1,7 +1,7 @@
 import { HttpResponse, IBaseController } from '@useCases/common';
 import { ConfirmEmailRequest } from './confirmEmailRequest';
 import { IConfirmEmailUseCase } from './confirmEmailUseCase';
-import { UserAlreadyConfirmedError, InvalidConfirmationTokenError } from '@domain/error/userError';
+import { InvalidConfirmationTokenError } from '@domain/error/userError';
 
 type Response = HttpResponse<undefined, { message: string }>;
 
@@ -22,10 +22,7 @@ export class ConfirmEmailController extends IBaseController<ConfirmEmailRequest,
       if (error instanceof InvalidConfirmationTokenError) {
         return this.badRequest(error.message);
       }
-      if (error instanceof UserAlreadyConfirmedError) {
-        return this.conflict(error.message);
-      }
-      return this.badRequest(error.message);
+      return this.badRequest('Invalid confirmation token');
     }
 
     return this.ok(result.unwrap());

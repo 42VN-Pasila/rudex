@@ -11,7 +11,6 @@ export const createMockUser = (options?: Partial<User>): User => ({
   accessToken: generateString(),
   accessTokenExpiryDate: new Date('2100'),
   refreshToken: generateString(),
-  emailConfirmed: false,
   createdAt: new Date(),
   updatedAt: new Date(),
   ...options

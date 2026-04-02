@@ -27,11 +27,8 @@ export interface KnexMigrationsLock {
 export interface Users {
   access_token: string | null;
   access_token_expiry_date: Timestamp | null;
-  confirmation_token: string | null;
-  confirmation_token_expires_at: Timestamp | null;
   created_at: Timestamp;
   email: string;
-  email_confirmed: Generated<boolean>;
   google_user_id: string | null;
   google_user_name: string | null;
   id: Generated<string>;
@@ -41,8 +38,19 @@ export interface Users {
   username: string;
 }
 
+export interface Registrations {
+  id: Generated<string>;
+  username: string;
+  password: string;
+  email: string;
+  confirmation_token: string;
+  confirmation_token_expires_at: Timestamp;
+  created_at: Timestamp;
+}
+
 export interface DB {
   knex_migrations: KnexMigrations;
   knex_migrations_lock: KnexMigrationsLock;
   users: Users;
+  registrations: Registrations;
 }

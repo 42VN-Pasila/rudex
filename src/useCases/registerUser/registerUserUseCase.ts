@@ -4,11 +4,11 @@ import { IRegisterUserResponse } from './registerUserResponse';
 import { ExistedEmailError, ExistedUsernameError } from '@domain/error/userError';
 import { IRegisterUserRequest } from './registerUserRequest';
 import { IUserRepository } from '@src/repositories/userRepository';
+import { IRegistrationRepository } from '@src/repositories/registrationRepository';
 import { Result, ok, err } from '@useCases/common';
 import { sendConfirmationEmailScheduler } from '@src/schedulers';
 import type { SendConfirmationEmailJobPayload } from '@src/schedulers/jobs/sendConfirmationEmail/sendConfirmationEmailJobPayload';
 import argon2 from 'argon2';
-import { directorClient } from '@services/director/directorClient';
 
 const TOKEN_EXPIRY_HOURS = 24;
 
@@ -18,9 +18,11 @@ export type IRegisterUserUseCase = IBaseUseCase<IRegisterUserRequest, IResponse>
 
 export class RegisterUserUseCase implements IRegisterUserUseCase {
   private readonly userRepo: IUserRepository;
+  private readonly registrationRepo: IRegistrationRepository;
 
-  constructor(userRepo: IUserRepository) {
+  constructor(userRepo: IUserRepository, registrationRepo: IRegistrationRepository) {
     this.userRepo = userRepo;
+    this.registrationRepo = registrationRepo;
   }
 
   async execute(request?: IRegisterUserRequest): Promise<IResponse> {
@@ -30,34 +32,38 @@ export class RegisterUserUseCase implements IRegisterUserUseCase {
 
     const { username, password, email } = request;
 
-    const rudexUserName = await this.userRepo.checkExistsByUsername(username);
-    if (rudexUserName) return err(ExistedUsernameError.create());
+    const existingUser = await this.userRepo.checkExistsByUsername(username);
+    if (existingUser) return err(ExistedUsernameError.create());
 
-    const rudexUserEmail = await this.userRepo.checkExistsByEmail(email);
-    if (rudexUserEmail) return err(ExistedEmailError.create());
+    const existingEmail = await this.userRepo.checkExistsByEmail(email);
+    if (existingEmail) return err(ExistedEmailError.create());
+
+    const pendingUsername = await this.registrationRepo.existsByUsername(username);
+    if (pendingUsername) return err(ExistedUsernameError.create());
+
+    const pendingEmail = await this.registrationRepo.existsByEmail(email);
+    if (pendingEmail) return err(ExistedEmailError.create());
 
     const hashedPassword = await argon2.hash(password);
-
-    const user = await this.userRepo.save({
-      username,
-      email,
-      password: hashedPassword
-    });
-
     const confirmationToken = crypto.randomBytes(32).toString('hex');
     const expiresAt = new Date(Date.now() + TOKEN_EXPIRY_HOURS * 60 * 60 * 1000);
-    await this.userRepo.setConfirmationToken(user.id, confirmationToken, expiresAt);
+
+    const registration = await this.registrationRepo.create({
+      username,
+      password: hashedPassword,
+      email,
+      confirmationToken,
+      confirmationTokenExpiresAt: expiresAt
+    });
 
     await sendConfirmationEmailScheduler.addJob({
-      userId: user.id,
+      userId: registration.id,
       email,
       username,
       confirmationToken
     } satisfies SendConfirmationEmailJobPayload);
 
-    await directorClient.createUser(username);
-
-    const response: IRegisterUserResponse = { rudexUserId: user.id };
+    const response: IRegisterUserResponse = { rudexUserId: registration.id };
 
     return ok(response);
   }

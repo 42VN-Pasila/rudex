@@ -5,7 +5,6 @@ export enum UserErrors {
   InvalidCredentialsError = 'InvalidCredentialsError',
   ExistedUsernameError = 'ExistedUsername',
   ExistedEmailError = 'ExistedEmailError',
-  UserAlreadyConfirmedError = 'UserAlreadyConfirmedError',
   InvalidConfirmationTokenError = 'InvalidConfirmationTokenError'
 }
 
@@ -40,14 +39,6 @@ export class ExistedEmailError extends BaseError {
 
   public static create(): ExistedEmailError {
     return new this(UserErrors.ExistedEmailError, 'This email is registered');
-  }
-}
-
-export class UserAlreadyConfirmedError extends BaseError {
-  type!: UserErrors.UserAlreadyConfirmedError;
-
-  public static create(): UserAlreadyConfirmedError {
-    return new this(UserErrors.UserAlreadyConfirmedError, 'Email is already confirmed');
   }
 }
 

@@ -1,21 +1,22 @@
 import { FastifyInstance, FastifyReply } from 'fastify';
 import { LoginUserUseCase } from '../useCases/loginUser/loginUserUseCase';
 import { UserRepository } from '../repositories/userRepository';
+import { RegistrationRepository } from '../repositories/registrationRepository';
 import { RegisterUserController } from '@useCases/registerUser/registerUserController';
 import { RegisterUserUseCase } from '@useCases/registerUser/registerUserUseCase';
 
 import { ConfirmEmailUseCase } from '@useCases/confirmEmail/confirmEmailUseCase';
 import { ConfirmEmailController } from '@useCases/confirmEmail/confirmEmailController';
-import { getPublicKey } from '@services/jwt/jwt';
 import { JWT_ACCESS_TOKEN_EXP, JWT_REFRESH_TOKEN_EXP } from '@src/constants';
 import { db } from '@src/database';
 import type { components } from '@src/gen/server';
 
 const userRepo = new UserRepository(db);
+const registrationRepo = new RegistrationRepository(db);
 const loginUserUseCase = new LoginUserUseCase(userRepo);
-const registerUserUseCase = new RegisterUserUseCase(userRepo);
+const registerUserUseCase = new RegisterUserUseCase(userRepo, registrationRepo);
 const registerUserController = new RegisterUserController(registerUserUseCase);
-const confirmEmailUseCase = new ConfirmEmailUseCase(userRepo);
+const confirmEmailUseCase = new ConfirmEmailUseCase(userRepo, registrationRepo);
 const confirmEmailController = new ConfirmEmailController(confirmEmailUseCase);
 
 export default async function baseRoutes(fastify: FastifyInstance) {
@@ -96,10 +97,6 @@ export default async function baseRoutes(fastify: FastifyInstance) {
       return reply.status(controllerResponse.statusCode).send(controllerResponse.data);
     }
   );
-
-  fastify.get('/.well-known/jwks.json', async (_request, reply: FastifyReply) => {
-    return reply.status(200).send({ publicKey: getPublicKey() });
-  });
 
   fastify.get<{
     Querystring: {
