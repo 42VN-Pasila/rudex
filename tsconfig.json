@@ -31,7 +31,7 @@
       "@schedulers/*": ["./src/schedulers/*"]
     }
   },
-  "include": ["src/**/*", "tests/**/*"],
+  "include": ["src/**/*", "tests/**/*", "migrations/**/*", "*.ts"],
   "exclude": ["./coverage/**", "./dist/**", "jest*"],
   "ts-node": {
     "files": true
