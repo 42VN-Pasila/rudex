@@ -26,11 +26,11 @@ paths:
             application/json:
               schema:
                 type: string
-  /users:
+  /internal/users:
     post:
       tags:
-        - Users
-      summary: Create a user
+        - Internal
+      summary: Create a user (service-to-service)
       security: []
       requestBody:
         required: true
@@ -57,6 +57,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /users:
     get:
       tags:
         - Users
