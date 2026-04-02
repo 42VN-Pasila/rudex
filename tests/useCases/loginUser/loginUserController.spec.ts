@@ -14,7 +14,7 @@ describe('LoginUserController', () => {
     jest.resetAllMocks();
   });
 
-  it('returns 200 and tokens on successful login (standard)', async () => {
+  it('returns 204 on successful login', async () => {
     const user = createMockUser();
 
     const request: LoginUserRequest = {
@@ -27,21 +27,17 @@ describe('LoginUserController', () => {
       refreshToken: user.refreshToken!,
       accessTokenExpiryDate: user.accessTokenExpiryDate!
     };
-    const expectedHttpResponse = {
-      ...useCaseResponse,
-      accessTokenExpiryDate: useCaseResponse.accessTokenExpiryDate.toISOString()
-    };
 
     useCase.execute.mockReturnValueOnce(ok(useCaseResponse));
 
     const result = await controller.execute(request);
 
-    expect(result.statusCode).toEqual(200);
-    expect(result.data).toEqual(expectedHttpResponse);
+    expect(result.statusCode).toEqual(204);
+    expect(result.data).toBeUndefined();
     expect(useCase.execute).toHaveBeenNthCalledWith(1, request);
   });
 
-  it('returns 401 on wrong password(standard)', async () => {
+  it('returns 401 on wrong password', async () => {
     const user = createMockUser();
 
     const request: LoginUserRequest = {

@@ -3,6 +3,7 @@ import { configuration } from './config';
 import logger from './logger';
 import fastifyCors from '@fastify/cors';
 import fastifyCookie from '@fastify/cookie';
+import { authMiddleware } from './middleware/auth';
 import router from './routes/router';
 
 const app = fastify({
@@ -28,6 +29,8 @@ app.register(fastifyCors, {
 });
 
 app.register(fastifyCookie);
+
+app.addHook('onRequest', authMiddleware);
 
 app.addHook('preHandler', (request, _reply, done) => {
   logger.info('Incoming request', {
