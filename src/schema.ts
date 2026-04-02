@@ -24,6 +24,16 @@ export interface KnexMigrationsLock {
   is_locked: number | null;
 }
 
+export interface Registrations {
+  confirmation_token: string;
+  confirmation_token_expires_at: Timestamp;
+  created_at: Timestamp;
+  email: string;
+  id: Generated<string>;
+  password: string;
+  username: string;
+}
+
 export interface Users {
   access_token: string | null;
   access_token_expiry_date: Timestamp | null;
@@ -38,19 +48,9 @@ export interface Users {
   username: string;
 }
 
-export interface Registrations {
-  id: Generated<string>;
-  username: string;
-  password: string;
-  email: string;
-  confirmation_token: string;
-  confirmation_token_expires_at: Timestamp;
-  created_at: Timestamp;
-}
-
 export interface DB {
   knex_migrations: KnexMigrations;
   knex_migrations_lock: KnexMigrationsLock;
-  users: Users;
   registrations: Registrations;
+  users: Users;
 }
