@@ -25,11 +25,7 @@ export class RegisterUserUseCase implements IRegisterUserUseCase {
     this.registrationRepo = registrationRepo;
   }
 
-  async execute(request?: IRegisterUserRequest): Promise<IResponse> {
-    if (!request) {
-      throw new Error('RegisterUserUseCase: Missing request');
-    }
-
+  async execute(request: IRegisterUserRequest): Promise<IResponse> {
     const { username, password, email } = request;
 
     const existingUser = await this.userRepo.checkExistsByUsername(username);

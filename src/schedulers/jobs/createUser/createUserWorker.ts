@@ -3,14 +3,16 @@ import { JobTypes } from '@src/schedulers/jobTypes';
 import { CreateUserJobPayload } from './createUserJobPayload';
 import { CreateUserProcessor } from './createUserProcessor';
 import { IUserRepository } from '@repository/userRepository';
+import { IRegistrationRepository } from '@repository/registrationRepository';
 
-export function SendConfirmationEmailWorker(
+export function CreateUserWorker(
   connection: ConnectionOptions,
-  userRepo: IUserRepository
+  userRepo: IUserRepository,
+  registrationRepo: IRegistrationRepository
 ): Worker<CreateUserJobPayload> {
   return new Worker<CreateUserJobPayload>(
     JobTypes.CreateUser,
-    (job) => CreateUserProcessor(job, userRepo),
+    (job) => CreateUserProcessor(job, userRepo, registrationRepo),
     { connection }
   );
 }

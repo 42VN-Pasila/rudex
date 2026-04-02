@@ -16,7 +16,7 @@ const registrationRepo = new RegistrationRepository(db);
 const loginUserUseCase = new LoginUserUseCase(userRepo);
 const registerUserUseCase = new RegisterUserUseCase(userRepo, registrationRepo);
 const registerUserController = new RegisterUserController(registerUserUseCase);
-const confirmEmailUseCase = new ConfirmEmailUseCase(userRepo, registrationRepo);
+const confirmEmailUseCase = new ConfirmEmailUseCase(registrationRepo);
 const confirmEmailController = new ConfirmEmailController(confirmEmailUseCase);
 
 export default async function baseRoutes(fastify: FastifyInstance) {
