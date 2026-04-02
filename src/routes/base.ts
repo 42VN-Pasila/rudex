@@ -66,7 +66,7 @@ export default async function baseRoutes(fastify: FastifyInstance) {
         maxAge: JWT_REFRESH_TOKEN_EXP
       });
 
-      return reply.status(204).send();
+      return reply.status(200).send({ username: request.body.username });
     }
   );
 

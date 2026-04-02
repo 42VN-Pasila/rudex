@@ -27,8 +27,17 @@ paths:
             schema:
               $ref: "#/components/schemas/LoginRequestBody"
       responses:
-        "204":
+        "200":
           description: Successful login (tokens set in httpOnly cookies)
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - username
+                properties:
+                  username:
+                    type: string
         "400":
           $ref: "#/components/responses/APIErrorResponse"
         "401":
