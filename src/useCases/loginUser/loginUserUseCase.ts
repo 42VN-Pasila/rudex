@@ -20,6 +20,10 @@ export class LoginUserUseCase implements ILoginUserUseCase {
   }
 
   async execute(request: LoginUserRequest): Promise<IResponse> {
+    if (!request) {
+      throw new Error('LoginUserUseCase: Missing request');
+    }
+
     const { username, password, googleUserId } = request;
 
     const rudexUser = await this.userRepo.checkExistsByUsername(username);

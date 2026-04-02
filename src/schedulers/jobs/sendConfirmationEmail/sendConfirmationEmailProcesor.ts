@@ -14,9 +14,9 @@ export async function SendConfirmationEmailProcessor(
 
   await sendMail({
     to: email,
-    subject: 'Confirm your Rudex account',
+    subject: 'Confirm your Pickpocker account',
     html: `
-            <h2>Welcome to Rudex, ${username}!</h2>
+            <h2>Welcome to Pickpocker, ${username}!</h2>
             <p>Please confirm your email address by clicking the link below:</p>
             <p><a href="${confirmUrl}">Confirm my account</a></p>
         `
