@@ -43,8 +43,8 @@ export class LoginUserUseCase implements ILoginUserUseCase {
       return err(InvalidCredentialsError.create());
     }
 
-    const accessToken = await signJwt({ userId: rudexUser.id }, JWT_ACCESS_TOKEN_EXP);
-    const refreshToken = await signJwt({ userId: rudexUser.id }, JWT_REFRESH_TOKEN_EXP);
+    const accessToken = await signJwt({ username: rudexUser.username }, JWT_ACCESS_TOKEN_EXP);
+    const refreshToken = await signJwt({ username: rudexUser.username }, JWT_REFRESH_TOKEN_EXP);
     const accessTokenExpiryDate = new Date(Date.now() + JWT_ACCESS_TOKEN_EXP * 1000);
 
     const response: LoginUserResponse = {

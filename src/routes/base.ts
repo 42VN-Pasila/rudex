@@ -1,7 +1,6 @@
 import { FastifyInstance, FastifyReply } from 'fastify';
 import { LoginUserUseCase } from '../useCases/loginUser/loginUserUseCase';
 import { UserRepository } from '../repositories/userRepository';
-import { LoginUserController } from '../useCases/loginUser/loginUserController';
 import { RegisterUserController } from '@useCases/registerUser/registerUserController';
 import { RegisterUserUseCase } from '@useCases/registerUser/registerUserUseCase';
 
@@ -14,7 +13,6 @@ import type { components } from '@src/gen/server';
 
 const userRepo = new UserRepository(db);
 const loginUserUseCase = new LoginUserUseCase(userRepo);
-const loginUserController = new LoginUserController(loginUserUseCase);
 const registerUserUseCase = new RegisterUserUseCase(userRepo);
 const registerUserController = new RegisterUserController(registerUserUseCase);
 const confirmEmailUseCase = new ConfirmEmailUseCase(userRepo);
@@ -40,32 +38,34 @@ export default async function baseRoutes(fastify: FastifyInstance) {
       }
     },
     async (request, reply: FastifyReply) => {
-      const controllerResponse = await loginUserController.execute({
+      const loginResult = await loginUserUseCase.execute({
         username: request.body.username,
         password: request.body.password,
         googleUserId: request.body.googleUserId
       });
 
-      if (controllerResponse.statusCode === 200 && controllerResponse.data) {
-        const { accessToken, refreshToken } = controllerResponse.data;
-        const cookieOpts = {
-          httpOnly: true,
-          secure: process.env.NODE_ENV === 'production',
-          sameSite: 'strict' as const,
-          path: '/'
-        };
-
-        reply.setCookie('access_token', accessToken, {
-          ...cookieOpts,
-          maxAge: JWT_ACCESS_TOKEN_EXP
-        });
-        reply.setCookie('refresh_token', refreshToken, {
-          ...cookieOpts,
-          maxAge: JWT_REFRESH_TOKEN_EXP
-        });
+      if (loginResult.isErr()) {
+        return reply.status(401).send({ error: 'Invalid user credentials' });
       }
 
-      return reply.status(controllerResponse.statusCode).send(controllerResponse.data);
+      const { accessToken, refreshToken } = loginResult.unwrap();
+      const cookieOpts = {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax' as const,
+        path: '/'
+      };
+
+      reply.setCookie('access_token', accessToken, {
+        ...cookieOpts,
+        maxAge: JWT_ACCESS_TOKEN_EXP
+      });
+      reply.setCookie('refresh_token', refreshToken, {
+        ...cookieOpts,
+        maxAge: JWT_REFRESH_TOKEN_EXP
+      });
+
+      return reply.status(204).send();
     }
   );
 

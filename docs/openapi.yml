@@ -27,12 +27,8 @@ paths:
             schema:
               $ref: "#/components/schemas/LoginRequestBody"
       responses:
-        "200":
-          description: Successful login response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/LoginResponseBody"
+        "204":
+          description: Successful login (tokens set in httpOnly cookies)
         "400":
           $ref: "#/components/responses/APIErrorResponse"
         "401":
@@ -96,24 +92,6 @@ components:
           format: password
         googleUserId:
           type: string
-
-    LoginResponseBody:
-      type: object
-      required:
-        - accessToken
-        - accessTokenExpiryDate
-        - refreshToken
-      properties:
-        accessToken:
-          type: string
-          description: JWT access token used for authenticated requests.
-        accessTokenExpiryDate:
-          type: string
-          format: date-time
-          description: Expiration date and time of the access token.
-        refreshToken:
-          type: string
-          description: Token used to refresh access tokens.
 
     RegisterRequestBody:
       type: object

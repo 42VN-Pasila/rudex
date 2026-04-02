@@ -31,5 +31,9 @@
       "@schedulers/*": ["./src/schedulers/*"]
     }
   },
-  "exclude": ["./coverage/**", "./dist/**", "jest*"]
+  "include": ["src/**/*", "tests/**/*"],
+  "exclude": ["./coverage/**", "./dist/**", "jest*"],
+  "ts-node": {
+    "files": true
+  }
 }
