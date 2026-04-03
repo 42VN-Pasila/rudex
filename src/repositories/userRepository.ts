@@ -19,11 +19,6 @@ function toUserDomain(row: UserEntity): User {
       ? new Date(row.access_token_expiry_date)
       : undefined,
     refreshToken: row.refresh_token ?? undefined,
-    emailConfirmed: row.email_confirmed,
-    confirmationToken: row.confirmation_token ?? undefined,
-    confirmationTokenExpiresAt: row.confirmation_token_expires_at
-      ? new Date(row.confirmation_token_expires_at)
-      : undefined,
     createdAt: new Date(row.created_at),
     updatedAt: new Date(row.updated_at)
   };
@@ -36,7 +31,6 @@ export interface PaginatedResult<T> {
 
 export interface IUserRepository {
   findById(userId: string): Promise<User>;
-  findByConfirmationToken(token: string): Promise<User | null>;
   findByGoogleUserId(googleUserId: string): Promise<User | null>;
   checkExistsByUsername(username: string): Promise<User | null>;
   checkExistsByEmail(email: string): Promise<User | null>;
@@ -53,8 +47,6 @@ export interface IUserRepository {
     googleUserName?: string;
     refreshToken?: string;
   }): Promise<User>;
-  setConfirmationToken(userId: string, token: string, expiresAt: Date): Promise<void>;
-  confirmEmail(userId: string): Promise<void>;
 }
 
 export class UserRepository extends BaseRepository<DB> implements IUserRepository {
@@ -132,41 +124,6 @@ export class UserRepository extends BaseRepository<DB> implements IUserRepositor
     ]);
 
     return { data: rows.map(toUserDomain), total: Number(countResult.count) };
-  }
-
-  async findByConfirmationToken(token: string): Promise<User | null> {
-    const row = await this.db
-      .selectFrom('users')
-      .selectAll()
-      .where('confirmation_token', '=', token)
-      .executeTakeFirst();
-
-    return row ? toUserDomain(row) : null;
-  }
-
-  async setConfirmationToken(userId: string, token: string, expiresAt: Date): Promise<void> {
-    await this.db
-      .updateTable('users')
-      .set({
-        confirmation_token: token,
-        confirmation_token_expires_at: expiresAt,
-        updated_at: new Date()
-      })
-      .where('id', '=', userId)
-      .execute();
-  }
-
-  async confirmEmail(userId: string): Promise<void> {
-    await this.db
-      .updateTable('users')
-      .set({
-        email_confirmed: true,
-        confirmation_token: null,
-        confirmation_token_expires_at: null,
-        updated_at: new Date()
-      })
-      .where('id', '=', userId)
-      .execute();
   }
 
   async save({

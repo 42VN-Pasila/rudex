@@ -1,8 +1,7 @@
-import { mockUserRepo } from '@mock/repos';
+import { mockUserRepo, mockRegistrationRepo } from '@mock/repos';
 import { RegisterUserUseCase } from '@useCases/registerUser/registerUserUseCase';
 import { ExistedEmailError, ExistedUsernameError } from '@domain/error';
-import { generateString, generateEmail, generatePassword } from '@tests/factories';
-import { createMockUser } from '@mock/user';
+import { generateString, generateEmail, generatePassword, generateUUID } from '@tests/factories';
 
 jest.mock('@src/schedulers', () => ({
   sendConfirmationEmailScheduler: {
@@ -10,21 +9,18 @@ jest.mock('@src/schedulers', () => ({
   }
 }));
 
-jest.mock('@services/director/directorClient', () => ({
-  directorClient: {
-    createUser: jest.fn().mockResolvedValue(undefined)
-  }
-}));
-
 describe('RegisterUserUseCase', () => {
   const userRepo = mockUserRepo();
-  const makeUseCase = () => new RegisterUserUseCase(userRepo);
+  const registrationRepo = mockRegistrationRepo();
+  const makeUseCase = () => new RegisterUserUseCase(userRepo, registrationRepo);
 
   beforeEach(() => {
     jest.resetAllMocks();
+    registrationRepo.existsByUsername.mockResolvedValue(false);
+    registrationRepo.existsByEmail.mockResolvedValue(false);
   });
 
-  it('returns ExistedUsernameError when username already exists', async () => {
+  it('returns ExistedUsernameError when username exists in users', async () => {
     userRepo.checkExistsByUsername.mockResolvedValue(true);
 
     const useCase = makeUseCase();
@@ -35,12 +31,11 @@ describe('RegisterUserUseCase', () => {
     });
 
     expect(result.isErr()).toBe(true);
-    const e = result.unwrapErr();
-    expect(e).toBeInstanceOf(ExistedUsernameError);
+    expect(result.unwrapErr()).toBeInstanceOf(ExistedUsernameError);
   });
 
-  it('returns ExistedEmailError when email already exists', async () => {
-    userRepo.checkExistsByUsername.mockResolvedValue(false);
+  it('returns ExistedEmailError when email exists in users', async () => {
+    userRepo.checkExistsByUsername.mockResolvedValue(null);
     userRepo.checkExistsByEmail.mockResolvedValue(true);
 
     const useCase = makeUseCase();
@@ -51,36 +46,65 @@ describe('RegisterUserUseCase', () => {
     });
 
     expect(result.isErr()).toBe(true);
-    const e = result.unwrapErr();
-    expect(e).toBeInstanceOf(ExistedEmailError);
+    expect(result.unwrapErr()).toBeInstanceOf(ExistedEmailError);
   });
 
-  it('returns Ok with new user when registration succeeds', async () => {
-    userRepo.checkExistsByUsername.mockResolvedValue(false);
-    userRepo.checkExistsByEmail.mockResolvedValue(false);
-    userRepo.setConfirmationToken.mockResolvedValue(undefined);
-
-    const newUser = createMockUser();
-    userRepo.save.mockResolvedValue(newUser);
+  it('returns ExistedUsernameError when username exists in pending registrations', async () => {
+    userRepo.checkExistsByUsername.mockResolvedValue(null);
+    userRepo.checkExistsByEmail.mockResolvedValue(null);
+    registrationRepo.existsByUsername.mockResolvedValue(true);
 
     const useCase = makeUseCase();
     const result = await useCase.execute({
-      username: newUser.username,
-      password: newUser.password as string,
-      email: newUser.email
+      username: generateString(),
+      password: generatePassword(),
+      email: generateEmail()
+    });
+
+    expect(result.isErr()).toBe(true);
+    expect(result.unwrapErr()).toBeInstanceOf(ExistedUsernameError);
+  });
+
+  it('returns ExistedEmailError when email exists in pending registrations', async () => {
+    userRepo.checkExistsByUsername.mockResolvedValue(null);
+    userRepo.checkExistsByEmail.mockResolvedValue(null);
+    registrationRepo.existsByUsername.mockResolvedValue(false);
+    registrationRepo.existsByEmail.mockResolvedValue(true);
+
+    const useCase = makeUseCase();
+    const result = await useCase.execute({
+      username: generateString(),
+      password: generatePassword(),
+      email: generateEmail()
+    });
+
+    expect(result.isErr()).toBe(true);
+    expect(result.unwrapErr()).toBeInstanceOf(ExistedEmailError);
+  });
+
+  it('creates a registration and enqueues confirmation email on success', async () => {
+    userRepo.checkExistsByUsername.mockResolvedValue(null);
+    userRepo.checkExistsByEmail.mockResolvedValue(null);
+
+    const registrationId = generateUUID();
+    registrationRepo.create.mockResolvedValue({ id: registrationId });
+
+    const useCase = makeUseCase();
+    const result = await useCase.execute({
+      username: generateString(),
+      password: generatePassword(),
+      email: generateEmail()
     });
 
     expect(result.isOk()).toBe(true);
-    const payload = result.unwrap();
+    expect(result.unwrap()).toEqual({ message: 'Please check your email to confirm your account' });
 
-    expect(payload).toEqual({
-      rudexUserId: newUser.id
+    expect(registrationRepo.create).toHaveBeenCalledWith({
+      username: expect.any(String),
+      password: expect.any(String),
+      email: expect.any(String),
+      confirmationToken: expect.any(String),
+      confirmationTokenExpiresAt: expect.any(Date)
     });
-
-    expect(userRepo.setConfirmationToken).toHaveBeenCalledWith(
-      newUser.id,
-      expect.any(String),
-      expect.any(Date)
-    );
   });
 });

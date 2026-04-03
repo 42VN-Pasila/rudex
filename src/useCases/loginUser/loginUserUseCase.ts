@@ -19,7 +19,7 @@ export class LoginUserUseCase implements ILoginUserUseCase {
     this.userRepo = userRepo;
   }
 
-  async execute(request?: LoginUserRequest): Promise<IResponse> {
+  async execute(request: LoginUserRequest): Promise<IResponse> {
     if (!request) {
       throw new Error('LoginUserUseCase: Missing request');
     }

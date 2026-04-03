@@ -91,6 +91,33 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /users/{username}:
+    get:
+      tags:
+        - Users
+      summary: Get user by username
+      operationId: getUserByUsername
+      parameters:
+        - in: path
+          name: username
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: User found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserDto"
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Internal server error
   /users/avatar:
     patch:
       tags:
@@ -731,10 +758,10 @@ components:
     UserDto:
       type: object
       required:
-        - id
+        - username
         - status
       properties:
-        id:
+        username:
           type: string
         status:
           type: string

@@ -1,52 +1,44 @@
 import { IBaseUseCase } from '@useCases/common/baseUseCase';
 import { ConfirmEmailRequest } from './confirmEmailRequest';
 import { ConfirmEmailResponse } from './confirmEmailResponse';
-import { IUserRepository } from '@src/repositories/userRepository';
+import { IRegistrationRepository } from '@src/repositories/registrationRepository';
 import { Result, ok, err } from '@useCases/common';
-import {
-  UserNotFoundError,
-  UserAlreadyConfirmedError,
-  InvalidConfirmationTokenError
-} from '@domain/error/userError';
+import { InvalidConfirmationTokenError } from '@domain/error/userError';
+import { createUserScheduler } from '@src/schedulers';
+import type { CreateUserJobPayload } from '@src/schedulers/jobs/createUser/createUserJobPayload';
 
-type ConfirmEmailError =
-  | UserNotFoundError
-  | UserAlreadyConfirmedError
-  | InvalidConfirmationTokenError;
+type ConfirmEmailError = InvalidConfirmationTokenError;
 
 export type IResponse = Result<ConfirmEmailResponse, ConfirmEmailError>;
 
 export type IConfirmEmailUseCase = IBaseUseCase<ConfirmEmailRequest, IResponse>;
 
 export class ConfirmEmailUseCase implements IConfirmEmailUseCase {
-  private readonly userRepo: IUserRepository;
+  private readonly registrationRepo: IRegistrationRepository;
 
-  constructor(userRepo: IUserRepository) {
-    this.userRepo = userRepo;
+  constructor(registrationRepo: IRegistrationRepository) {
+    this.registrationRepo = registrationRepo;
   }
 
-  async execute(request?: ConfirmEmailRequest): Promise<IResponse> {
-    if (!request) {
-      throw new Error('ConfirmEmailUseCase: Missing request');
-    }
-
+  async execute(request: ConfirmEmailRequest): Promise<IResponse> {
     const { token } = request;
 
-    const user = await this.userRepo.findByConfirmationToken(token);
+    const registration = await this.registrationRepo.findByToken(token);
 
-    if (!user) {
+    if (!registration) {
       return err(InvalidConfirmationTokenError.create());
     }
 
-    if (user.emailConfirmed) {
-      return err(UserAlreadyConfirmedError.create());
-    }
-
-    if (user.confirmationTokenExpiresAt && user.confirmationTokenExpiresAt < new Date()) {
+    if (registration.confirmationTokenExpiresAt < new Date()) {
       return err(InvalidConfirmationTokenError.create());
     }
 
-    await this.userRepo.confirmEmail(user.id);
+    await createUserScheduler.addJob({
+      registrationId: registration.id,
+      username: registration.username,
+      password: registration.password,
+      email: registration.email
+    } satisfies CreateUserJobPayload);
 
     return ok({ message: 'Email confirmed successfully' });
   }
