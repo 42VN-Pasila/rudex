@@ -153,7 +153,7 @@ paths:
     get:
       tags:
         - Friends
-      summary: Get current user's friends (userId from JWT)
+      summary: Get current user's friends (username from JWT)
       operationId: getUserFriends
       responses:
         "200":
@@ -180,7 +180,7 @@ paths:
     delete:
       tags:
         - Friends
-      summary: Remove a friend (userId from JWT)
+      summary: Remove a friend (username from JWT)
       operationId: removeFriendship
       parameters:
         - in: path
@@ -195,7 +195,7 @@ paths:
     get:
       tags:
         - Friends
-      summary: Get incoming/outgoing friend requests (userId from JWT)
+      summary: Get incoming/outgoing friend requests (username from JWT)
       operationId: getAllFriendRequests
       responses:
         "200":
@@ -209,7 +209,7 @@ paths:
     post:
       tags:
         - Friends
-      summary: Send a friend request (userId from JWT)
+      summary: Send a friend request (username from JWT)
       operationId: sendFriendRequest
       requestBody:
         required: true
@@ -248,7 +248,7 @@ paths:
     patch:
       tags:
         - Friends
-      summary: Respond to a friend request (userId from JWT)
+      summary: Respond to a friend request (username from JWT)
       operationId: respondToFriendRequest
       parameters:
         - in: path
@@ -324,7 +324,7 @@ paths:
     post:
       tags:
         - Rooms
-      summary: Create a room (userId derived from JWT)
+      summary: Create a room (username derived from JWT)
       requestBody:
         required: true
         content:
@@ -483,7 +483,7 @@ paths:
     post:
       tags:
         - Rooms
-      summary: Start a match (ownerId derived from JWT)
+      summary: Start a match (ownerUsername derived from JWT)
       operationId: startMatch
       parameters:
         - in: path
@@ -614,15 +614,15 @@ components:
       type: object
       required:
         - matchId
-        - userId
-        - opponentId
+        - username
+        - opponentUsername
         - card
       properties:
         matchId:
           type: string
-        userId:
+        username:
           type: string
-        opponentId:
+        opponentUsername:
           type: string
         card:
           $ref: "#/components/schemas/Card"
@@ -630,51 +630,51 @@ components:
       type: object
       required:
         - matchId
-        - userId
+        - username
       properties:
         matchId:
           type: string
-        userId:
+        username:
           type: string
     LeaveMatchEvent:
       type: object
       required:
         - matchId
-        - userId
+        - username
       properties:
         matchId:
           type: string
-        userId:
+        username:
           type: string
     CreateMatchEvent:
       type: object
       required:
         - matchId
-        - userId
+        - username
       properties:
         matchId:
           type: string
-        userId:
+        username:
           type: string
     SkipTurnEvent:
       type: object
       required:
         - matchId
-        - userId
+        - username
       properties:
         matchId:
           type: string
-        userId:
+        username:
           type: string
     ExitMatchEvent:
       type: object
       required:
         - matchId
-        - userId
+        - username
       properties:
         matchId:
           type: string
-        userId:
+        username:
           type: string
     CreateUserRequestBody:
       type: object
@@ -700,10 +700,10 @@ components:
     UpdateUserAvatarResponse:
       type: object
       required:
-        - userId
+        - username
         - avatarId
       properties:
-        userId:
+        username:
           type: string
         avatarId:
           type: string
@@ -799,7 +799,7 @@ components:
       required:
         - id
         - name
-        - ownerId
+        - ownerUsername
         - users
         - connectionCount
         - started
@@ -808,7 +808,7 @@ components:
           type: string
         name:
           type: string
-        ownerId:
+        ownerUsername:
           type: string
         users:
           type: array
@@ -824,7 +824,7 @@ components:
       required:
         - id
         - name
-        - ownerId
+        - ownerUsername
         - users
         - connectionCount
         - started
@@ -833,7 +833,7 @@ components:
           type: string
         name:
           type: string
-        ownerId:
+        ownerUsername:
           type: string
         users:
           type: array
@@ -865,42 +865,42 @@ components:
       type: object
       required:
         - cards
-        - userId
+        - username
       properties:
         cards:
           items:
             $ref: "#/components/schemas/Card"
-        userId:
+        username:
           type: string
     BookDto:
       type: object
       required:
         - cards
-        - userId
+        - username
       properties:
         cards:
           type: array
           items:
             $ref: "#/components/schemas/Card"
-        userId:
+        username:
           type: string
     HandCountDto:
       type: object
       required:
-        - userId
+        - username
         - handCount
       properties:
-        userId:
+        username:
           type: string
         handCount:
           type: integer
     BookCountDto:
       type: object
       required:
-        - userId
+        - username
         - count
       properties:
-        userId:
+        username:
           type: string
         count:
           type: integer
@@ -908,12 +908,12 @@ components:
       type: object
       required:
         - order
-        - userId
+        - username
         - isTurn
       properties:
         order:
           type: integer
-        userId:
+        username:
           type: string
         isTurn:
           type: boolean
@@ -966,7 +966,7 @@ components:
       type: object
       required:
         - roomId
-        - winnerUserId
+        - winnerUsername
         - hasCoWinners
         - endedReason
         - startedAt
@@ -974,7 +974,7 @@ components:
       properties:
         roomId:
           type: string
-        winnerUserId:
+        winnerUsername:
           type: string
           nullable: true
         hasCoWinners:
@@ -1021,12 +1021,12 @@ components:
       type: object
       required:
         - roomId
-        - userId
+        - username
         - status
       properties:
         roomId:
           type: string
-        userId:
+        username:
           type: string
         status:
           type: string
