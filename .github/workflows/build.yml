@@ -23,8 +23,8 @@ jobs:
           cache: yarn
       - name: Install dependencies
         run: yarn install --frozen-lockfile
-      - name: Generate OpenAPI
-        run: yarn gen:openapi
+      - name: Generate types
+        run: yarn gen
       - name: Run format check
         run: yarn format:check
 
@@ -41,8 +41,8 @@ jobs:
           cache: yarn
       - name: Install dependencies
         run: yarn install --frozen-lockfile
-      - name: Generate OpenAPI
-        run: yarn gen:openapi
+      - name: Generate types
+        run: yarn gen
       - name: Run lint
         run: yarn lint
 
@@ -59,8 +59,8 @@ jobs:
           cache: yarn
       - name: Install dependencies
         run: yarn install --frozen-lockfile
-      - name: Generate OpenAPI
-        run: yarn gen:openapi
+      - name: Generate types
+        run: yarn gen
       - name: Run Type Check
         run: yarn tsc --noEmit
 
@@ -78,7 +78,9 @@ jobs:
           cache: yarn
       - name: Install dependencies
         run: yarn install --frozen-lockfile
-      - name: Generate OpenAPI
-        run: yarn gen:openapi
+      - name: Generate types
+        run: yarn gen
+      - name: Generate keys
+        run: yarn gen:keys
       - name: Run unit tests
         run: yarn test
