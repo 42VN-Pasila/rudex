@@ -8,11 +8,11 @@ const currentEnvironment = getEnvironment('NODE_ENV');
 
 export const configuration = {
   service: {
-    containerPort: getNumberFromEnv('PORT'),
+    containerPort: getNumberFromEnv('PORT', 4000),
     name: getValueFromEnv('SERVICE_NAME', 'rudex'),
     currentEnvironment
   },
-  baseUrl: getValueFromEnv('BASE_URL'),
+  baseUrl: getValueFromEnv('BASE_URL', 'http://localhost:4000'),
   host: getValueFromEnv('HOST', '127.0.0.1'),
   workerApp: {
     port: getNumberFromEnv('WORKER_PORT', 4010)
