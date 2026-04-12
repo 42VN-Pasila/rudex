@@ -34,6 +34,7 @@ export interface IUserRepository {
   findByGoogleUserId(googleUserId: string): Promise<User | null>;
   checkExistsByUsername(username: string): Promise<User | null>;
   checkExistsByEmail(email: string): Promise<User | null>;
+  updatePasswordByUsername(username: string, hashedPassword: string): Promise<boolean>;
   findUsers(params: {
     userIds?: string[];
     offset: number;
@@ -101,6 +102,21 @@ export class UserRepository extends BaseRepository<DB> implements IUserRepositor
       .executeTakeFirst();
 
     return row ? toUserDomain(row) : null;
+  }
+
+  async updatePasswordByUsername(username: string, hashedPassword: string): Promise<boolean> {
+    const now = new Date();
+    const row = await this.db
+      .updateTable('users')
+      .set({
+        password: hashedPassword,
+        updated_at: now
+      })
+      .where('username', '=', username)
+      .returning('id')
+      .executeTakeFirst();
+
+    return Boolean(row);
   }
 
   async findUsers({

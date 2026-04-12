@@ -7,6 +7,9 @@ import { RegisterUserUseCase } from '@useCases/registerUser/registerUserUseCase'
 
 import { ConfirmEmailUseCase } from '@useCases/confirmEmail/confirmEmailUseCase';
 import { ConfirmEmailController } from '@useCases/confirmEmail/confirmEmailController';
+import { UpdatePasswordUseCase } from '@useCases/updatePassword/updatePasswordUseCase';
+import { UpdatePasswordController } from '@useCases/updatePassword/updatePasswordController';
+import type { UpdatePasswordDto } from '@src/dtos/passwordDto';
 import { JWT_ACCESS_TOKEN_EXP, JWT_REFRESH_TOKEN_EXP } from '@src/constants';
 import { db } from '@src/database';
 import type { components } from '@src/gen/server';
@@ -18,6 +21,8 @@ const registerUserUseCase = new RegisterUserUseCase(userRepo, registrationRepo);
 const registerUserController = new RegisterUserController(registerUserUseCase);
 const confirmEmailUseCase = new ConfirmEmailUseCase(registrationRepo);
 const confirmEmailController = new ConfirmEmailController(confirmEmailUseCase);
+const updatePasswordUseCase = new UpdatePasswordUseCase(userRepo);
+const updatePasswordController = new UpdatePasswordController(updatePasswordUseCase);
 
 export default async function baseRoutes(fastify: FastifyInstance) {
   fastify.post<{
@@ -94,6 +99,43 @@ export default async function baseRoutes(fastify: FastifyInstance) {
         password: request.body.password,
         email: request.body.email
       });
+      return reply.status(controllerResponse.statusCode).send(controllerResponse.data);
+    }
+  );
+
+  fastify.post<{
+    Body: UpdatePasswordDto;
+  }>(
+    '/update-password',
+    {
+      schema: {
+        body: {
+          type: 'object',
+          additionalProperties: false,
+          required: ['currentPassword', 'newPassword'],
+          properties: {
+            currentPassword: { type: 'string' },
+            newPassword: { type: 'string' }
+          }
+        }
+      }
+    },
+    async (request, reply: FastifyReply) => {
+      const username = request.user?.username;
+      if (!username) {
+        return reply.status(401).send({ error: 'Not authenticated' });
+      }
+
+      const controllerResponse = await updatePasswordController.execute({
+        username,
+        currentPassword: request.body.currentPassword,
+        newPassword: request.body.newPassword
+      });
+
+      if (controllerResponse.statusCode === 204) {
+        return reply.status(204).send();
+      }
+
       return reply.status(controllerResponse.statusCode).send(controllerResponse.data);
     }
   );
