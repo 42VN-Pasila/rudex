@@ -70,6 +70,23 @@ export default async function baseRoutes(fastify: FastifyInstance) {
     }
   );
 
+  fastify.get('/profile', async (request, reply: FastifyReply) => {
+    const username = request.user?.username;
+
+    if (!username) {
+      return reply.status(401).send({ error: 'Not authenticated' });
+    }
+
+    const user = await userRepo.checkExistsByUsername(username);
+    if (!user) {
+      return reply.status(404).send({ error: 'User not found' });
+    }
+
+    return reply.status(200).send({
+      email: user.email
+    });
+  });
+
   fastify.post<{
     Body: components['schemas']['RegisterRequestBody'];
   }>(
