@@ -106,7 +106,7 @@ export default async function baseRoutes(fastify: FastifyInstance) {
   fastify.post<{
     Body: UpdatePasswordDto;
   }>(
-    '/update-password',
+    '/profile/password',
     {
       schema: {
         body: {
