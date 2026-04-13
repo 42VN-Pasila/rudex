@@ -41,7 +41,11 @@ describe('Profile route', () => {
     });
 
     expect(res.statusCode).toBe(401);
-    expect(res.json()).toEqual({ error: 'Not authenticated' });
+    expect(res.json()).toEqual({
+      type: 'Unauthorized',
+      message: 'Not authenticated',
+      info: {}
+    });
   });
 
   it('returns current user profile when authenticated', async () => {
@@ -62,8 +66,6 @@ describe('Profile route', () => {
 
     expect(res.statusCode).toBe(200);
     expect(res.json()).toEqual({
-      id: user.id,
-      username: user.username,
       email: user.email
     });
   });
@@ -80,6 +82,10 @@ describe('Profile route', () => {
     });
 
     expect(res.statusCode).toBe(404);
-    expect(res.json()).toEqual({ error: 'User not found' });
+    expect(res.json()).toEqual({
+      type: 'NotFound',
+      message: 'User not found',
+      info: {}
+    });
   });
 });

@@ -7,6 +7,8 @@ import { RegisterUserUseCase } from '@useCases/registerUser/registerUserUseCase'
 
 import { ConfirmEmailUseCase } from '@useCases/confirmEmail/confirmEmailUseCase';
 import { ConfirmEmailController } from '@useCases/confirmEmail/confirmEmailController';
+import { GetUserEmailUseCase } from '@useCases/getUserEmail/getUserEmailUseCase';
+import { GetUserEmailController } from '@useCases/getUserEmail/getUserEmailController';
 import { JWT_ACCESS_TOKEN_EXP, JWT_REFRESH_TOKEN_EXP } from '@src/constants';
 import { db } from '@src/database';
 import type { components } from '@src/gen/server';
@@ -18,6 +20,8 @@ const registerUserUseCase = new RegisterUserUseCase(userRepo, registrationRepo);
 const registerUserController = new RegisterUserController(registerUserUseCase);
 const confirmEmailUseCase = new ConfirmEmailUseCase(registrationRepo);
 const confirmEmailController = new ConfirmEmailController(confirmEmailUseCase);
+const getUserEmailUseCase = new GetUserEmailUseCase(userRepo);
+const getUserEmailController = new GetUserEmailController(getUserEmailUseCase);
 
 export default async function baseRoutes(fastify: FastifyInstance) {
   fastify.post<{
@@ -70,22 +74,38 @@ export default async function baseRoutes(fastify: FastifyInstance) {
     }
   );
 
-  fastify.get('/profile', async (request, reply: FastifyReply) => {
-    const username = request.user?.username;
+  fastify.get(
+    '/profile',
+    {
+      schema: {
+        response: {
+          200: {
+            type: 'object',
+            additionalProperties: false,
+            required: ['email'],
+            properties: {
+              email: { type: 'string', format: 'email' }
+            }
+          }
+        }
+      }
+    },
+    async (request, reply: FastifyReply) => {
+      const username = request.user?.username;
+      if (!username) {
+        return reply.status(401).send({
+          type: 'Unauthorized',
+          message: 'Not authenticated',
+          info: {}
+        });
+      }
 
-    if (!username) {
-      return reply.status(401).send({ error: 'Not authenticated' });
+      const controllerResponse = await getUserEmailController.execute({
+        username
+      });
+      return reply.status(controllerResponse.statusCode).send(controllerResponse.data);
     }
-
-    const user = await userRepo.checkExistsByUsername(username);
-    if (!user) {
-      return reply.status(404).send({ error: 'User not found' });
-    }
-
-    return reply.status(200).send({
-      email: user.email
-    });
-  });
+  );
 
   fastify.post<{
     Body: components['schemas']['RegisterRequestBody'];

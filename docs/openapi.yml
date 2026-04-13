@@ -145,7 +145,6 @@ components:
       type: object
       additionalProperties: false
       required:
-        - username
         - email
       properties:
         email:
