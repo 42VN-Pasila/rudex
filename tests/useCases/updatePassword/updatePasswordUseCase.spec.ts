@@ -60,7 +60,7 @@ describe('UpdatePasswordUseCase', () => {
       createdAt: new Date(),
       updatedAt: new Date()
     });
-    userRepo.updatePasswordByUsername.mockResolvedValue(true);
+    userRepo.updateByUsername.mockResolvedValue(true);
 
     const result = await makeUseCase().execute({
       username: 'test_user',
@@ -69,9 +69,11 @@ describe('UpdatePasswordUseCase', () => {
     });
 
     expect(result.isOk()).toBe(true);
-    expect(userRepo.updatePasswordByUsername).toHaveBeenCalledWith(
+    expect(userRepo.updateByUsername).toHaveBeenCalledWith(
       'test_user',
-      expect.any(String)
+      expect.objectContaining({
+        password: expect.any(String)
+      })
     );
   });
 });

@@ -1,7 +1,7 @@
 import { User } from '@domain/user/user';
 import { UserNotFoundError } from '@domain/error';
 import { DB, Users } from '@src/schema';
-import { Kysely, Selectable } from 'kysely';
+import { Kysely, Selectable, Updateable } from 'kysely';
 import { BaseRepository } from './baseRepository';
 
 type UserEntity = Selectable<Users>;
@@ -29,12 +29,22 @@ export interface PaginatedResult<T> {
   total: number;
 }
 
+export type UserUpdatePayload = Partial<{
+  password: string;
+  email: string;
+  googleUserId: string;
+  googleUserName: string;
+  refreshToken: string;
+  accessToken: string;
+  accessTokenExpiryDate: Date;
+}>;
+
 export interface IUserRepository {
   findById(userId: string): Promise<User>;
   findByGoogleUserId(googleUserId: string): Promise<User | null>;
   checkExistsByUsername(username: string): Promise<User | null>;
   checkExistsByEmail(email: string): Promise<User | null>;
-  updatePasswordByUsername(username: string, hashedPassword: string): Promise<boolean>;
+  updateByUsername(username: string, payload: UserUpdatePayload): Promise<boolean>;
   findUsers(params: {
     userIds?: string[];
     offset: number;
@@ -104,12 +114,30 @@ export class UserRepository extends BaseRepository<DB> implements IUserRepositor
     return row ? toUserDomain(row) : null;
   }
 
-  async updatePasswordByUsername(username: string, hashedPassword: string): Promise<boolean> {
+  async updateByUsername(username: string, payload: UserUpdatePayload): Promise<boolean> {
+    const updates: Updateable<Users> = {
+      ...(payload.password !== undefined ? { password: payload.password } : {}),
+      ...(payload.email !== undefined ? { email: payload.email } : {}),
+      ...(payload.googleUserId !== undefined ? { google_user_id: payload.googleUserId } : {}),
+      ...(payload.googleUserName !== undefined
+        ? { google_user_name: payload.googleUserName }
+        : {}),
+      ...(payload.refreshToken !== undefined ? { refresh_token: payload.refreshToken } : {}),
+      ...(payload.accessToken !== undefined ? { access_token: payload.accessToken } : {}),
+      ...(payload.accessTokenExpiryDate !== undefined
+        ? { access_token_expiry_date: payload.accessTokenExpiryDate }
+        : {})
+    };
+
+    if (Object.keys(updates).length === 0) {
+      return false;
+    }
+
     const now = new Date();
     const row = await this.db
       .updateTable('users')
       .set({
-        password: hashedPassword,
+        ...updates,
         updated_at: now
       })
       .where('username', '=', username)
