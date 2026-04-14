@@ -28,7 +28,7 @@ async function createUserDb(data?: Partial<User>) {
   return { ...user, id: row.id };
 }
 
-describe('Profile route', () => {
+describe('Get user email route', () => {
   afterEach(async () => {
     await db.deleteFrom('users').execute();
     jest.clearAllMocks();
@@ -37,18 +37,16 @@ describe('Profile route', () => {
   it('returns 401 when access token is missing', async () => {
     const res = await app.inject({
       method: 'GET',
-      url: '/profile'
+      url: '/users'
     });
 
     expect(res.statusCode).toBe(401);
     expect(res.json()).toEqual({
-      type: 'Unauthorized',
-      message: 'Not authenticated',
-      info: {}
+      error: 'Not authenticated'
     });
   });
 
-  it('returns current user profile when authenticated', async () => {
+  it('returns current user email when authenticated', async () => {
     const user = await createUserDb({
       username: 'profile_user',
       email: 'profile.user@gmail.com'
@@ -58,7 +56,7 @@ describe('Profile route', () => {
 
     const res = await app.inject({
       method: 'GET',
-      url: '/profile',
+      url: '/users',
       headers: {
         authorization: `Bearer ${accessToken}`
       }
@@ -75,7 +73,7 @@ describe('Profile route', () => {
 
     const res = await app.inject({
       method: 'GET',
-      url: '/profile',
+      url: '/users',
       headers: {
         authorization: `Bearer ${accessToken}`
       }

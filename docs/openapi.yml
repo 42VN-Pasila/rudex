@@ -11,20 +11,20 @@ servers:
     description: Production
 
 paths:
-  /profile:
+  /users:
     get:
-      operationId: getUserProfile
-      summary: Get current user profile
-      description: Returns the authenticated user's profile information.
+      operationId: getUserEmail
+      summary: Get current user email
+      description: Returns the authenticated user's email information.
       tags:
-        - User profile
+        - User email
       responses:
         "200":
-          description: Current authenticated user profile
+          description: Current authenticated user email
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/UserProfile"
+                $ref: "#/components/schemas/UserEmail"
         "401":
           $ref: "#/components/responses/APIErrorResponse"
         "404":
@@ -141,7 +141,7 @@ components:
         email:
           type: string
 
-    UserProfile:
+    UserEmail:
       type: object
       additionalProperties: false
       required:

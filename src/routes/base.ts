@@ -75,7 +75,7 @@ export default async function baseRoutes(fastify: FastifyInstance) {
   );
 
   fastify.get(
-    '/profile',
+    '/users',
     {
       schema: {
         response: {
