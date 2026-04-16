@@ -1,11 +1,12 @@
 import { UserNotFoundError } from '@domain/error';
 import { mockUserRepo } from '@mock/repos';
 import { createMockUser } from '@mock/user';
-import { GetUserEmailUseCase } from '@useCases/getUserEmail/getUserEmailUseCase';
+import { GetUserInfoUseCase } from '@useCases/getUserInfo/getUserInfoUseCase';
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
-describe('GetUserEmailUseCase', () => {
+describe('GetUserInfoUseCase', () => {
   const userRepo = mockUserRepo();
-  const useCase = new GetUserEmailUseCase(userRepo);
+  const useCase = new GetUserInfoUseCase(userRepo);
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -20,13 +21,13 @@ describe('GetUserEmailUseCase', () => {
     expect(result.unwrapErr()).toBeInstanceOf(UserNotFoundError);
   });
 
-  it('returns email when user exists', async () => {
+  it('returns user info when user exists', async () => {
     const user = createMockUser({ email: 'profile.user@gmail.com' });
     userRepo.checkExistsByUsername.mockResolvedValue(user);
 
     const result = await useCase.execute({ username: user.username });
 
     expect(result.isOk()).toBe(true);
-    expect(result.unwrap()).toEqual({ email: 'profile.user@gmail.com' });
+    expect(result.unwrap()).toEqual({ username: user.username, email: 'profile.user@gmail.com' });
   });
 });

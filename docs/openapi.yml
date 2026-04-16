@@ -13,18 +13,18 @@ servers:
 paths:
   /users:
     get:
-      operationId: getUserEmail
-      summary: Get current user email
-      description: Returns the authenticated user's email information.
+      operationId: getUserInfo
+      summary: Get current user info
+      description: Returns the authenticated user's information.
       tags:
-        - User email
+        - User info
       responses:
         "200":
-          description: Current authenticated user email
+          description: Current authenticated user info
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/UserEmail"
+                $ref: "#/components/schemas/UserInfo"
         "401":
           $ref: "#/components/responses/APIErrorResponse"
         "404":
@@ -141,12 +141,15 @@ components:
         email:
           type: string
 
-    UserEmail:
+    UserInfo:
       type: object
       additionalProperties: false
       required:
+        - username
         - email
       properties:
+        username:
+          type: string
         email:
           type: string
           format: email

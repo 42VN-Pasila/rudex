@@ -7,8 +7,8 @@ import { RegisterUserUseCase } from '@useCases/registerUser/registerUserUseCase'
 
 import { ConfirmEmailUseCase } from '@useCases/confirmEmail/confirmEmailUseCase';
 import { ConfirmEmailController } from '@useCases/confirmEmail/confirmEmailController';
-import { GetUserEmailUseCase } from '@useCases/getUserEmail/getUserEmailUseCase';
-import { GetUserEmailController } from '@useCases/getUserEmail/getUserEmailController';
+import { GetUserInfoUseCase } from '@useCases/getUserInfo/getUserInfoUseCase';
+import { GetUserInfoController } from '@useCases/getUserInfo/getUserInfoController';
 import { JWT_ACCESS_TOKEN_EXP, JWT_REFRESH_TOKEN_EXP } from '@src/constants';
 import { db } from '@src/database';
 import type { components } from '@src/gen/server';
@@ -20,8 +20,8 @@ const registerUserUseCase = new RegisterUserUseCase(userRepo, registrationRepo);
 const registerUserController = new RegisterUserController(registerUserUseCase);
 const confirmEmailUseCase = new ConfirmEmailUseCase(registrationRepo);
 const confirmEmailController = new ConfirmEmailController(confirmEmailUseCase);
-const getUserEmailUseCase = new GetUserEmailUseCase(userRepo);
-const getUserEmailController = new GetUserEmailController(getUserEmailUseCase);
+const getUserInfoUseCase = new GetUserInfoUseCase(userRepo);
+const getUserInfoController = new GetUserInfoController(getUserInfoUseCase);
 
 export default async function baseRoutes(fastify: FastifyInstance) {
   fastify.post<{
@@ -82,8 +82,9 @@ export default async function baseRoutes(fastify: FastifyInstance) {
           200: {
             type: 'object',
             additionalProperties: false,
-            required: ['email'],
+            required: ['username', 'email'],
             properties: {
+              username: { type: 'string' },
               email: { type: 'string', format: 'email' }
             }
           }
@@ -100,7 +101,7 @@ export default async function baseRoutes(fastify: FastifyInstance) {
         });
       }
 
-      const controllerResponse = await getUserEmailController.execute({
+      const controllerResponse = await getUserInfoController.execute({
         username
       });
       return reply.status(controllerResponse.statusCode).send(controllerResponse.data);
