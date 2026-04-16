@@ -11,7 +11,7 @@ servers:
     description: Production
 
 paths:
-  /profile/password:
+  /users/password:
     post:
       operationId: updatePassword
       summary: Update current user password

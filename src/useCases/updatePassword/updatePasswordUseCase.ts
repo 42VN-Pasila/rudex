@@ -34,13 +34,10 @@ export class UpdatePasswordUseCase implements IUpdatePasswordUseCase {
     }
 
     const hashedPassword = await argon2.hash(newPassword);
-    const isUpdated = await this.userRepo.updateByUsername(username, {
+    await this.userRepo.update({
+      username: username,
       password: hashedPassword
     });
-
-    if (!isUpdated) {
-      return err(UserNotFoundError.create(username));
-    }
 
     return ok(undefined);
   }
