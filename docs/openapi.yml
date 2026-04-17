@@ -152,6 +152,7 @@ components:
       required:
         - currentPassword
         - newPassword
+        - username
       properties:
         currentPassword:
           type: string
@@ -159,6 +160,8 @@ components:
         newPassword:
           type: string
           format: password
+        username:
+          type: string
 
   responses:
     APIErrorResponse:

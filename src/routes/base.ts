@@ -9,7 +9,6 @@ import { ConfirmEmailUseCase } from '@useCases/confirmEmail/confirmEmailUseCase'
 import { ConfirmEmailController } from '@useCases/confirmEmail/confirmEmailController';
 import { UpdatePasswordUseCase } from '@useCases/updatePassword/updatePasswordUseCase';
 import { UpdatePasswordController } from '@useCases/updatePassword/updatePasswordController';
-import type { UpdatePasswordDto } from '@src/dtos/passwordDto';
 import { JWT_ACCESS_TOKEN_EXP, JWT_REFRESH_TOKEN_EXP } from '@src/constants';
 import { db } from '@src/database';
 import type { components } from '@src/gen/server';
@@ -104,7 +103,7 @@ export default async function baseRoutes(fastify: FastifyInstance) {
   );
 
   fastify.post<{
-    Body: UpdatePasswordDto;
+    Body: components['schemas']['UpdatePasswordRequestBody'];
   }>(
     '/users/password',
     {
@@ -123,19 +122,13 @@ export default async function baseRoutes(fastify: FastifyInstance) {
     async (request, reply: FastifyReply) => {
       const username = request.user?.username;
       if (!username) {
-        return reply.status(401).send({ error: 'Not authenticated' });
+        return reply.status(401).send({ error: 'Unauthorized' });
       }
-
       const controllerResponse = await updatePasswordController.execute({
         username,
         currentPassword: request.body.currentPassword,
         newPassword: request.body.newPassword
       });
-
-      if (controllerResponse.statusCode === 204) {
-        return reply.status(204).send();
-      }
-
       return reply.status(controllerResponse.statusCode).send(controllerResponse.data);
     }
   );

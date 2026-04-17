@@ -17,7 +17,7 @@ export class UpdatePasswordUseCase implements IUpdatePasswordUseCase {
   }
 
   async execute(request: UpdatePasswordRequest): Promise<IResponse> {
-    const { username, currentPassword, newPassword } = request;
+    const {username, currentPassword, newPassword} = request;
 
     const user = await this.userRepo.checkExistsByUsername(username);
     if (!user) {

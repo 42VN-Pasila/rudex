@@ -1,5 +1,3 @@
-import type { UpdatePasswordDto } from '@src/dtos/passwordDto';
+import { UpdatePasswordDto } from "@src/dtos/passwordDto";
 
-export type UpdatePasswordRequest = {
-  username: string;
-} & UpdatePasswordDto;
+export type UpdatePasswordRequest = UpdatePasswordDto;

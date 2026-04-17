@@ -36,7 +36,7 @@ export interface IUserRepository {
   findByGoogleUserId(googleUserId: string): Promise<User | null>;
   checkExistsByUsername(username: string): Promise<User | null>;
   checkExistsByEmail(email: string): Promise<User | null>;
-  update(newUser: UserUpdatePayload): Promise<void>;
+  update(newUser: UserUpdatePayload): Promise<User>;
   findUsers(params: {
     userIds?: string[];
     offset: number;
@@ -106,22 +106,29 @@ export class UserRepository extends BaseRepository<DB> implements IUserRepositor
     return row ? toUserDomain(row) : null;
   }
 
-  async update(newUser: UserUpdatePayload): Promise<void> {
+  async update(newUser: UserUpdatePayload): Promise<User> {
     if (Object.keys(newUser).length === 0) {
-      return;
+      throw new Error('No updates provided');
     }
-
-       await this.db
+    const existingUser = await this.checkExistsByUsername(newUser.username ?? '');
+    if (!existingUser) {
+      throw UserNotFoundError.create(newUser.username ?? '');
+    }
+    const row = await this.db
       .updateTable('users')
       .set({
         ...newUser,
         updated_at: new Date()
       })
-      .where('username', '=', newUser.username ?? '')
-      .returning('username')
+      .where('username', '=', existingUser.username)
+      .returningAll()
       .executeTakeFirst();
 
-    return;
+    if (!row) {
+      throw new Error('Update failed');
+    }
+
+    return toUserDomain(row);
   }
 
   async findUsers({
