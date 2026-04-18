@@ -5,7 +5,7 @@ import { Kysely, Selectable, Updateable } from 'kysely';
 import { BaseRepository } from './baseRepository';
 
 type UserEntity = Selectable<Users>;
-export type UpdateUser = Updateable<Users>;
+type UpdateUser = Updateable<Users>;
 
 function toUserDomain(row: UserEntity): User {
   return {
