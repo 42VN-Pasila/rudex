@@ -9,6 +9,8 @@ import { ConfirmEmailUseCase } from '@useCases/confirmEmail/confirmEmailUseCase'
 import { ConfirmEmailController } from '@useCases/confirmEmail/confirmEmailController';
 import { GetUserInfoUseCase } from '@useCases/getUserInfo/getUserInfoUseCase';
 import { GetUserInfoController } from '@useCases/getUserInfo/getUserInfoController';
+import { UpdatePasswordUseCase } from '@useCases/updatePassword/updatePasswordUseCase';
+import { UpdatePasswordController } from '@useCases/updatePassword/updatePasswordController';
 import { JWT_ACCESS_TOKEN_EXP, JWT_REFRESH_TOKEN_EXP } from '@src/constants';
 import { db } from '@src/database';
 import type { components } from '@src/gen/server';
@@ -22,6 +24,8 @@ const confirmEmailUseCase = new ConfirmEmailUseCase(registrationRepo);
 const confirmEmailController = new ConfirmEmailController(confirmEmailUseCase);
 const getUserInfoUseCase = new GetUserInfoUseCase(userRepo);
 const getUserInfoController = new GetUserInfoController(getUserInfoUseCase);
+const updatePasswordUseCase = new UpdatePasswordUseCase(userRepo);
+const updatePasswordController = new UpdatePasswordController(updatePasswordUseCase);
 
 export default async function baseRoutes(fastify: FastifyInstance) {
   fastify.post<{
@@ -122,6 +126,34 @@ export default async function baseRoutes(fastify: FastifyInstance) {
         username: request.body.username,
         password: request.body.password,
         email: request.body.email
+      });
+      return reply.status(controllerResponse.statusCode).send(controllerResponse.data);
+    }
+  );
+
+  fastify.post<{
+    Body: components['schemas']['UpdatePasswordRequestBody'];
+  }>(
+    '/users/password',
+    {
+      schema: {
+        body: {
+          type: 'object',
+          additionalProperties: false,
+          required: ['currentPassword', 'newPassword'],
+          properties: {
+            currentPassword: { type: 'string' },
+            newPassword: { type: 'string' }
+          }
+        }
+      }
+    },
+    async (request, reply: FastifyReply) => {
+      const username = request.user?.username;
+      const controllerResponse = await updatePasswordController.execute({
+        username: username!,
+        currentPassword: request.body.currentPassword,
+        newPassword: request.body.newPassword
       });
       return reply.status(controllerResponse.statusCode).send(controllerResponse.data);
     }
