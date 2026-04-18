@@ -29,14 +29,14 @@ export interface PaginatedResult<T> {
   total: number;
 }
 
-export type UserUpdatePayload = Updateable<Users>;
+export type UpdateUser = Updateable<Users>;
 
 export interface IUserRepository {
   findById(userId: string): Promise<User>;
   findByGoogleUserId(googleUserId: string): Promise<User | null>;
   checkExistsByUsername(username: string): Promise<User | null>;
   checkExistsByEmail(email: string): Promise<User | null>;
-  update(newUser: UserUpdatePayload): Promise<void>;
+  update(newUser: UpdateUser): Promise<void>;
   findUsers(params: {
     userIds?: string[];
     offset: number;
@@ -106,7 +106,7 @@ export class UserRepository extends BaseRepository<DB> implements IUserRepositor
     return row ? toUserDomain(row) : null;
   }
 
-  async update(newUser: UserUpdatePayload): Promise<void> {
+  async update(newUser: UpdateUser): Promise<void> {
     if (Object.keys(newUser).length === 0) {
       throw new Error('No updates provided');
     }
