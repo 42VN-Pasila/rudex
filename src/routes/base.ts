@@ -92,17 +92,8 @@ export default async function baseRoutes(fastify: FastifyInstance) {
       }
     },
     async (request, reply: FastifyReply) => {
-      const username = request.user?.username;
-      if (!username) {
-        return reply.status(401).send({
-          type: 'Unauthorized',
-          message: 'Not authenticated',
-          info: {}
-        });
-      }
-
       const controllerResponse = await getUserInfoController.execute({
-        username
+        username: request.user!.username
       });
       return reply.status(controllerResponse.statusCode).send(controllerResponse.data);
     }
