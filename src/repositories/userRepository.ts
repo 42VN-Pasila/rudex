@@ -118,7 +118,7 @@ export class UserRepository extends BaseRepository<DB> implements IUserRepositor
       .where('username', '=', newUser.username ?? '')
       .execute();
 
-    return ;
+    return;
   }
 
   async findUsers({
