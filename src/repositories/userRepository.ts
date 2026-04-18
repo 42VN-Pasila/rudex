@@ -5,6 +5,7 @@ import { Kysely, Selectable, Updateable } from 'kysely';
 import { BaseRepository } from './baseRepository';
 
 type UserEntity = Selectable<Users>;
+export type UpdateUser = Updateable<Users>;
 
 function toUserDomain(row: UserEntity): User {
   return {
@@ -28,8 +29,6 @@ export interface PaginatedResult<T> {
   data: T[];
   total: number;
 }
-
-export type UpdateUser = Updateable<Users>;
 
 export interface IUserRepository {
   findById(userId: string): Promise<User>;
