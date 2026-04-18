@@ -122,7 +122,7 @@ export default async function baseRoutes(fastify: FastifyInstance) {
     async (request, reply: FastifyReply) => {
       const username = request.user?.username;
       const controllerResponse = await updatePasswordController.execute({
-        username: username ?? '',
+        username: username!,
         currentPassword: request.body.currentPassword,
         newPassword: request.body.newPassword
       });

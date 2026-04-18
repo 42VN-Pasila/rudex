@@ -107,15 +107,12 @@ export class UserRepository extends BaseRepository<DB> implements IUserRepositor
   }
 
   async update(newUser: UpdateUser): Promise<void> {
-    if (Object.keys(newUser).length === 0) {
-      throw new Error('No updates provided');
-    }
     await this.db
       .updateTable('users')
       .set({
         ...newUser
       })
-      .where('username', '=', newUser.username ?? '')
+      .where('username', '=', newUser.username!)
       .execute();
 
     return;
