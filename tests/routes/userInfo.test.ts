@@ -64,6 +64,7 @@ describe('Get user email route', () => {
 
     expect(res.statusCode).toBe(200);
     expect(res.json()).toEqual({
+      username: user.username,
       email: user.email
     });
   });

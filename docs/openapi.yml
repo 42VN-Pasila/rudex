@@ -25,6 +25,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/UserInfo"
+        "400":
+          $ref: "#/components/responses/APIErrorResponse"
+        "404":
+          $ref: "#/components/responses/APIErrorResponse"
+        "500":
+          $ref: "#/components/responses/APIErrorResponse"
 
   /users/password:
     post:
