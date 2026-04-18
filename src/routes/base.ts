@@ -121,11 +121,8 @@ export default async function baseRoutes(fastify: FastifyInstance) {
     },
     async (request, reply: FastifyReply) => {
       const username = request.user?.username;
-      if (!username) {
-        return reply.status(401).send({ error: 'Unauthorized' });
-      }
       const controllerResponse = await updatePasswordController.execute({
-        username,
+        username: username ?? '',
         currentPassword: request.body.currentPassword,
         newPassword: request.body.newPassword
       });

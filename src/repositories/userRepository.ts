@@ -29,14 +29,14 @@ export interface PaginatedResult<T> {
   total: number;
 }
 
-export type UserUpdatePayload = Partial<Updateable<Users>>;
+export type UserUpdatePayload = Updateable<Users>;
 
 export interface IUserRepository {
   findById(userId: string): Promise<User>;
   findByGoogleUserId(googleUserId: string): Promise<User | null>;
   checkExistsByUsername(username: string): Promise<User | null>;
   checkExistsByEmail(email: string): Promise<User | null>;
-  update(newUser: UserUpdatePayload): Promise<User>;
+  update(newUser: UserUpdatePayload): Promise<void>;
   findUsers(params: {
     userIds?: string[];
     offset: number;
@@ -106,29 +106,19 @@ export class UserRepository extends BaseRepository<DB> implements IUserRepositor
     return row ? toUserDomain(row) : null;
   }
 
-  async update(newUser: UserUpdatePayload): Promise<User> {
+  async update(newUser: UserUpdatePayload): Promise<void> {
     if (Object.keys(newUser).length === 0) {
       throw new Error('No updates provided');
     }
-    const existingUser = await this.checkExistsByUsername(newUser.username ?? '');
-    if (!existingUser) {
-      throw UserNotFoundError.create(newUser.username ?? '');
-    }
-    const row = await this.db
+    await this.db
       .updateTable('users')
       .set({
-        ...newUser,
-        updated_at: new Date()
+        ...newUser
       })
-      .where('username', '=', existingUser.username)
-      .returningAll()
-      .executeTakeFirst();
+      .where('username', '=', newUser.username ?? '')
+      .execute();
 
-    if (!row) {
-      throw new Error('Update failed');
-    }
-
-    return toUserDomain(row);
+    return ;
   }
 
   async findUsers({

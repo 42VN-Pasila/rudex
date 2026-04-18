@@ -1,3 +1,5 @@
-import { UpdatePasswordDto } from "@src/dtos/passwordDto";
-
-export type UpdatePasswordRequest = UpdatePasswordDto;
+export type UpdatePasswordRequest = {
+  username: string;
+  currentPassword: string;
+  newPassword: string;
+};
