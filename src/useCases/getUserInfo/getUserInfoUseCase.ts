@@ -20,7 +20,7 @@ export class GetUserInfoUseCase implements IGetUserInfoUseCase {
     if (!user) {
       return err(UserNotFoundError.create(request.username));
     }
-    
+
     return ok({
       username: user.username,
       email: user.email
