@@ -96,8 +96,12 @@ export default async function baseRoutes(fastify: FastifyInstance) {
       }
     },
     async (request, reply: FastifyReply) => {
+      const username = (request.params as { username: string }).username;
+      if (request.user?.username !== username) {
+        return reply.status(403).send({ error: 'Forbidden' });
+      }
       const controllerResponse = await getUserInfoController.execute({
-        username: request.user!.username
+        username: username
       });
       return reply.status(controllerResponse.statusCode).send(controllerResponse.data);
     }
