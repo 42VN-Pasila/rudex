@@ -144,13 +144,8 @@ describe('User routes', () => {
     });
   });
 
-  describe.only('Get user email route', () => {
-    afterEach(async () => {
-      await db.deleteFrom('users').execute();
-      jest.clearAllMocks();
-    });
-
-    it.only('returns 401 when access token is missing', async () => {
+  describe('Get user email route', () => {
+    it('returns 401 when access token is missing', async () => {
       const res = await app.inject({
         method: 'GET',
         url: '/users/{username}/info'
@@ -162,7 +157,7 @@ describe('User routes', () => {
       });
     });
 
-    it.only('returns current user email when authenticated', async () => {
+    it('returns current user email when authenticated', async () => {
       const user = await createUserDb({
         username: 'profile_user',
         email: 'profile.user@gmail.com'
@@ -185,7 +180,7 @@ describe('User routes', () => {
       });
     });
 
-    it.only('returns 404 when token user does not exist', async () => {
+    it('returns 404 when token user does not exist', async () => {
       const accessToken = await signJwt({ username: 'missing_user' }, JWT_ACCESS_TOKEN_EXP);
 
       const res = await app.inject({
