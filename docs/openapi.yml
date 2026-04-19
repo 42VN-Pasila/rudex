@@ -11,20 +11,26 @@ servers:
     description: Production
 
 paths:
-  /users:
+  /users/{username}/info:
     get:
       operationId: getUserInfo
       summary: Get current user info
       description: Returns the authenticated user's information.
       tags:
         - User info
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserInfoRequestBody"
       responses:
         "200":
           description: Current authenticated user info
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/UserInfo"
+                $ref: "#/components/schemas/UserInfoResponse"
         "400":
           $ref: "#/components/responses/APIErrorResponse"
         "404":
@@ -167,7 +173,16 @@ components:
         email:
           type: string
 
-    UserInfo:
+    UserInfoRequestBody:
+      type: object
+      additionalProperties: false
+      required:
+        - username
+      properties:
+        username:
+          type: string
+
+    UserInfoResponse:
       type: object
       additionalProperties: false
       required:

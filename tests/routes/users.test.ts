@@ -3,6 +3,8 @@ import { createMockUser } from '@mock/user';
 import app from '@src/app';
 import { db } from '@src/database';
 import { generatePassword, generateString } from '@tests/factories';
+import { JWT_ACCESS_TOKEN_EXP } from '@src/constants';
+import { signJwt } from '@services/jwt/jwt';
 
 async function createUserDb(data?: Partial<User>) {
   const user = createMockUser(data);
@@ -89,7 +91,7 @@ describe('User routes', () => {
     });
   });
 
-  describe.only('POST /register', () => {
+  describe('POST /register', () => {
     it('returns 201 for successfully created user ', async () => {
       const res = await app.inject({
         method: 'POST',
@@ -106,7 +108,7 @@ describe('User routes', () => {
         rudexUserId: expect.any(String)
       });
     });
-    it.only('returns 409 for existing username', async () => {
+    it('returns 409 for existing username', async () => {
       const existedUser = await createUserDb();
       const res = await app.inject({
         method: 'POST',
@@ -139,6 +141,67 @@ describe('User routes', () => {
       const body = res.json();
       expect(body.type).toEqual('Conflict');
       expect(body.message).toEqual('This email is registered');
+    });
+  });
+
+  describe.only('Get user email route', () => {
+    afterEach(async () => {
+      await db.deleteFrom('users').execute();
+      jest.clearAllMocks();
+    });
+
+    it.only('returns 401 when access token is missing', async () => {
+      const res = await app.inject({
+        method: 'GET',
+        url: '/users/{username}/info'
+      });
+
+      expect(res.statusCode).toBe(401);
+      expect(res.json()).toEqual({
+        error: 'Not authenticated'
+      });
+    });
+
+    it.only('returns current user email when authenticated', async () => {
+      const user = await createUserDb({
+        username: 'profile_user',
+        email: 'profile.user@gmail.com'
+      });
+
+      const accessToken = await signJwt({ username: user.username }, JWT_ACCESS_TOKEN_EXP);
+
+      const res = await app.inject({
+        method: 'GET',
+        url: `/users/${user.username}/info`,
+        headers: {
+          authorization: `Bearer ${accessToken}`
+        }
+      });
+
+      expect(res.statusCode).toBe(200);
+      expect(res.json()).toEqual({
+        username: user.username,
+        email: user.email
+      });
+    });
+
+    it.only('returns 404 when token user does not exist', async () => {
+      const accessToken = await signJwt({ username: 'missing_user' }, JWT_ACCESS_TOKEN_EXP);
+
+      const res = await app.inject({
+        method: 'GET',
+        url: `/users/missing_user/info`,
+        headers: {
+          authorization: `Bearer ${accessToken}`
+        }
+      });
+
+      expect(res.statusCode).toBe(404);
+      expect(res.json()).toEqual({
+        type: 'NotFound',
+        message: 'User not found',
+        info: {}
+      });
     });
   });
 });

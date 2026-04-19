@@ -79,7 +79,7 @@ export default async function baseRoutes(fastify: FastifyInstance) {
   );
 
   fastify.get(
-    '/users',
+    '/users/:username/info',
     {
       schema: {
         response: {
