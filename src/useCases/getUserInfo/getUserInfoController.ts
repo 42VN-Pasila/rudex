@@ -1,10 +1,11 @@
 import { HttpResponse, IBaseController, ErrorResponse } from '@useCases/common';
 import { UserNotFoundError } from '@domain/error';
 import { GetUserInfoRequest } from './getUserInfoRequest';
-import { GetUserInfoResponse } from './getUserInfoResponse';
 import { IGetUserInfoUseCase } from './getUserInfoUseCase';
+import type { components } from '@src/gen/server';
 
-type Response = HttpResponse<undefined, GetUserInfoResponse | ErrorResponse>;
+type OkResponse = components['schemas']['UserInfoResponse'];
+type Response = HttpResponse<undefined, OkResponse | ErrorResponse>;
 
 export class GetUserInfoController extends IBaseController<GetUserInfoRequest, Response> {
   private readonly getUserInfoUseCase: IGetUserInfoUseCase;

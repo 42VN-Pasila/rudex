@@ -18,12 +18,12 @@ paths:
       description: Returns the authenticated user's information.
       tags:
         - User info
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/UserInfoRequestBody"
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
       responses:
         "200":
           description: Current authenticated user info
@@ -173,24 +173,19 @@ components:
         email:
           type: string
 
-    UserInfoRequestBody:
-      type: object
-      additionalProperties: false
-      required:
-        - username
-      properties:
-        username:
-          type: string
-
     UserInfoResponse:
       type: object
       additionalProperties: false
       required:
+        - username
         - email
       properties:
+        username:
+          type: string
         email:
           type: string
           format: email
+
     UpdatePasswordRequestBody:
       type: object
       additionalProperties: false
