@@ -7,6 +7,8 @@ import { RegisterUserUseCase } from '@useCases/registerUser/registerUserUseCase'
 
 import { ConfirmEmailUseCase } from '@useCases/confirmEmail/confirmEmailUseCase';
 import { ConfirmEmailController } from '@useCases/confirmEmail/confirmEmailController';
+import { GetUserInfoUseCase } from '@useCases/getUserInfo/getUserInfoUseCase';
+import { GetUserInfoController } from '@useCases/getUserInfo/getUserInfoController';
 import { UpdatePasswordUseCase } from '@useCases/updatePassword/updatePasswordUseCase';
 import { UpdatePasswordController } from '@useCases/updatePassword/updatePasswordController';
 import { JWT_ACCESS_TOKEN_EXP, JWT_REFRESH_TOKEN_EXP } from '@src/constants';
@@ -20,6 +22,8 @@ const registerUserUseCase = new RegisterUserUseCase(userRepo, registrationRepo);
 const registerUserController = new RegisterUserController(registerUserUseCase);
 const confirmEmailUseCase = new ConfirmEmailUseCase(registrationRepo);
 const confirmEmailController = new ConfirmEmailController(confirmEmailUseCase);
+const getUserInfoUseCase = new GetUserInfoUseCase(userRepo);
+const getUserInfoController = new GetUserInfoController(getUserInfoUseCase);
 const updatePasswordUseCase = new UpdatePasswordUseCase(userRepo);
 const updatePasswordController = new UpdatePasswordController(updatePasswordUseCase);
 
@@ -71,6 +75,69 @@ export default async function baseRoutes(fastify: FastifyInstance) {
       });
 
       return reply.status(200).send({ username: request.body.username });
+    }
+  );
+
+  fastify.get(
+    '/users/:username/info',
+    {
+      schema: {
+        response: {
+          200: {
+            type: 'object',
+            additionalProperties: false,
+            required: ['username', 'email'],
+            properties: {
+              username: { type: 'string' },
+              email: { type: 'string', format: 'email' }
+            }
+          },
+          401: {
+            type: 'object',
+            additionalProperties: false,
+            required: ['error'],
+            properties: {
+              error: { type: 'string' }
+            }
+          },
+          403: {
+            type: 'object',
+            additionalProperties: false,
+            required: ['type', 'message', 'info'],
+            properties: {
+              type: { type: 'string' },
+              message: { type: 'string' },
+              stack: { type: 'string' },
+              info: { type: 'object' }
+            }
+          },
+          404: {
+            type: 'object',
+            additionalProperties: false,
+            required: ['type', 'message', 'info'],
+            properties: {
+              type: { type: 'string' },
+              message: { type: 'string' },
+              stack: { type: 'string' },
+              info: { type: 'object' }
+            }
+          }
+        }
+      }
+    },
+    async (request, reply: FastifyReply) => {
+      const username = (request.params as { username: string }).username;
+      if (request.user?.username !== username) {
+        return reply.status(403).send({
+          type: 'Forbidden',
+          message: 'Forbidden',
+          info: {}
+        });
+      }
+      const controllerResponse = await getUserInfoController.execute({
+        username: username
+      });
+      return reply.status(controllerResponse.statusCode).send(controllerResponse.data);
     }
   );
 

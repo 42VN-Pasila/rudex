@@ -11,6 +11,37 @@ servers:
     description: Production
 
 paths:
+  /users/{username}/info:
+    get:
+      operationId: getUserInfo
+      summary: Get current user info
+      description: Returns the authenticated user's information.
+      tags:
+        - User info
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Current authenticated user info
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserInfoResponse"
+        "401":
+          $ref: "#/components/responses/APIErrorResponse"
+        "403":
+          $ref: "#/components/responses/APIErrorResponse"
+        "400":
+          $ref: "#/components/responses/APIErrorResponse"
+        "404":
+          $ref: "#/components/responses/APIErrorResponse"
+        "500":
+          $ref: "#/components/responses/APIErrorResponse"
+
   /users/password:
     post:
       operationId: updatePassword
@@ -145,6 +176,19 @@ components:
           type: string
         email:
           type: string
+
+    UserInfoResponse:
+      type: object
+      additionalProperties: false
+      required:
+        - username
+        - email
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+          format: email
 
     UpdatePasswordRequestBody:
       type: object
