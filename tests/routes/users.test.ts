@@ -148,7 +148,7 @@ describe('User routes', () => {
     it('returns 401 when access token is missing', async () => {
       const res = await app.inject({
         method: 'GET',
-        url: '/users/{username}/info'
+        url: '/users/some_user/info'
       });
 
       expect(res.statusCode).toBe(401);
@@ -195,6 +195,29 @@ describe('User routes', () => {
       expect(res.json()).toEqual({
         type: 'NotFound',
         message: 'User not found',
+        info: {}
+      });
+    });
+
+    it('returns 403 when token user does not match requested user', async () => {
+      const user = await createUserDb({
+        username: 'profile_user2',
+        email: 'profile.user2@gmail.com'
+      });
+
+      const asscessToken = await signJwt({ username: user.username }, JWT_ACCESS_TOKEN_EXP);
+
+      const res = await app.inject({
+        method: 'GET',
+        url: `/users/other_user/info`,
+        headers: {
+          authorization: `Bearer ${asscessToken}`
+        }
+      });
+      expect(res.statusCode).toBe(403);
+      expect(res.json()).toEqual({
+        type: 'Forbidden',
+        message: 'Forbidden',
         info: {}
       });
     });

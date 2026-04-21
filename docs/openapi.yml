@@ -31,6 +31,10 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/UserInfoResponse"
+        "401":
+          $ref: "#/components/responses/APIErrorResponse"
+        "403":
+          $ref: "#/components/responses/APIErrorResponse"
         "400":
           $ref: "#/components/responses/APIErrorResponse"
         "404":

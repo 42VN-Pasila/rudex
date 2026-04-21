@@ -91,6 +91,36 @@ export default async function baseRoutes(fastify: FastifyInstance) {
               username: { type: 'string' },
               email: { type: 'string', format: 'email' }
             }
+          },
+          401: {
+            type: 'object',
+            additionalProperties: false,
+            required: ['error'],
+            properties: {
+              error: { type: 'string' }
+            }
+          },
+          403: {
+            type: 'object',
+            additionalProperties: false,
+            required: ['type', 'message', 'info'],
+            properties: {
+              type: { type: 'string' },
+              message: { type: 'string' },
+              stack: { type: 'string' },
+              info: { type: 'object' }
+            }
+          },
+          404: {
+            type: 'object',
+            additionalProperties: false,
+            required: ['type', 'message', 'info'],
+            properties: {
+              type: { type: 'string' },
+              message: { type: 'string' },
+              stack: { type: 'string' },
+              info: { type: 'object' }
+            }
           }
         }
       }
@@ -98,7 +128,11 @@ export default async function baseRoutes(fastify: FastifyInstance) {
     async (request, reply: FastifyReply) => {
       const username = (request.params as { username: string }).username;
       if (request.user?.username !== username) {
-        return reply.status(403).send({ error: 'Forbidden' });
+        return reply.status(403).send({
+          type: 'Forbidden',
+          message: 'Forbidden',
+          info: {}
+        });
       }
       const controllerResponse = await getUserInfoController.execute({
         username: username
