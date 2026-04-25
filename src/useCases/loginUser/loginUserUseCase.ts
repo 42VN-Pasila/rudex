@@ -1,15 +1,15 @@
-import { IBaseUseCase } from '@useCases/common/baseUseCase';
+import { IBaseUseCase, IUseCaseResponse } from '@useCases/common/baseUseCase';
 import { LoginUserRequest } from './loginUserRequest';
 import { LoginUserResponse } from './loginUserResponse';
 import { IUserRepository } from '@src/repositories/userRepository';
 import { UserNotFoundError, InvalidCredentialsError } from '@domain/error';
-import { Result, ok, err } from '@useCases/common';
+import { ok, err } from '@useCases/common';
 import { signJwt } from '@services/jwt/jwt';
 import { JWT_ACCESS_TOKEN_EXP, JWT_REFRESH_TOKEN_EXP } from '@src/constants';
 import argon2 from 'argon2';
 import { loginUserScheduler } from '@src/schedulers';
 
-export type IResponse = Result<
+export type IResponse = IUseCaseResponse<
   LoginUserResponse,
   UserNotFoundError | InvalidCredentialsError | Error
 >;
@@ -54,7 +54,7 @@ export class LoginUserUseCase implements ILoginUserUseCase {
     try {
       await loginUserScheduler.addJob({ username: rudexUser.username });
     } catch (error) {
-      return err(error instanceof Error ? error : new Error('Failed to dispatch login user job'));
+      return err(error instanceof Error ? error : new Error('Failed to login user in Director'));
     }
 
     const response: LoginUserResponse = {

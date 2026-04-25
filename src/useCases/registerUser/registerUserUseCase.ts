@@ -1,18 +1,20 @@
 import crypto from 'node:crypto';
-import { IBaseUseCase } from '@useCases/common/baseUseCase';
 import { IRegisterUserResponse } from './registerUserResponse';
 import { ExistedEmailError, ExistedUsernameError } from '@domain/error/userError';
 import { IRegisterUserRequest } from './registerUserRequest';
 import { IUserRepository } from '@src/repositories/userRepository';
 import { IRegistrationRepository } from '@src/repositories/registrationRepository';
-import { Result, ok, err } from '@useCases/common';
+import { IUseCaseResponse, ok, err, IBaseUseCase } from '@useCases/common';
 import { sendConfirmationEmailScheduler } from '@src/schedulers';
 import type { SendConfirmationEmailJobPayload } from '@src/schedulers/jobs/sendConfirmationEmail/sendConfirmationEmailJobPayload';
 import argon2 from 'argon2';
 
 const TOKEN_EXPIRY_HOURS = 24;
 
-export type IResponse = Result<IRegisterUserResponse, ExistedUsernameError | ExistedEmailError>;
+export type IResponse = IUseCaseResponse<
+  IRegisterUserResponse,
+  ExistedUsernameError | ExistedEmailError
+>;
 
 export type IRegisterUserUseCase = IBaseUseCase<IRegisterUserRequest, IResponse>;
 

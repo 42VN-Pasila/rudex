@@ -1,15 +1,14 @@
-import { IBaseUseCase } from '@useCases/common/baseUseCase';
 import { ConfirmEmailRequest } from './confirmEmailRequest';
 import { ConfirmEmailResponse } from './confirmEmailResponse';
 import { IRegistrationRepository } from '@src/repositories/registrationRepository';
-import { Result, ok, err } from '@useCases/common';
+import { ok, err, IBaseUseCase, IUseCaseResponse } from '@useCases/common';
 import { InvalidConfirmationTokenError } from '@domain/error/userError';
 import { createUserScheduler } from '@src/schedulers';
 import type { CreateUserJobPayload } from '@src/schedulers/jobs/createUser/createUserJobPayload';
 
 type ConfirmEmailError = InvalidConfirmationTokenError;
 
-export type IResponse = Result<ConfirmEmailResponse, ConfirmEmailError>;
+export type IResponse = IUseCaseResponse<ConfirmEmailResponse, ConfirmEmailError>;
 
 export type IConfirmEmailUseCase = IBaseUseCase<ConfirmEmailRequest, IResponse>;
 
