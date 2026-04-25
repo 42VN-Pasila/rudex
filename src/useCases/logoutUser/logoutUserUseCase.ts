@@ -1,10 +1,10 @@
-import { IBaseUseCase, Result, ok } from '@useCases/common';
+import { IBaseUseCase, IUseCaseResponse, ok } from '@useCases/common';
 import { err } from '@useCases/common';
 import { logoutUserScheduler } from '@src/schedulers';
 import { LogoutUserRequest } from './logoutUserRequest';
 import { LogoutUserResponse } from './logoutUserResponse';
 
-export type IResponse = Result<LogoutUserResponse, Error>;
+export type IResponse = IUseCaseResponse<LogoutUserResponse, Error>;
 
 export type ILogoutUserUseCase = IBaseUseCase<LogoutUserRequest, IResponse>;
 
