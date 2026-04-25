@@ -140,7 +140,7 @@ paths:
         Clears authentication cookies for the current browser session.
         This operation is idempotent and always succeeds even when the user is already logged out.
       tags:
-        - User login
+        - User logout
       responses:
         "204":
           description: Logout successful
