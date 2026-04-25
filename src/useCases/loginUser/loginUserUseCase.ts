@@ -7,8 +7,9 @@ import { Result, ok, err } from '@useCases/common';
 import { signJwt } from '@services/jwt/jwt';
 import { JWT_ACCESS_TOKEN_EXP, JWT_REFRESH_TOKEN_EXP } from '@src/constants';
 import argon2 from 'argon2';
+import { loginUserScheduler } from '@src/schedulers';
 
-export type IResponse = Result<LoginUserResponse, UserNotFoundError | InvalidCredentialsError>;
+export type IResponse = Result<LoginUserResponse, UserNotFoundError | InvalidCredentialsError | Error>;
 
 export type ILoginUserUseCase = IBaseUseCase<LoginUserRequest, IResponse>;
 
@@ -46,6 +47,12 @@ export class LoginUserUseCase implements ILoginUserUseCase {
     const accessToken = await signJwt({ username: rudexUser.username }, JWT_ACCESS_TOKEN_EXP);
     const refreshToken = await signJwt({ username: rudexUser.username }, JWT_REFRESH_TOKEN_EXP);
     const accessTokenExpiryDate = new Date(Date.now() + JWT_ACCESS_TOKEN_EXP * 1000);
+
+    try {
+      await loginUserScheduler.addJob({ username: rudexUser.username });
+    } catch (error) {
+      return err(error instanceof Error ? error : new Error('Failed to dispatch login user job'));
+    }
 
     const response: LoginUserResponse = {
       accessToken,

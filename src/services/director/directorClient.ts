@@ -23,6 +23,25 @@ export class DirectorClient {
     }
   }
 
+  async loginUser(username: string): Promise<void> {
+    try {
+      await InternalService.postInternalUsers({
+        requestBody: {
+          username
+        }
+      });
+    } catch (error: unknown) {
+      const details = {
+        message: error instanceof Error ? error.message : String(error),
+        status: (error as any)?.status,
+        body: (error as any)?.body,
+        url: (error as any)?.url
+      };
+      logger.error('Failed to login user in Director', details);
+      throw DirectorClientError.create();
+    }
+  }
+
   async logoutUser(username: string): Promise<void> {
     try {
       await InternalService.postInternalLogout({
