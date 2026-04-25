@@ -16,7 +16,7 @@ export function CreateUserWorker(
 ): Worker<CreateUserJobPayload> {
   return new Worker<CreateUserJobPayload>(
     JobTypes.CreateUser,
-    (job) => CreateUserProcessor(job, userRepo, registrationRepo),
+    (job) => CreateUserProcessor(job, deps),
     { connection }
   );
 }
