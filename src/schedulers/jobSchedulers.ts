@@ -1,5 +1,6 @@
-import { ConnectionOptions, Queue } from 'bullmq';
+import { ConnectionOptions, JobsOptions, Queue } from 'bullmq';
 import { JobToPayloadMap } from './jobTypes';
+import { randomUUID } from 'crypto';
 
 export type IJobScheduler<TJobType extends keyof JobToPayloadMap> = {
   readonly jobType: TJobType;
@@ -19,9 +20,19 @@ export class JobScheduler<TJobType extends keyof JobToPayloadMap>
     this.queue = new Queue(jobType, { connection });
   }
 
-  async addJob(payload: JobToPayloadMap[TJobType]): Promise<string> {
-    const job = await this.queue.add(this.jobType, payload);
-    return job.id!;
+  async addJob(payload: JobToPayloadMap[TJobType], opts?: JobsOptions): Promise<string> {
+    const jobId = opts?.jobId ?? randomUUID();
+    await this.queue.add(this.jobType, payload, {
+      attempts: 3,
+      backoff: {
+        type: 'exponential',
+        delay: 1000
+      },
+      ...opts,
+      jobId
+    });
+
+    return jobId;
   }
 
   async close(): Promise<void> {
