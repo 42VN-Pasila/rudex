@@ -1,6 +1,7 @@
 import { HttpResponse, IBaseController } from '@useCases/common';
 import { ILogoutUserUseCase } from './logoutUserUseCase';
 import { LogoutUserRequest } from './logoutUserRequest';
+import { UserNotFoundError } from '@domain/error';
 
 type Response = HttpResponse<undefined, undefined>;
 
@@ -16,7 +17,11 @@ export class LogoutUserController extends IBaseController<LogoutUserRequest, Res
     const result = await this.logoutUserUseCase.execute(request as LogoutUserRequest);
 
     if (result.isErr()) {
-      return this.badRequest(result.unwrapErr().message);
+      const error = result.unwrapErr();
+      if (error instanceof UserNotFoundError) {
+        return this.notFound(error.message);
+      }
+      return this.badRequest(error.message);
     }
 
     return this.noContent();

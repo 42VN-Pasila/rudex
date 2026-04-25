@@ -5,11 +5,12 @@ import logger from '@src/logger';
 import { SendConfirmationEmailWorker } from './jobs/sendConfirmationEmail/sendConfirmationEmailWorker';
 import { CreateUserWorker } from './jobs/createUser/createUserWorker';
 import { LogoutUserWorker } from './jobs/logoutUser/logoutUserWorker';
-import { LoginUserWorker } from './jobs/loginUser/loginUserWorker';
+
 import { UserRepository } from '@repository/userRepository';
 import { RegistrationRepository } from '@repository/registrationRepository';
 import { db } from '@src/database';
 import { getRedisConnection } from './config';
+import { LoginUserWorker } from './jobs/loginUser/loginUserWorker';
 
 export let sendConfirmationEmailScheduler: JobScheduler<JobTypes.SendConfirmationEmail>;
 export let createUserScheduler: JobScheduler<JobTypes.CreateUser>;

@@ -13,9 +13,6 @@ function extractToken(request: FastifyRequest): string | undefined {
 }
 
 export async function authMiddleware(request: FastifyRequest, reply: FastifyReply): Promise<void> {
-  if (request.method === 'OPTIONS') {
-    return;
-  }
 
   if (PUBLIC_ROUTES.includes(request.url.split('?')[0])) {
     return;

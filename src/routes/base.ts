@@ -29,7 +29,7 @@ const getUserInfoUseCase = new GetUserInfoUseCase(userRepo);
 const getUserInfoController = new GetUserInfoController(getUserInfoUseCase);
 const updatePasswordUseCase = new UpdatePasswordUseCase(userRepo);
 const updatePasswordController = new UpdatePasswordController(updatePasswordUseCase);
-const logoutUserUseCase = new LogoutUserUseCase();
+const logoutUserUseCase = new LogoutUserUseCase(userRepo);
 const logoutUserController = new LogoutUserController(logoutUserUseCase);
 
 export default async function baseRoutes(fastify: FastifyInstance) {
@@ -176,23 +176,6 @@ export default async function baseRoutes(fastify: FastifyInstance) {
 
   fastify.post(
     '/logout',
-    {
-      schema: {
-        response: {
-          204: {
-            type: 'null'
-          },
-          500: {
-            type: 'object',
-            additionalProperties: false,
-            required: ['error'],
-            properties: {
-              error: { type: 'string' }
-            }
-          }
-        }
-      }
-    },
     async (request, reply: FastifyReply) => {
       const cookieOpts = {
         httpOnly: true,
