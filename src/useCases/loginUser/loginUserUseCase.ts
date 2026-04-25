@@ -9,7 +9,10 @@ import { JWT_ACCESS_TOKEN_EXP, JWT_REFRESH_TOKEN_EXP } from '@src/constants';
 import argon2 from 'argon2';
 import { loginUserScheduler } from '@src/schedulers';
 
-export type IResponse = Result<LoginUserResponse, UserNotFoundError | InvalidCredentialsError | Error>;
+export type IResponse = Result<
+  LoginUserResponse,
+  UserNotFoundError | InvalidCredentialsError | Error
+>;
 
 export type ILoginUserUseCase = IBaseUseCase<LoginUserRequest, IResponse>;
 
