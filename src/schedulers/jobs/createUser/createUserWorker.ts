@@ -5,14 +5,18 @@ import { CreateUserProcessor } from './createUserProcessor';
 import { IUserRepository } from '@repository/userRepository';
 import { IRegistrationRepository } from '@repository/registrationRepository';
 
+export type CreateUserWorkerDeps = {
+  userRepo: IUserRepository;
+  registrationRepo: IRegistrationRepository;
+};
+
 export function CreateUserWorker(
   connection: ConnectionOptions,
-  userRepo: IUserRepository,
-  registrationRepo: IRegistrationRepository
+  deps: CreateUserWorkerDeps
 ): Worker<CreateUserJobPayload> {
   return new Worker<CreateUserJobPayload>(
     JobTypes.CreateUser,
-    (job) => CreateUserProcessor(job, userRepo, registrationRepo),
+    (job) => CreateUserProcessor(job, deps),
     { connection }
   );
 }

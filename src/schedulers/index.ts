@@ -28,7 +28,7 @@ export function initWorkers(): void {
   const registrationRepo = new RegistrationRepository(db);
 
   workers.push(SendConfirmationEmailWorker(connection));
-  workers.push(CreateUserWorker(connection, userRepo, registrationRepo));
+  workers.push(CreateUserWorker(connection, { userRepo, registrationRepo }));
 
   logger.info('Workers initialized');
 }
