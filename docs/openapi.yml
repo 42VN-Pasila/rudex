@@ -11,6 +11,62 @@ servers:
     description: Production
 
 paths:
+  /users/{username}/info:
+    get:
+      operationId: getUserInfo
+      summary: Get current user info
+      description: Returns the authenticated user's information.
+      tags:
+        - User info
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Current authenticated user info
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserInfoResponse"
+        "401":
+          $ref: "#/components/responses/APIErrorResponse"
+        "403":
+          $ref: "#/components/responses/APIErrorResponse"
+        "400":
+          $ref: "#/components/responses/APIErrorResponse"
+        "404":
+          $ref: "#/components/responses/APIErrorResponse"
+        "500":
+          $ref: "#/components/responses/APIErrorResponse"
+
+  /users/password:
+    post:
+      operationId: updatePassword
+      summary: Update current user password
+      description: Updates password for the authenticated user.
+      tags:
+        - User profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdatePasswordRequestBody"
+      responses:
+        "204":
+          description: Password updated successfully
+        "400":
+          $ref: "#/components/responses/APIErrorResponse"
+        "401":
+          $ref: "#/components/responses/APIErrorResponse"
+        "404":
+          $ref: "#/components/responses/APIErrorResponse"
+        "500":
+          $ref: "#/components/responses/APIErrorResponse"
+
   /login:
     post:
       operationId: loginUser
@@ -75,6 +131,7 @@ paths:
           $ref: "#/components/responses/APIErrorResponse"
         "500":
           $ref: "#/components/responses/APIErrorResponse"
+
 components:
   parameters:
     rudexUserIdQuery:
@@ -119,6 +176,33 @@ components:
           type: string
         email:
           type: string
+
+    UserInfoResponse:
+      type: object
+      additionalProperties: false
+      required:
+        - username
+        - email
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+          format: email
+
+    UpdatePasswordRequestBody:
+      type: object
+      additionalProperties: false
+      required:
+        - currentPassword
+        - newPassword
+      properties:
+        currentPassword:
+          type: string
+          format: password
+        newPassword:
+          type: string
+          format: password
 
   responses:
     APIErrorResponse:
