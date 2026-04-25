@@ -1,14 +1,17 @@
-import { IBaseUseCase } from '@useCases/common/baseUseCase';
+import { IBaseUseCase, IUseCaseResponse } from '@useCases/common/baseUseCase';
 import { LoginUserRequest } from './loginUserRequest';
 import { LoginUserResponse } from './loginUserResponse';
 import { IUserRepository } from '@src/repositories/userRepository';
 import { UserNotFoundError, InvalidCredentialsError } from '@domain/error';
-import { Result, ok, err } from '@useCases/common';
+import { ok, err } from '@useCases/common';
 import { signJwt } from '@services/jwt/jwt';
 import { JWT_ACCESS_TOKEN_EXP, JWT_REFRESH_TOKEN_EXP } from '@src/constants';
 import argon2 from 'argon2';
 
-export type IResponse = Result<LoginUserResponse, UserNotFoundError | InvalidCredentialsError>;
+export type IResponse = IUseCaseResponse<
+  LoginUserResponse,
+  UserNotFoundError | InvalidCredentialsError
+>;
 
 export type ILoginUserUseCase = IBaseUseCase<LoginUserRequest, IResponse>;
 

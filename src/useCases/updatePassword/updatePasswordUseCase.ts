@@ -1,11 +1,14 @@
 import argon2 from 'argon2';
 import { UserNotFoundError, InvalidCredentialsError } from '@domain/error';
 import { IUserRepository } from '@src/repositories/userRepository';
-import { IBaseUseCase, Result, ok, err } from '@useCases/common';
+import { IBaseUseCase, IUseCaseResponse, ok, err } from '@useCases/common';
 import { UpdatePasswordRequest } from './updatePasswordRequest';
 import { UpdatePasswordResponse } from './updatePasswordResponse';
 
-export type IResponse = Result<UpdatePasswordResponse, UserNotFoundError | InvalidCredentialsError>;
+export type IResponse = IUseCaseResponse<
+  UpdatePasswordResponse,
+  UserNotFoundError | InvalidCredentialsError
+>;
 
 export type IUpdatePasswordUseCase = IBaseUseCase<UpdatePasswordRequest, IResponse>;
 
