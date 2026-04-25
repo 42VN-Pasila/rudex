@@ -3,7 +3,7 @@ info:
   title: Rudex
   description: >
     Authentication service
-  version: '0.1'
+  version: "0.1"
   x-displayName: Authentication service
 
 servers:
@@ -25,22 +25,22 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: Current authenticated user info
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserInfoResponse'
-        '400':
-          $ref: '#/components/responses/APIErrorResponse'
-        '401':
-          $ref: '#/components/responses/APIErrorResponse'
-        '403':
-          $ref: '#/components/responses/APIErrorResponse'
-        '404':
-          $ref: '#/components/responses/APIErrorResponse'
-        '500':
-          $ref: '#/components/responses/APIErrorResponse'
+                $ref: "#/components/schemas/UserInfoResponse"
+        "400":
+          $ref: "#/components/responses/APIErrorResponse"
+        "401":
+          $ref: "#/components/responses/APIErrorResponse"
+        "403":
+          $ref: "#/components/responses/APIErrorResponse"
+        "404":
+          $ref: "#/components/responses/APIErrorResponse"
+        "500":
+          $ref: "#/components/responses/APIErrorResponse"
 
   /users/password:
     post:
@@ -54,18 +54,18 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UpdatePasswordRequestBody'
+              $ref: "#/components/schemas/UpdatePasswordRequestBody"
       responses:
-        '204':
+        "204":
           description: Password updated successfully
-        '400':
-          $ref: '#/components/responses/APIErrorResponse'
-        '401':
-          $ref: '#/components/responses/APIErrorResponse'
-        '404':
-          $ref: '#/components/responses/APIErrorResponse'
-        '500':
-          $ref: '#/components/responses/APIErrorResponse'
+        "400":
+          $ref: "#/components/responses/APIErrorResponse"
+        "401":
+          $ref: "#/components/responses/APIErrorResponse"
+        "404":
+          $ref: "#/components/responses/APIErrorResponse"
+        "500":
+          $ref: "#/components/responses/APIErrorResponse"
 
   /login:
     post:
@@ -81,9 +81,9 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/LoginRequestBody'
+              $ref: "#/components/schemas/LoginRequestBody"
       responses:
-        '200':
+        "200":
           description: Successful login (tokens set in httpOnly cookies)
           content:
             application/json:
@@ -94,12 +94,12 @@ paths:
                 properties:
                   username:
                     type: string
-        '400':
-          $ref: '#/components/responses/APIErrorResponse'
-        '401':
-          $ref: '#/components/responses/APIErrorResponse'
-        '500':
-          $ref: '#/components/responses/APIErrorResponse'
+        "400":
+          $ref: "#/components/responses/APIErrorResponse"
+        "401":
+          $ref: "#/components/responses/APIErrorResponse"
+        "500":
+          $ref: "#/components/responses/APIErrorResponse"
 
   /register:
     post:
@@ -114,9 +114,9 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RegisterRequestBody'
+              $ref: "#/components/schemas/RegisterRequestBody"
       responses:
-        '201':
+        "201":
           description: Registration created, confirmation email sent
           content:
             application/json:
@@ -125,12 +125,12 @@ paths:
                 properties:
                   message:
                     type: string
-        '400':
-          $ref: '#/components/responses/APIErrorResponse'
-        '409':
-          $ref: '#/components/responses/APIErrorResponse'
-        '500':
-          $ref: '#/components/responses/APIErrorResponse'
+        "400":
+          $ref: "#/components/responses/APIErrorResponse"
+        "409":
+          $ref: "#/components/responses/APIErrorResponse"
+        "500":
+          $ref: "#/components/responses/APIErrorResponse"
 
   /logout:
     post:
@@ -142,10 +142,10 @@ paths:
       tags:
         - User logout
       responses:
-        '204':
+        "204":
           description: Logout successful
-        '500':
-          $ref: '#/components/responses/APIErrorResponse'
+        "500":
+          $ref: "#/components/responses/APIErrorResponse"
 
 components:
   parameters:
@@ -155,13 +155,13 @@ components:
       description: Unique ID of a Rudex user (optional)
       required: false
       schema:
-        $ref: '#/components/schemas/rudexUserId'
+        $ref: "#/components/schemas/rudexUserId"
 
   schemas:
     rudexUserId:
       type: string
       description: Rudex user identifier (string). Use UUID if you require a UUID format.
-      example: '123e4567-e89b-12d3-a456-426614174000'
+      example: "123e4567-e89b-12d3-a456-426614174000"
 
     LoginRequestBody:
       type: object
