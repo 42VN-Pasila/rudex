@@ -1,10 +1,11 @@
 import { User } from '@domain/user/user';
 import { UserNotFoundError } from '@domain/error';
 import { DB, Users } from '@src/schema';
-import { Kysely, Selectable } from 'kysely';
+import { Kysely, Selectable, Updateable } from 'kysely';
 import { BaseRepository } from './baseRepository';
 
 type UserEntity = Selectable<Users>;
+type UpdateUser = Updateable<Users>;
 
 function toUserDomain(row: UserEntity): User {
   return {
@@ -34,6 +35,7 @@ export interface IUserRepository {
   findByGoogleUserId(googleUserId: string): Promise<User | null>;
   checkExistsByUsername(username: string): Promise<User | null>;
   checkExistsByEmail(email: string): Promise<User | null>;
+  update(newUser: UpdateUser): Promise<void>;
   findUsers(params: {
     userIds?: string[];
     offset: number;
@@ -101,6 +103,18 @@ export class UserRepository extends BaseRepository<DB> implements IUserRepositor
       .executeTakeFirst();
 
     return row ? toUserDomain(row) : null;
+  }
+
+  async update(newUser: UpdateUser): Promise<void> {
+    await this.db
+      .updateTable('users')
+      .set({
+        ...newUser
+      })
+      .where('username', '=', newUser.username!)
+      .execute();
+
+    return;
   }
 
   async findUsers({
