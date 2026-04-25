@@ -1,10 +1,10 @@
 import { UserNotFoundError } from '@domain/error';
 import { IUserRepository } from '@src/repositories/userRepository';
-import { IBaseUseCase, Result, err, ok } from '@useCases/common';
+import { IBaseUseCase, IUseCaseResponse, err, ok } from '@useCases/common';
 import { GetUserInfoRequest } from './getUserInfoRequest';
 import { GetUserInfoResponse } from './getUserInfoResponse';
 
-export type IResponse = Result<GetUserInfoResponse, UserNotFoundError>;
+export type IResponse = IUseCaseResponse<GetUserInfoResponse, UserNotFoundError>;
 
 export type IGetUserInfoUseCase = IBaseUseCase<GetUserInfoRequest, IResponse>;
 
