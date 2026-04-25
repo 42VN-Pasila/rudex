@@ -132,6 +132,21 @@ paths:
         "500":
           $ref: "#/components/responses/APIErrorResponse"
 
+  /logout:
+    post:
+      operationId: logoutUser
+      summary: Logout a user and clear authentication tokens.
+      description: >
+        Clears authentication cookies for the current browser session.
+        This operation is idempotent and always succeeds even when the user is already logged out.
+      tags:
+        - User login
+      responses:
+        "204":
+          description: Logout successful
+        "500":
+          $ref: "#/components/responses/APIErrorResponse"
+
 components:
   parameters:
     rudexUserIdQuery:
