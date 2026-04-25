@@ -3,7 +3,6 @@ import { SendConfirmationEmailJobPayload } from './jobs/sendConfirmationEmail/se
 import { LogoutUserJobPayload } from './jobs/logoutUser/logoutUserJobPayload';
 import { LoginUserJobPayload } from './jobs/loginUser/loginUserJobPayload';
 
-
 export enum JobTypes {
   SendConfirmationEmail = 'send-confirmation-email',
   CreateUser = 'create-user',

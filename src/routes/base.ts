@@ -174,34 +174,31 @@ export default async function baseRoutes(fastify: FastifyInstance) {
     }
   );
 
-  fastify.post(
-    '/logout',
-    async (request, reply: FastifyReply) => {
-      const cookieOpts = {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax' as const,
-        path: '/'
-      };
+  fastify.post('/logout', async (request, reply: FastifyReply) => {
+    const cookieOpts = {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax' as const,
+      path: '/'
+    };
 
-      reply.clearCookie('access_token', cookieOpts);
-      reply.clearCookie('refresh_token', cookieOpts);
+    reply.clearCookie('access_token', cookieOpts);
+    reply.clearCookie('refresh_token', cookieOpts);
 
-      const token = request.cookies.access_token ?? request.cookies.refresh_token;
-      if (!token) {
-        return reply.status(204).send(null);
-      }
-
-      const result = verifyJwt(token);
-      if (result.status === 'invalid') {
-        return reply.status(204).send(null);
-      }
-
-      const username = result.payload.username;
-      const controllerResponse = await logoutUserController.execute({ username });
-      return reply.status(controllerResponse.statusCode).send(controllerResponse.data);
+    const token = request.cookies.access_token ?? request.cookies.refresh_token;
+    if (!token) {
+      return reply.status(204).send(null);
     }
-  );
+
+    const result = verifyJwt(token);
+    if (result.status === 'invalid') {
+      return reply.status(204).send(null);
+    }
+
+    const username = result.payload.username;
+    const controllerResponse = await logoutUserController.execute({ username });
+    return reply.status(controllerResponse.statusCode).send(controllerResponse.data);
+  });
 
   fastify.post<{
     Body: components['schemas']['UpdatePasswordRequestBody'];
