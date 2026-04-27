@@ -28,10 +28,9 @@ export class LogoutUserUseCase implements ILogoutUserUseCase {
       }
 
       await directorClient.logoutUser(user.username);
+      return ok(undefined);
     } catch (error) {
       return err(error instanceof Error ? error : new Error('Failed to logout user'));
     }
-
-    return ok(undefined);
   }
 }
