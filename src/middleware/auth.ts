@@ -2,7 +2,7 @@ import { FastifyReply, FastifyRequest } from 'fastify';
 import { verifyJwt, signJwt } from '@services/jwt/jwt';
 import { JWT_ACCESS_TOKEN_EXP, JWT_REFRESH_TOKEN_EXP } from '@src/constants';
 
-const PUBLIC_ROUTES = ['/login', '/register', '/mail/confirm', '/.well-known/jwks.json', '/logout'];
+const PUBLIC_ROUTES = ['/login', '/register', '/mail/confirm', '/.well-known/jwks.json'];
 
 function extractToken(request: FastifyRequest): string | undefined {
   const authHeader = request.headers.authorization;

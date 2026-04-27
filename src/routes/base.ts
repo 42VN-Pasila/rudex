@@ -16,7 +16,6 @@ import { LogoutUserController } from '@useCases/logoutUser/logoutUserController'
 import { JWT_ACCESS_TOKEN_EXP, JWT_REFRESH_TOKEN_EXP } from '@src/constants';
 import { db } from '@src/database';
 import type { components } from '@src/gen/server';
-import { verifyJwt } from '@services/jwt/jwt';
 
 const userRepo = new UserRepository(db);
 const registrationRepo = new RegistrationRepository(db);
@@ -185,17 +184,7 @@ export default async function baseRoutes(fastify: FastifyInstance) {
     reply.clearCookie('access_token', cookieOpts);
     reply.clearCookie('refresh_token', cookieOpts);
 
-    const token = request.cookies.access_token ?? request.cookies.refresh_token;
-    if (!token) {
-      return reply.status(204).send(null);
-    }
-
-    const result = verifyJwt(token);
-    if (result.status === 'invalid') {
-      return reply.status(204).send(null);
-    }
-
-    const username = result.payload.username;
+    const username = request.user?.username;
     const controllerResponse = await logoutUserController.execute({ username });
     return reply.status(controllerResponse.statusCode).send(controllerResponse.data);
   });
