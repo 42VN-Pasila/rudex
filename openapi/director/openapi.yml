@@ -57,6 +57,33 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /internal/logout:
+    post:
+      tags:
+        - Internal
+      summary: Logout a user
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InternalLogoutRequestBody"
+      responses:
+        "200":
+          description: Logout successful
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /users:
     get:
       tags:
@@ -176,7 +203,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
-  /friends/{otherUserId}:
+  /friends/{otherUsername}:
     delete:
       tags:
         - Friends
@@ -184,13 +211,14 @@ paths:
       operationId: removeFriendship
       parameters:
         - in: path
-          name: otherUserId
+          name: otherUsername
           required: true
           schema:
             type: string
       responses:
         "204":
           description: Friend removed
+
   /friends/requests:
     get:
       tags:
@@ -244,7 +272,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
-  /friends/requests/{otherUserId}:
+  /friends/requests/{otherUsername}:
     patch:
       tags:
         - Friends
@@ -252,7 +280,7 @@ paths:
       operationId: respondToFriendRequest
       parameters:
         - in: path
-          name: otherUserId
+          name: otherUsername
           required: true
           schema:
             type: string
@@ -676,6 +704,19 @@ components:
           type: string
         username:
           type: string
+    SendMessageEvent:
+      type: object
+      required:
+        - matchId
+        - message
+        - username
+      properties:
+        matchId:
+          type: string
+        message:
+          type: string
+        username:
+          type: string
     CreateUserRequestBody:
       type: object
       required:
@@ -689,6 +730,13 @@ components:
         - jobId
       properties:
         jobId:
+          type: string
+    InternalLogoutRequestBody:
+      type: object
+      required:
+        - username
+      properties:
+        username:
           type: string
     UpdateUserAvatarRequestBody:
       type: object
@@ -721,15 +769,12 @@ components:
     SocialUserDto:
       type: object
       required:
-        - id
         - status
         - relationship
         - direction
         - username
         - displayName
       properties:
-        id:
-          type: string
         avatarUrl:
           type: string
           nullable: true
@@ -771,9 +816,9 @@ components:
     RequestFriendRequestBody:
       type: object
       required:
-        - otherUserId
+        - otherUsername
       properties:
-        otherUserId:
+        otherUsername:
           type: string
 
     RespondToFriendRequestRequestBody:

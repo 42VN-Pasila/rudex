@@ -2,8 +2,8 @@ import { CreateUserJobPayload } from './jobs/createUser/createUserJobPayload';
 import { SendConfirmationEmailJobPayload } from './jobs/sendConfirmationEmail/sendConfirmationEmailJobPayload';
 
 export enum JobTypes {
-  SendConfirmationEmail = 'send-confirmation-email',
-  CreateUser = 'create-user'
+  CreateUser = 'create-user',
+  SendConfirmationEmail = 'send-confirmation-email'
 }
 
 export type JobToPayloadMap = {

@@ -11,6 +11,8 @@ import { GetUserInfoUseCase } from '@useCases/getUserInfo/getUserInfoUseCase';
 import { GetUserInfoController } from '@useCases/getUserInfo/getUserInfoController';
 import { UpdatePasswordUseCase } from '@useCases/updatePassword/updatePasswordUseCase';
 import { UpdatePasswordController } from '@useCases/updatePassword/updatePasswordController';
+import { LogoutUserUseCase } from '@useCases/logoutUser/logoutUserUseCase';
+import { LogoutUserController } from '@useCases/logoutUser/logoutUserController';
 import { JWT_ACCESS_TOKEN_EXP, JWT_REFRESH_TOKEN_EXP } from '@src/constants';
 import { db } from '@src/database';
 import type { components } from '@src/gen/server';
@@ -26,6 +28,8 @@ const getUserInfoUseCase = new GetUserInfoUseCase(userRepo);
 const getUserInfoController = new GetUserInfoController(getUserInfoUseCase);
 const updatePasswordUseCase = new UpdatePasswordUseCase(userRepo);
 const updatePasswordController = new UpdatePasswordController(updatePasswordUseCase);
+const logoutUserUseCase = new LogoutUserUseCase(userRepo);
+const logoutUserController = new LogoutUserController(logoutUserUseCase);
 
 export default async function baseRoutes(fastify: FastifyInstance) {
   fastify.post<{
@@ -168,6 +172,22 @@ export default async function baseRoutes(fastify: FastifyInstance) {
       return reply.status(controllerResponse.statusCode).send(controllerResponse.data);
     }
   );
+
+  fastify.post('/logout', async (request, reply: FastifyReply) => {
+    const cookieOpts = {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax' as const,
+      path: '/'
+    };
+
+    reply.clearCookie('access_token', cookieOpts);
+    reply.clearCookie('refresh_token', cookieOpts);
+
+    const username = request.user?.username;
+    const controllerResponse = await logoutUserController.execute({ username });
+    return reply.status(controllerResponse.statusCode).send(controllerResponse.data);
+  });
 
   fastify.post<{
     Body: components['schemas']['UpdatePasswordRequestBody'];

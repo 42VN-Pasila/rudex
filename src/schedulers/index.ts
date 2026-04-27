@@ -4,6 +4,7 @@ import { JobScheduler } from './jobSchedulers';
 import logger from '@src/logger';
 import { SendConfirmationEmailWorker } from './jobs/sendConfirmationEmail/sendConfirmationEmailWorker';
 import { CreateUserWorker } from './jobs/createUser/createUserWorker';
+
 import { UserRepository } from '@repository/userRepository';
 import { RegistrationRepository } from '@repository/registrationRepository';
 import { db } from '@src/database';

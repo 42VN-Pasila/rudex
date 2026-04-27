@@ -5,6 +5,24 @@ import { db } from '@src/database';
 import { generatePassword, generateString } from '@tests/factories';
 import { JWT_ACCESS_TOKEN_EXP } from '@src/constants';
 import { signJwt } from '@services/jwt/jwt';
+import { directorClient } from '@services/director/directorClient';
+
+jest.mock('@src/schedulers', () => ({
+  sendConfirmationEmailScheduler: { addJob: jest.fn().mockResolvedValue('1') },
+  createUserScheduler: { addJob: jest.fn().mockResolvedValue('1') },
+  initSchedulers: jest.fn(),
+  initWorkers: jest.fn(),
+  closeSchedulers: jest.fn(),
+  closeWorkers: jest.fn()
+}));
+
+jest.mock('@services/director/directorClient', () => ({
+  directorClient: {
+    loginUser: jest.fn().mockResolvedValue(undefined),
+    logoutUser: jest.fn().mockResolvedValue(undefined),
+    createUser: jest.fn().mockResolvedValue(undefined)
+  }
+}));
 
 async function createUserDb(data?: Partial<User>) {
   const user = createMockUser(data);
@@ -30,8 +48,17 @@ async function createUserDb(data?: Partial<User>) {
 }
 
 describe('User routes', () => {
+  const loginUserMock = directorClient.loginUser as jest.MockedFunction<
+    typeof directorClient.loginUser
+  >;
+  const logoutUserMock = directorClient.logoutUser as jest.MockedFunction<
+    typeof directorClient.logoutUser
+  >;
+
   afterEach(async () => {
     jest.clearAllMocks();
+    loginUserMock.mockResolvedValue(undefined);
+    logoutUserMock.mockResolvedValue(undefined);
     await db.deleteFrom('users').execute();
   });
 
@@ -220,6 +247,48 @@ describe('User routes', () => {
         message: 'Forbidden',
         info: {}
       });
+    });
+  });
+
+  describe('POST /logout', () => {
+    it('returns 401 when access token is missing', async () => {
+      const res = await app.inject({
+        method: 'POST',
+        url: '/logout'
+      });
+
+      expect(res.statusCode).toBe(401);
+      expect(res.json()).toEqual({
+        error: 'Not authenticated'
+      });
+    });
+
+    it('returns 204 and clears auth cookies when authenticated', async () => {
+      const user = await createUserDb({
+        username: 'logout_user',
+        email: 'logout.user@gmail.com'
+      });
+
+      const accessToken = await signJwt({ username: user.username }, JWT_ACCESS_TOKEN_EXP);
+
+      const res = await app.inject({
+        method: 'POST',
+        url: '/logout',
+        headers: {
+          authorization: `Bearer ${accessToken}`
+        }
+      });
+
+      expect(res.statusCode).toBe(204);
+      const setCookieHeader = res.headers['set-cookie'];
+      const cookies = Array.isArray(setCookieHeader)
+        ? setCookieHeader
+        : setCookieHeader
+          ? [setCookieHeader]
+          : [];
+
+      expect(cookies.some((cookie) => cookie.startsWith('access_token=;'))).toBe(true);
+      expect(cookies.some((cookie) => cookie.startsWith('refresh_token=;'))).toBe(true);
     });
   });
 });

@@ -31,11 +31,11 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/UserInfoResponse"
+        "400":
+          $ref: "#/components/responses/APIErrorResponse"
         "401":
           $ref: "#/components/responses/APIErrorResponse"
         "403":
-          $ref: "#/components/responses/APIErrorResponse"
-        "400":
           $ref: "#/components/responses/APIErrorResponse"
         "404":
           $ref: "#/components/responses/APIErrorResponse"
@@ -129,6 +129,21 @@ paths:
           $ref: "#/components/responses/APIErrorResponse"
         "409":
           $ref: "#/components/responses/APIErrorResponse"
+        "500":
+          $ref: "#/components/responses/APIErrorResponse"
+
+  /logout:
+    post:
+      operationId: logoutUser
+      summary: Logout a user and clear authentication tokens.
+      description: >
+        Clears authentication cookies for the current browser session.
+        This operation is idempotent and always succeeds even when the user is already logged out.
+      tags:
+        - User logout
+      responses:
+        "204":
+          description: Logout successful
         "500":
           $ref: "#/components/responses/APIErrorResponse"
 
