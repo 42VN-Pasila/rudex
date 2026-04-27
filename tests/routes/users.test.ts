@@ -5,16 +5,23 @@ import { db } from '@src/database';
 import { generatePassword, generateString } from '@tests/factories';
 import { JWT_ACCESS_TOKEN_EXP } from '@src/constants';
 import { signJwt } from '@services/jwt/jwt';
+import { directorClient } from '@services/director/directorClient';
 
 jest.mock('@src/schedulers', () => ({
   sendConfirmationEmailScheduler: { addJob: jest.fn().mockResolvedValue('1') },
   createUserScheduler: { addJob: jest.fn().mockResolvedValue('1') },
-  logoutUserScheduler: { addJob: jest.fn().mockResolvedValue('1') },
-  loginUserScheduler: { addJob: jest.fn().mockResolvedValue('1') },
   initSchedulers: jest.fn(),
   initWorkers: jest.fn(),
   closeSchedulers: jest.fn(),
   closeWorkers: jest.fn()
+}));
+
+jest.mock('@services/director/directorClient', () => ({
+  directorClient: {
+    loginUser: jest.fn().mockResolvedValue(undefined),
+    logoutUser: jest.fn().mockResolvedValue(undefined),
+    createUser: jest.fn().mockResolvedValue(undefined)
+  }
 }));
 
 async function createUserDb(data?: Partial<User>) {
@@ -41,8 +48,17 @@ async function createUserDb(data?: Partial<User>) {
 }
 
 describe('User routes', () => {
+  const loginUserMock = directorClient.loginUser as jest.MockedFunction<
+    typeof directorClient.loginUser
+  >;
+  const logoutUserMock = directorClient.logoutUser as jest.MockedFunction<
+    typeof directorClient.logoutUser
+  >;
+
   afterEach(async () => {
     jest.clearAllMocks();
+    loginUserMock.mockResolvedValue(undefined);
+    logoutUserMock.mockResolvedValue(undefined);
     await db.deleteFrom('users').execute();
   });
 

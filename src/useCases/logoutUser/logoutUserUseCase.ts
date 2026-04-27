@@ -1,10 +1,10 @@
 import { IBaseUseCase, IUseCaseResponse, ok } from '@useCases/common';
 import { err } from '@useCases/common';
-import { logoutUserScheduler } from '@src/schedulers';
 import { LogoutUserRequest } from './logoutUserRequest';
 import { LogoutUserResponse } from './logoutUserResponse';
 import { IUserRepository } from '@src/repositories/userRepository';
 import { UserNotFoundError } from '@domain/error';
+import { directorClient } from '@services/director/directorClient';
 
 export type IResponse = IUseCaseResponse<LogoutUserResponse, Error | UserNotFoundError>;
 
@@ -24,7 +24,7 @@ export class LogoutUserUseCase implements ILogoutUserUseCase {
     }
 
     try {
-      await logoutUserScheduler.addJob({ userId: user.id, username: user.username });
+      await directorClient.logoutUser(user.username);
     } catch (error) {
       return err(error instanceof Error ? error : new Error('Failed to logout user in Director'));
     }

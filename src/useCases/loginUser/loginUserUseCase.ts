@@ -7,7 +7,7 @@ import { ok, err } from '@useCases/common';
 import { signJwt } from '@services/jwt/jwt';
 import { JWT_ACCESS_TOKEN_EXP, JWT_REFRESH_TOKEN_EXP } from '@src/constants';
 import argon2 from 'argon2';
-import { loginUserScheduler } from '@src/schedulers';
+import { directorClient } from '@services/director/directorClient';
 
 export type IResponse = IUseCaseResponse<
   LoginUserResponse,
@@ -52,7 +52,7 @@ export class LoginUserUseCase implements ILoginUserUseCase {
     const accessTokenExpiryDate = new Date(Date.now() + JWT_ACCESS_TOKEN_EXP * 1000);
 
     try {
-      await loginUserScheduler.addJob({ username: rudexUser.username });
+      await directorClient.loginUser(rudexUser.username);
     } catch (error) {
       return err(error instanceof Error ? error : new Error('Failed to login user in Director'));
     }

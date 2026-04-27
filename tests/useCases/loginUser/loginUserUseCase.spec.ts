@@ -3,14 +3,23 @@ import { mockUserRepo } from '@mock/repos';
 import { LoginUserUseCase } from '@useCases/loginUser/loginUserUseCase';
 import { UserNotFoundError, InvalidCredentialsError } from '@domain/error';
 import { generatePassword, generateString, generateUUID } from '@tests/factories';
+import { directorClient } from '@services/director/directorClient';
+
+jest.mock('@services/director/directorClient', () => ({
+  directorClient: {
+    loginUser: jest.fn()
+  }
+}));
 
 describe('LoginUserUseCase', () => {
   const userRepo = mockUserRepo();
+  const loginUserMock = directorClient.loginUser as jest.MockedFunction<typeof directorClient.loginUser>;
 
   const makeUseCase = () => new LoginUserUseCase(userRepo);
 
   beforeEach(() => {
     jest.resetAllMocks();
+    loginUserMock.mockResolvedValue(undefined);
   });
 
   it('returns UserNotFoundError when user does not exist', async () => {
@@ -74,5 +83,6 @@ describe('LoginUserUseCase', () => {
         accessTokenExpiryDate: expect.any(Date)
       })
     );
+    expect(loginUserMock).toHaveBeenCalledWith(dbUser.username);
   });
 });
