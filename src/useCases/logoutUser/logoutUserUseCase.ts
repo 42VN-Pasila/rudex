@@ -18,15 +18,18 @@ export class LogoutUserUseCase implements ILogoutUserUseCase {
   }
 
   async execute(request: LogoutUserRequest): Promise<IResponse> {
-    const user = await this.userRepo.checkExistsByUsername(request.username!);
-    if (!user) {
-      return err(UserNotFoundError.create(request.username!));
-    }
-
     try {
+      if (!request || !request.username) {
+        throw new Error('LogoutUserUseCase: Missing request or username');
+      }
+      const user = await this.userRepo.checkExistsByUsername(request.username!);
+      if (!user) {
+        return err(UserNotFoundError.create(request.username!));
+      }
+
       await directorClient.logoutUser(user.username);
     } catch (error) {
-      return err(error instanceof Error ? error : new Error('Failed to logout user in Director'));
+      return err(error instanceof Error ? error : new Error('Failed to logout user'));
     }
 
     return ok(undefined);
