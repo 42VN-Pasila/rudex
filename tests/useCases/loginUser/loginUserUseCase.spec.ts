@@ -13,7 +13,9 @@ jest.mock('@services/director/directorClient', () => ({
 
 describe('LoginUserUseCase', () => {
   const userRepo = mockUserRepo();
-  const loginUserMock = directorClient.loginUser as jest.MockedFunction<typeof directorClient.loginUser>;
+  const loginUserMock = directorClient.loginUser as jest.MockedFunction<
+    typeof directorClient.loginUser
+  >;
 
   const makeUseCase = () => new LoginUserUseCase(userRepo);
 
