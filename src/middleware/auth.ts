@@ -1,6 +1,7 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { verifyJwt, signJwt } from '@services/jwt/jwt';
 import { JWT_ACCESS_TOKEN_EXP, JWT_REFRESH_TOKEN_EXP } from '@src/constants';
+import { configuration } from '@src/config';
 
 const PUBLIC_ROUTES = ['/login', '/register', '/mail/confirm', '/.well-known/jwks.json'];
 
@@ -47,7 +48,7 @@ export async function authMiddleware(request: FastifyRequest, reply: FastifyRepl
 
     reply.setCookie('access_token', newAccessToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: configuration.cookies.secure,
       sameSite: 'lax',
       path: '/',
       maxAge: JWT_ACCESS_TOKEN_EXP
@@ -55,7 +56,7 @@ export async function authMiddleware(request: FastifyRequest, reply: FastifyRepl
 
     reply.setCookie('refresh_token', refreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: configuration.cookies.secure,
       sameSite: 'lax',
       path: '/',
       maxAge: JWT_REFRESH_TOKEN_EXP

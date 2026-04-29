@@ -23,11 +23,17 @@ export const configuration = {
   frontend: {
     url: getValueFromEnv('FRONTEND_URL')
   },
+  director: {
+    url: getValueFromEnv('DIRECTOR_URL', 'http://localhost:5000')
+  },
   pg: {
     url: getValueFromEnv('DATABASE_URL', 'postgres://rudex:password@127.0.0.1:4020/rudex_dev')
   },
   redis: {
     url: getValueFromEnv('REDIS_URL', 'redis://127.0.0.1:4030')
+  },
+  cookies: {
+    secure: getBooleanFromEnv('COOKIE_SECURE', currentEnvironment.isProduction)
   },
   jwt: {
     privateKeyPath: getValueFromEnv('JWT_PRIVATE_KEY_PATH', './keys/private.pem'),
@@ -62,6 +68,15 @@ export function getNumberFromEnv(key: string, defaultValue?: number): number {
   }
 
   throw new Error('Missing environment variable: ' + key);
+}
+
+function getBooleanFromEnv(key: string, defaultValue: boolean): boolean {
+  const value = process.env[key];
+  if (!value) {
+    return defaultValue;
+  }
+
+  return ['1', 'true', 'yes'].includes(value.toLowerCase());
 }
 
 /**

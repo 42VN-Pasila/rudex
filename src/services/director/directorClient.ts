@@ -1,7 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { DirectorClientError } from '@domain/error/externalClientError';
 import { InternalService } from '@src/gen/director';
+import { OpenAPI } from '@src/gen/director/core/OpenAPI';
+import { configuration } from '@src/config';
 import logger from '@src/logger';
+
+OpenAPI.BASE = configuration.director.url;
 
 export class DirectorClient {
   async createUser(username: string): Promise<void> {

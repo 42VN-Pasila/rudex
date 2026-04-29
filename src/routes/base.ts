@@ -16,6 +16,7 @@ import { LogoutUserController } from '@useCases/logoutUser/logoutUserController'
 import { JWT_ACCESS_TOKEN_EXP, JWT_REFRESH_TOKEN_EXP } from '@src/constants';
 import { db } from '@src/database';
 import type { components } from '@src/gen/server';
+import { configuration } from '@src/config';
 
 const userRepo = new UserRepository(db);
 const registrationRepo = new RegistrationRepository(db);
@@ -64,7 +65,7 @@ export default async function baseRoutes(fastify: FastifyInstance) {
       const { accessToken, refreshToken } = loginResult.unwrap();
       const cookieOpts = {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
+        secure: configuration.cookies.secure,
         sameSite: 'lax' as const,
         path: '/'
       };
@@ -176,7 +177,7 @@ export default async function baseRoutes(fastify: FastifyInstance) {
   fastify.post('/logout', async (request, reply: FastifyReply) => {
     const cookieOpts = {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: configuration.cookies.secure,
       sameSite: 'lax' as const,
       path: '/'
     };
